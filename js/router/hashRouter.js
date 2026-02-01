@@ -13,7 +13,7 @@ export async function handleRoute() {
   await new Promise(r => setTimeout(r, 200));
 
   try {
-    content.innerHTML = await load(`pages/${page}.html`);
+    content.innerHTML = await load(`./pages/${page}.html`);
   } catch {
     content.innerHTML = '<h2>Page not found</h2>';
   }
