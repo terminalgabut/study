@@ -1,5 +1,4 @@
 import { load } from './utils/loader.js';
-import { initRouter } from './router.js';
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
