@@ -1,14 +1,25 @@
-const buttons = document.querySelectorAll('nav button');
-const pages = document.querySelectorAll('.page');
+import { load } from './loader.js';
+import { navigate } from './router.js';
 
-buttons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const page = btn.dataset.page;
+async function init() {
+  const app = document.getElementById('app');
 
-    pages.forEach(p => p.classList.remove('active'));
-    buttons.forEach(b => b.classList.remove('active'));
+  app.innerHTML = `
+    ${await load('components/header.html')}
+    <div class="layout">
+      ${await load('components/sidebar.html')}
+      <main id="content"></main>
+    </div>
+  `;
 
-    document.getElementById(page).classList.add('active');
-    btn.classList.add('active');
+  bindNav();
+  navigate('home');
+}
+
+function bindNav() {
+  document.querySelectorAll('[data-page]').forEach(btn => {
+    btn.onclick = () => navigate(btn.dataset.page);
   });
-});
+}
+
+init();
