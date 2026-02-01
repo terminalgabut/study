@@ -1,5 +1,7 @@
-import { load } from './loader.js';
-import { navigate, handleRoute } from './router.js';
+import { load } from './utils/loader.js';
+import { initRouter } from './router/hashRouter.js';
+import { initSidebar } from './ui/sidebar.js';
+import { initHeader } from './ui/header.js';
 
 async function init() {
   const app = document.getElementById('app');
@@ -12,47 +14,9 @@ async function init() {
     </div>
   `;
 
-  bindMenu();
-  bindNav();
-
-  // load awal dari hash
-  handleRoute();
-
-  // dengarkan perubahan hash
-  window.addEventListener('hashchange', handleRoute);
-}
-
-function bindMenu() {
-  const menuBtn = document.getElementById('menuBtn');
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.querySelector('.sidebar-overlay');
-
-  if (!menuBtn || !sidebar || !overlay) return;
-
-  const close = () => {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('show');
-  };
-
-  menuBtn.onclick = () => {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('show');
-  };
-
-  overlay.onclick = close;
-}
-
-function bindNav() {
-  const buttons = document.querySelectorAll('.nav-btn');
-  const sidebar = document.querySelector('.sidebar');
-
-  buttons.forEach(btn => {
-    btn.onclick = () => {
-      navigate(btn.dataset.page);
-      sidebar?.classList.remove('open');
-document.querySelector('.sidebar-overlay')?.classList.remove('show');
-    };
-  });
+  initHeader();
+  initSidebar();
+  initRouter();
 }
 
 init();
