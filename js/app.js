@@ -17,6 +17,17 @@ async function init() {
   navigate('home');
 }
 
+function bindMenu() {
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.querySelector('.sidebar');
+
+  if (!menuBtn || !sidebar) return;
+
+  menuBtn.onclick = () => {
+    sidebar.classList.toggle('open');
+  };
+}
+
 function bindNav() {
   const buttons = document.querySelectorAll('.nav-btn');
 
