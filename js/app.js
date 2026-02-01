@@ -25,11 +25,21 @@ async function init() {
 function bindMenu() {
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.querySelector('.sidebar');
-  if (!menuBtn || !sidebar) return;
+  const overlay = document.querySelector('.sidebar-overlay');
+
+  if (!menuBtn || !sidebar || !overlay) return;
+
+  const close = () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  };
 
   menuBtn.onclick = () => {
     sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
   };
+
+  overlay.onclick = close;
 }
 
 function bindNav() {
@@ -40,6 +50,7 @@ function bindNav() {
     btn.onclick = () => {
       navigate(btn.dataset.page);
       sidebar?.classList.remove('open');
+document.querySelector('.sidebar-overlay')?.classList.remove('show');
     };
   });
 }
