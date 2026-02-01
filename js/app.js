@@ -48,3 +48,4 @@ function setActive(page) {
 }
 
 init();
+bindMenu();
