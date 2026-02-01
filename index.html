@@ -1,62 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Study Web App</title>
+  <meta charset="UTF-8">
+  <title>Study App</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<header>
-  📘 Study Web App
-</header>
-
-<nav>
-  <button data-page="home" class="active">Home</button>
-  <button data-page="materi">Materi</button>
-  <button data-page="catatan">Catatan</button>
-  <button data-page="about">About</button>
-</nav>
-
-<main>
-
-  <section id="home" class="page active">
-    <div class="card">
-      <h2>🏠 Home</h2>
-      <p class="muted">Halaman awal (nama repo)</p>
-      <p>Web app ini dipakai untuk belajar dan mencatat materi.</p>
-    </div>
-  </section>
-
-  <section id="materi" class="page">
-    <div class="card">
-      <h2>📚 Materi</h2>
-      <ul>
-        <li>HTML</li>
-        <li>CSS</li>
-        <li>JavaScript</li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="catatan" class="page">
-    <div class="card">
-      <h2>📝 Catatan</h2>
-      <textarea placeholder="Tulis catatan..."
-      ></textarea>
-    </div>
-  </section>
-
-  <section id="about" class="page">
-    <div class="card">
-      <h2>ℹ️ About</h2>
-      <p class="muted">Single HTML SPA — GitHub Pages</p>
-    </div>
-  </section>
-
-</main>
+<div id="app"></div>
 
 <script src="app.js"></script>
 </body>
