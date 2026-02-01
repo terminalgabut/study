@@ -1,5 +1,5 @@
 import { load } from './loader.js';
-import { navigate } from './router.js';
+import { navigate, handleRoute } from './router.js';
 
 async function init() {
   const app = document.getElementById('app');
@@ -12,17 +12,19 @@ async function init() {
     </div>
   `;
 
-  bindNav();
   bindMenu();
-  const startPage = 'home';
-setActive(startPage);
-navigate(startPage);
+  bindNav();
+
+  // load awal dari hash
+  handleRoute();
+
+  // dengarkan perubahan hash
+  window.addEventListener('hashchange', handleRoute);
 }
 
 function bindMenu() {
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.querySelector('.sidebar');
-
   if (!menuBtn || !sidebar) return;
 
   menuBtn.onclick = () => {
@@ -35,24 +37,10 @@ function bindNav() {
   const sidebar = document.querySelector('.sidebar');
 
   buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const page = btn.dataset.page;
-
-      setActive(page);
-      navigate(page);
-
-      // mobile: auto close
+    btn.onclick = () => {
+      navigate(btn.dataset.page);
       sidebar?.classList.remove('open');
-    });
-  });
-}
-
-function setActive(page) {
-  const buttons = document.querySelectorAll('.nav-btn');
-  if (!buttons.length) return;
-
-  buttons.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.page === page);
+    };
   });
 }
 
