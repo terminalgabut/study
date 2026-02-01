@@ -13,6 +13,7 @@ async function init() {
   `;
 
   bindNav();
+  bindMenu();
   setActive('home');
   navigate('home');
 }
@@ -48,4 +49,3 @@ function setActive(page) {
 }
 
 init();
-bindMenu();
