@@ -1,6 +1,22 @@
 .app-header {
-  padding: 16px;
-  text-align: center;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
   border-bottom: 1px solid #1f2937;
+}
+
+.menu-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* desktop: tombol tidak perlu */
+@media (min-width: 768px) {
+  .menu-btn {
+    display: none;
+  }
 }
