@@ -14,8 +14,9 @@ async function init() {
 
   bindNav();
   bindMenu();
-  setActive('home');
-  navigate('home');
+  const startPage = 'home';
+setActive(startPage);
+navigate(startPage);
 }
 
 function bindMenu() {
@@ -31,6 +32,7 @@ function bindMenu() {
 
 function bindNav() {
   const buttons = document.querySelectorAll('.nav-btn');
+  const sidebar = document.querySelector('.sidebar');
 
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -38,12 +40,18 @@ function bindNav() {
 
       setActive(page);
       navigate(page);
+
+      // mobile: auto close
+      sidebar?.classList.remove('open');
     });
   });
 }
 
 function setActive(page) {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
+  const buttons = document.querySelectorAll('.nav-btn');
+  if (!buttons.length) return;
+
+  buttons.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === page);
   });
 }
