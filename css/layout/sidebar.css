@@ -1,4 +1,4 @@
-nav {
+.sidebar {
   display: flex;
   gap: 8px;
   padding: 10px;
@@ -6,10 +6,40 @@ nav {
   background: #020617;
 }
 
+/* tombol default */
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.nav-btn:hover {
+  background: var(--accent);
+  color: #020617;
+}
+
+/* ACTIVE */
+.nav-btn.active {
+  background: var(--accent);
+  color: #020617;
+  font-weight: 600;
+}
+
+/* DESKTOP */
 @media (min-width: 768px) {
-  nav {
-    width: 200px;
+  .sidebar {
     flex-direction: column;
+    width: 200px;
     align-items: stretch;
+  }
+
+  .nav-btn {
+    text-align: left;
+    width: 100%;
   }
 }
