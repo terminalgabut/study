@@ -1,0 +1,52 @@
+/* ===============================
+   CSS RESET (GLOBAL BASE)
+   =============================== */
+
+/* box model konsisten */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* hilangkan margin default browser */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* body adalah yang scroll */
+body {
+  background: var(--bg);
+  color: var(--text);
+
+  /* PENTING: offset header fixed */
+  padding-top: 56px;
+
+  line-height: 1.5;
+}
+
+/* media default */
+img,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+/* list reset */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+/* button & input konsisten */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
