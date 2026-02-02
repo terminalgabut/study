@@ -2,6 +2,7 @@ import { load } from './utils/loader.js';
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
+import { initSettingsModal } from './ui/settings.js';
 
 async function init() {
   const app = document.getElementById('app');
@@ -17,6 +18,7 @@ async function init() {
   initHeader();
   initSidebar();
   initRouter();
+  initSettingsModal();
 }
 
 init();
