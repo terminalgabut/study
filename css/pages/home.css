@@ -1,27 +1,61 @@
 .home {
-  padding: 24px;
+  padding: 20px;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .home-card {
   background: #1e1e1e;
   border-radius: 16px;
-  padding: 24px;
-  max-width: 600px;
+  padding: 20px;
+  color: #e0e0e0;
 }
 
-.home-card h1 {
-  color: #ffffff;
+.hero {
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  color: #a5d8ff;
   margin-bottom: 8px;
 }
 
-.home-card .subtitle {
-  color: #a5d8ff; /* biru lembut */
-  font-size: 15px;
-  margin-bottom: 12px;
-}
-
-.home-card .desc {
-  color: #e0e0e0; /* abu terang, nyaman dibaca */
+.desc {
   line-height: 1.6;
-  margin-bottom: 8px;
+}
+
+.small {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.highlight {
+  font-size: 18px;
+  color: #ffffff;
+  margin: 6px 0;
+}
+
+.quote {
+  font-style: italic;
+  color: #ddd;
+}
+
+.task-list,
+.link-list {
+  padding-left: 18px;
+}
+
+.primary-btn {
+  margin-top: 10px;
+  background: #4dabf7;
+  color: #000;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
 }
