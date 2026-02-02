@@ -1,0 +1,27 @@
+.home {
+  padding: 24px;
+}
+
+.home-card {
+  background: #1e1e1e;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 600px;
+}
+
+.home-card h1 {
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.home-card .subtitle {
+  color: #a5d8ff; /* biru lembut */
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.home-card .desc {
+  color: #e0e0e0; /* abu terang, nyaman dibaca */
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
