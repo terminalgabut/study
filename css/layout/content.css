@@ -9,3 +9,6 @@
   opacity: 0;
   transform: translateY(6px);
 }
+#content {
+  padding-top: 56px; /* sama dengan tinggi header */
+}
