@@ -1,13 +1,29 @@
+/* ===============================
+   HEADER (Fixed App Header)
+   =============================== */
+
 .app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 
   height: 56px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   padding: 0 16px;
+
   background: #020617;
   border-bottom: 1px solid #1e293b;
 }
+
+/* ===============================
+   LEFT SECTION
+   =============================== */
 
 .header-left {
   display: flex;
@@ -19,17 +35,28 @@
   font-size: 1rem;
   font-weight: 600;
   color: #e5e7eb;
+  white-space: nowrap;
 }
 
+/* menu (mobile) */
 .menu-btn {
   background: transparent;
   border: none;
   font-size: 1.3rem;
   color: #e5e7eb;
   cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
 }
 
-/* kanan */
+.menu-btn:hover {
+  background: rgba(148, 163, 255, 0.15);
+}
+
+/* ===============================
+   RIGHT SECTION
+   =============================== */
+
 .header-right {
   display: flex;
   align-items: center;
@@ -41,17 +68,20 @@
   border: none;
   color: #cbd5f5;
   font-size: 1.2rem;
+
   padding: 6px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
+
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .icon-btn:hover {
   background: rgba(148, 163, 255, 0.15);
+  color: #e5e7eb;
 }
 
-/* avatar */
+/* profile avatar */
 .profile-btn img {
   width: 28px;
   height: 28px;
@@ -59,7 +89,11 @@
   display: block;
 }
 
-/* desktop: menu hidden */
+/* ===============================
+   RESPONSIVE
+   =============================== */
+
+/* desktop: hide menu button */
 @media (min-width: 768px) {
   .menu-btn {
     display: none;
