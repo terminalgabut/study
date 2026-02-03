@@ -1,3 +1,4 @@
+alert('APP JS JALAN');
 // app.js
 
 import { initRouter } from './router/hashRouter.js';
