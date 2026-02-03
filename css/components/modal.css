@@ -1,71 +1,62 @@
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.6);
-  backdrop-filter: blur(3px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
+.modal-settings {
+  position: absolute;
+  top: 100%;      /* tepat di bawah tombol */
+  right: 0;        /* sejajar kanan tombol */
+  transform: translateY(8px);
+  width: 220px;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  display: none;   /* default hidden */
   z-index: 2000;
 }
 
-.modal-overlay.show {
-  opacity: 1;
-  pointer-events: auto;
+/* tampil saat toggle */
+.modal-settings.show {
+  display: block;
 }
 
-.modal {
-  width: 90%;
-  max-width: 360px;
-  background: var(--card);
-  border-radius: 16px;
-  padding: 16px;
-
-  transform: translateY(10px);
-  transition: transform 0.25s ease;
-}
-
-.modal-overlay.show .modal {
-  transform: translateY(0);
-}
-
-
+/* modal header */
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .modal-header h3 {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text);
+  margin: 0;
 }
 
 .modal-close {
   background: transparent;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--muted);
   cursor: pointer;
 }
 
-
+/* modal body */
 .modal-body {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
-.setting-item {
+.modal-body label {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--text);
   font-size: 0.9rem;
+  color: var(--text);
+}
+
+.version {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: right;
 }
