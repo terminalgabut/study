@@ -1,4 +1,116 @@
-/* ================================
+/* =========================
+   KONTEN MATERI PAGE
+   ========================= */
+
+.konten-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* WRAPPER UTAMA */
+.konten-wrapper {
+  width: 100%;
+  max-width: 820px;          /* sedikit lebih lebar dari sebelumnya */
+  padding: 28px 22px 72px;
+}
+
+/* JUDUL */
+.konten-title {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 28px;
+  color: var(--text);
+}
+
+/* ISI DARI DB */
+.konten-isi {
+  font-size: 18px;           /* 🔼 naik dikit */
+  line-height: 1.85;
+  color: var(--text);
+}
+
+/* =========================
+   ELEMEN HTML UMUM
+   ========================= */
+
+.konten-isi p {
+  margin-bottom: 18px;
+}
+
+.konten-isi h2 {
+  font-size: 22px;
+  margin: 40px 0 14px;
+  line-height: 1.4;
+}
+
+.konten-isi h3 {
+  font-size: 19px;
+  margin: 28px 0 12px;
+  line-height: 1.4;
+}
+
+.konten-isi ul,
+.konten-isi ol {
+  padding-left: 22px;
+  margin-bottom: 18px;
+}
+
+.konten-isi li {
+  margin-bottom: 8px;
+}
+
+/* QUOTE */
+.konten-isi blockquote {
+  margin: 28px 0;
+  padding: 18px 22px;
+  border-left: 4px solid var(--accent);
+  background: var(--card);
+  border-radius: 10px;
+  color: var(--text-muted);
+}
+
+/* LINK */
+.konten-isi a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* =========================
+   MOBILE OPTIMIZATION
+   ========================= */
+
+@media (max-width: 768px) {
+  .konten-wrapper {
+    padding: 24px 18px 56px;
+  }
+
+  .konten-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .konten-isi {
+    font-size: 16.5px;
+    line-height: 1.8;
+  }
+}
+
+@media (max-width: 480px) {
+  .konten-wrapper {
+    padding: 20px 16px 48px;
+  }
+
+  .konten-title {
+    font-size: 22px;
+  }
+
+  .konten-isi {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+}/* ================================
    LEARNING / KONTEN BAB
    Mirip Kritika, tema Study
 ================================ */
@@ -43,84 +155,6 @@
 /* ===== List ===== */
 .learning-content ul,
 .learning-content ol {
-  margin: 12px 0 16px;
-  padding-left: 22px;
-}
-
-.learning-content li {
-  margin-bottom: 8px;
-  color: var(--text-muted);
-}
-
-/* ===== Blockquote ===== */
-.learning-content blockquote {
-  border-left: 3px solid var(--accent);
-  padding-left: 14px;
-  margin: 16px 0;
-  color: var(--text);
-  opacity: 0.9;
-}
-
-/* ===== Code Block ===== */
-.learning-content pre {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 16px;
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
-  margin: 18px 0;
-  box-shadow: var(--shadow-sm);
-}
-
-.learning-content code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
-  color: var(--accent);
-}
-
-/* inline code */
-.learning-content p code,
-.learning-content li code {
-  background: rgba(56, 189, 248, 0.12);
-  padding: 2px 6px;
-  border-radius: 6px;
-}
-
-/* ===== Image ===== */
-.learning-content img {
-  max-width: 100%;
-  border-radius: var(--radius-md);
-  margin: 16px 0;
-  display: block;
-}
-
-/* ===== Horizontal Rule ===== */
-.learning-content hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 28px 0;
-}
-
-/* ===== Table ===== */
-.learning-content table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 18px 0;
-  font-size: 14px;
-}
-
-.learning-content th,
-.learning-content td {
-  border: 1px solid var(--border);
-  padding: 10px 12px;
-}
-
-.learning-content th {
-  background: var(--card);
-  color: var(--text);
-  font-weight: 600;
-}
-
-.learning-content td {
+g-content td {
   color: var(--text-muted);
 }
