@@ -1,3 +1,4 @@
+export const materiView = `
 <section class="materi">
   <div class="hero">
     <h2>📚 Materi Pembelajaran</h2>
@@ -22,3 +23,4 @@
     </a>
   </div>
 </section>
+`;
