@@ -1,11 +1,11 @@
-// router/hashRouter.js
+// js/router/hashRouter.js
 
-// ===== VIEW pages (HTML string) =====
+// ===== VIEW pages =====
 import { homeView } from '../../pages/homeView.js';
 import { materiView } from '../../pages/materiView.js';
 import { babView } from '../../pages/babView.js';
 
-// ===== LOGIC =====
+// ===== LOGIC (OPTIONAL, JANGAN BIKIN ROUTER MATI) =====
 import { initBab } from '../ui/bab.js';
 
 export function navigate(page) {
@@ -13,29 +13,33 @@ export function navigate(page) {
 }
 
 export async function handleRoute() {
-  const hash = location.hash.replace('#', '') || 'home';
+  const rawHash = location.hash || '#home';
+  const hash = rawHash.replace(/^#\/?/, ''); // 🔑 fix #/materi vs #materi
   const content = document.getElementById('content');
   if (!content) return;
 
-  // animasi keluar
   content.classList.add('fade-out');
-  await new Promise(r => setTimeout(r, 200));
+  await new Promise(r => setTimeout(r, 150));
 
   try {
-    // ===== Route dinamis: materi/:category =====
+    // ===== ROUTE DINAMIS: materi/:category =====
     const materiMatch = hash.match(/^materi\/([^\/]+)$/);
 
     if (materiMatch) {
-      const [, category] = materiMatch;
+      const category = materiMatch[1];
 
-      // render VIEW
+      // render view dulu (ANTI BLANK)
       content.innerHTML = babView;
 
-      // jalankan LOGIC
-      initBab(category);
+      // logic OPTIONAL (jangan bunuh router)
+      try {
+        initBab(category);
+      } catch (e) {
+        console.error('initBab error:', e);
+      }
 
     } else {
-      // ===== Route statis =====
+      // ===== ROUTE STATIS =====
       switch (hash) {
         case 'home':
           content.innerHTML = homeView;
@@ -50,11 +54,10 @@ export async function handleRoute() {
       }
     }
   } catch (err) {
-    console.error(err);
-    content.innerHTML = '<h2>Page error</h2>';
+    console.error('Router error:', err);
+    content.innerHTML = '<h2>Router error</h2>';
   }
 
-  // animasi masuk
   content.classList.remove('fade-out');
 
   // ===== Update active nav =====
@@ -65,6 +68,6 @@ export async function handleRoute() {
 }
 
 export function initRouter() {
-  handleRoute();
   window.addEventListener('hashchange', handleRoute);
+  handleRoute();
 }
