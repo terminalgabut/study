@@ -1,4 +1,4 @@
-/* overlay mobile */
+
 .sidebar-overlay {
   position: fixed;
   inset: 0;
@@ -10,7 +10,7 @@
   z-index: 40;
 }
 
-/* sidebar */
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -28,9 +28,7 @@
   z-index: 50;
 }
 
-/* ===============================
-   SIDEBAR OVERLAY (MOBILE)
-   =============================== */
+
 .sidebar-overlay {
   position: fixed;
   inset: 0;
@@ -44,9 +42,7 @@
   z-index: 40;
 }
 
-/* ===============================
-   SIDEBAR
-   =============================== */
+
 .sidebar {
   position: fixed;
   top: var(--header-height);
@@ -68,7 +64,7 @@
   z-index: 50;
 }
 
-/* open state */
+
 .sidebar.open {
   transform: translateX(0);
 }
@@ -78,9 +74,7 @@
   pointer-events: auto;
 }
 
-/* ===============================
-   NAV BUTTON
-   =============================== */
+
 .nav-btn {
   display: flex;
   align-items: center;
@@ -105,7 +99,7 @@
   color: var(--text);
 }
 
-/* active */
+
 .nav-btn.active {
   background: rgba(148, 163, 255, 0.18);
   color: #fff;
@@ -122,9 +116,7 @@
   background: var(--accent);
 }
 
-/* ===============================
-   DESKTOP MODE
-   =============================== */
+
 @media (min-width: 768px) {
   .sidebar {
     position: static;
