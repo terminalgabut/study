@@ -9,8 +9,8 @@ import { initProfileDropdown } from './ui/modalprofil.js';
 // import VIEW (HTML sebagai string)
 import { headerView } from './components/headerView.js';
 import { sidebarView } from './components/sidebarView.js';
-import { settingsModalView } from './components/modal-settingsView.js';
-import { modalProfilView } from './components/modalprofilView.js';
+import { modalsettingsView } from './components/modal-settingsView.js';
+import { modalprofilView } from './components/modalprofilView.js';
 
 function init() {
   const app = document.getElementById('app');
