@@ -8,22 +8,24 @@ async function init() {
   const app = document.getElementById('app');
   if (!app) return;
 
-  
-  app.innerHTML = `
-    ${await load('components/header.html')}
+  // 1️⃣ Load semua komponen HTML dulu
+  const headerHTML = await load('components/header.html');
+  const sidebarHTML = await load('components/sidebar.html');
+  const modalHTML = await load('components/modal-settings.html');
 
+  app.innerHTML = `
+    ${headerHTML}
     <div class="layout">
-      ${await load('components/sidebar.html')}
+      ${sidebarHTML}
       <main id="content"></main>
     </div>
-
-    ${await load('components/modal-settings.html')}
+    ${modalHTML}
   `;
 
-  
+  // 2️⃣ Init UI setelah HTML ada di DOM
   initHeader();
   initSidebar();
-  initSettingsModal();
+  initSettingsModal(); // popover modal Settings
   initRouter();
 }
 
