@@ -8,7 +8,7 @@ async function init() {
   const app = document.getElementById('app');
   if (!app) return;
 
-  // render layout + modal
+  
   app.innerHTML = `
     ${await load('components/header.html')}
 
@@ -20,7 +20,7 @@ async function init() {
     ${await load('components/modal-settings.html')}
   `;
 
-  // init UI (SETELAH HTML ADA)
+  
   initHeader();
   initSidebar();
   initSettingsModal();
