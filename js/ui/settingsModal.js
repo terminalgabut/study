@@ -1,21 +1,19 @@
 export function initSettingsModal() {
-  const settingsBtn = document.querySelector('.icon-btn[title="Settings"]');
+  const btn = document.querySelector('.icon-btn[title="Settings"]');
   const modal = document.getElementById('settingsModal');
-  if (!settingsBtn || !modal) return;
+  if (!btn || !modal) return;
 
-  // toggle via tombol settings
-  settingsBtn.addEventListener('click', (e) => {
+  btn.addEventListener('click', (e) => {
     e.stopPropagation();
     modal.classList.toggle('show');
 
-    const rect = settingsBtn.getBoundingClientRect();
-    modal.style.top = rect.bottom + window.scrollY + 8 + 'px';
-    modal.style.right = window.innerWidth - rect.right + 'px';
+    const r = btn.getBoundingClientRect();
+    modal.style.top = r.bottom + window.scrollY + 8 + 'px';
+    modal.style.right = window.innerWidth - r.right + 'px';
   });
 
-  // klik luar → tutup
   document.addEventListener('click', (e) => {
-    if (!modal.contains(e.target) && !settingsBtn.contains(e.target)) {
+    if (!modal.contains(e.target) && !btn.contains(e.target)) {
       modal.classList.remove('show');
     }
   });
