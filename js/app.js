@@ -8,24 +8,30 @@ async function init() {
   const app = document.getElementById('app');
   if (!app) return;
 
-  // 1️⃣ Load semua komponen HTML dulu
+  // load komponen
   const headerHTML = await load('components/header.html');
   const sidebarHTML = await load('components/sidebar.html');
   const modalHTML = await load('components/modal-settings.html');
 
+  // render utama (TANPA modal)
   app.innerHTML = `
     ${headerHTML}
     <div class="layout">
       ${sidebarHTML}
       <main id="content"></main>
     </div>
-    ${modalHTML}
   `;
 
-  // 2️⃣ Init UI setelah HTML ada di DOM
+  // inject modal ke header-right (KUNCI)
+  const headerRight = document.querySelector('.header-right');
+  if (headerRight) {
+    headerRight.insertAdjacentHTML('beforeend', modalHTML);
+  }
+
+  // init UI
   initHeader();
   initSidebar();
-  initSettingsModal(); // popover modal Settings
+  initSettingsModal();
   initRouter();
 }
 
