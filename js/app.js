@@ -29,7 +29,6 @@ async function init() {
     ${await load('components/modal-settings.html')}
   `;
 
-  // init UI (SETELAH HTML ADA)
   initHeader();
   initSidebar();
   initSettingsModal();
