@@ -1,4 +1,4 @@
-export const modalsettingsView = `
+export const modal-settingsView = `
 <div class="modal-settings" id="settingsModal">
   <div class="modal-header">
     <h3>Pengaturan</h3>
