@@ -1,3 +1,4 @@
+export const sidebarView = `
 <div class="sidebar-overlay"></div>
 
 <nav class="sidebar">
@@ -49,3 +50,4 @@
     <span class="label">About</span>
   </button>
 </nav>
+`;
