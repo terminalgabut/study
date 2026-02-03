@@ -1,4 +1,4 @@
-export const daftar-babView = `
+export const daftarBabView = `
 <section class="page-daftar-bab">
   <div class="hero">
     <h2 id="materi-title">📚 Materi</h2>
