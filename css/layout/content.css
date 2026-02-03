@@ -1,10 +1,8 @@
 #content {
-  
   opacity: 1;
-  transform: translateY(0);
+  /* transform: translateY(0);  <-- HAPUS */
   transition: opacity 0.25s ease, transform 0.25s ease;
 
-  
   padding-top: calc(
     var(--header-height)
     + var(--space-lg)
@@ -15,12 +13,10 @@
   padding-bottom: var(--space-lg);
 }
 
-
 #content.fade-out {
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateY(6px); /* BOLEH, hanya saat animasi */
 }
-
 
 @media (min-width: 768px) {
   #content {
