@@ -1,0 +1,126 @@
+/* ================================
+   LEARNING / KONTEN BAB
+   Mirip Kritika, tema Study
+================================ */
+
+.learning {
+  max-width: 860px;
+  margin: 0 auto;
+  padding-bottom: var(--space-xl);
+}
+
+.learning-content {
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 15px;
+}
+
+/* ===== Heading ===== */
+.learning-content h1,
+.learning-content h2,
+.learning-content h3 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.learning-content h2 {
+  font-size: 1.4rem;
+}
+
+.learning-content h3 {
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+/* ===== Paragraph ===== */
+.learning-content p {
+  margin-bottom: 14px;
+  color: var(--text-muted);
+}
+
+/* ===== List ===== */
+.learning-content ul,
+.learning-content ol {
+  margin: 12px 0 16px;
+  padding-left: 22px;
+}
+
+.learning-content li {
+  margin-bottom: 8px;
+  color: var(--text-muted);
+}
+
+/* ===== Blockquote ===== */
+.learning-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 14px;
+  margin: 16px 0;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+/* ===== Code Block ===== */
+.learning-content pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin: 18px 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.learning-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+/* inline code */
+.learning-content p code,
+.learning-content li code {
+  background: rgba(56, 189, 248, 0.12);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+/* ===== Image ===== */
+.learning-content img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  margin: 16px 0;
+  display: block;
+}
+
+/* ===== Horizontal Rule ===== */
+.learning-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 28px 0;
+}
+
+/* ===== Table ===== */
+.learning-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 14px;
+}
+
+.learning-content th,
+.learning-content td {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+}
+
+.learning-content th {
+  background: var(--card);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.learning-content td {
+  color: var(--text-muted);
+}
