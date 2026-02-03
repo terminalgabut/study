@@ -29,6 +29,12 @@ async function init() {
     headerRight.insertAdjacentHTML('beforeend', modalHTML);
   }
 
+  const profileHTML = await load('components/modalprofil.html');
+  // inject modal profil
+  if (headerRight) {
+  headerRight.insertAdjacentHTML('beforeend', profileHTML);
+}
+
   // init UI
   initHeader();
   initSidebar();
