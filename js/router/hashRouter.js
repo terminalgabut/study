@@ -1,7 +1,6 @@
-import { renderDaftarBab } from '../ui/daftarBab.js';
-import { renderKontenBab } from '../ui/kontenBab.js';
+// router/hashRouter.js
 
-// import VIEW pages
+// VIEW pages (HTML string)
 import { homeView } from '../pages/homeView.js';
 import { materiView } from '../pages/materiView.js';
 
@@ -18,34 +17,18 @@ export async function handleRoute() {
   await new Promise(r => setTimeout(r, 200));
 
   try {
-    // ===== Route Dinamis =====
-    const materiBabMatch = hash.match(/^materi\/([^\/]+)\/([^\/]+)$/);
-    const materiMatch = hash.match(/^materi\/([^\/]+)$/);
+    switch (hash) {
+      case 'home':
+        content.innerHTML = homeView;
+        break;
 
-    if (materiBabMatch) {
-      const [, slugMateri, slugBab] = materiBabMatch;
-      await renderKontenBab(slugMateri, slugBab);
+      case 'materi':
+        content.innerHTML = materiView;
+        break;
 
-    } else if (materiMatch) {
-      const [, slugMateri] = materiMatch;
-      await renderDaftarBab(slugMateri);
-
-    } else {
-      // ===== Route statis =====
-      switch (hash) {
-        case 'home':
-          content.innerHTML = homeView;
-          break;
-
-        case 'materi':
-          content.innerHTML = materiView;
-          break;
-
-        default:
-          content.innerHTML = '<h2>Page not found</h2>';
-      }
+      default:
+        content.innerHTML = '<h2>Page not found</h2>';
     }
-
   } catch (err) {
     console.error(err);
     content.innerHTML = '<h2>Page error</h2>';
@@ -53,7 +36,7 @@ export async function handleRoute() {
 
   content.classList.remove('fade-out');
 
-  // ===== Update active nav =====
+  // update active nav
   const rootPage = hash.split('/')[0];
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === rootPage);
