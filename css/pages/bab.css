@@ -1,0 +1,29 @@
+.bab-list {
+  display: grid;
+  gap: 16px;
+}
+
+.bab-item {
+  display: block;
+  background: var(--card);
+  padding: 16px;
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.bab-item:hover {
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+}
+
+.bab-item h4 {
+  margin-bottom: 6px;
+  color: var(--accent);
+}
+
+.bab-item p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
