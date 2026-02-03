@@ -18,7 +18,27 @@
   backdrop-filter: blur(8px);
 }
 
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 
+  height: 56px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 16px;
+
+  background: var(--bg);
+  border-bottom: 1px solid rgba(148, 163, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+/* LEFT */
 .header-left {
   display: flex;
   align-items: center;
@@ -32,7 +52,7 @@
   white-space: nowrap;
 }
 
-
+/* MENU */
 .menu-btn {
   background: transparent;
   border: none;
@@ -50,37 +70,47 @@
   background: rgba(148, 163, 255, 0.15);
 }
 
-
-.header-right {
-.app-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 56px;
-  z-index: 1000;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-
-  background: var(--bg);
-  border-bottom: 1px solid rgba(148, 163, 255, 0.12);
-  backdrop-filter: blur(8px);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
+/* RIGHT */
 .header-right {
   display: flex;
   align-items: center;
   gap: 8px;
 
-  /* 🔑 KUNCI */
+  /* 🔑 PENTING UNTUK MODAL */
   position: relative;
+}
+
+/* ICON BUTTON */
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.icon-btn:hover {
+  background: rgba(148, 163, 255, 0.15);
+  color: var(--text);
+}
+
+/* PROFILE */
+.profile-btn img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: block;
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+  .menu-btn {
+    display: none;
+  }
 }
