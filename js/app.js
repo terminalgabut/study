@@ -6,17 +6,20 @@ import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileDropdown } from './ui/modalprofil.js';
 
-// import VIEW (HTML sebagai string)
+// VIEW (HTML string)
 import { headerView } from './components/headerView.js';
 import { sidebarView } from './components/sidebarView.js';
-import { modalsettingsView } from './components/modalsettingsView.js';
+import { modalsettingsView } from './components/modal-settingsView.js';
 import { modalprofilView } from './components/modalprofilView.js';
 
 function init() {
   const app = document.getElementById('app');
-  if (!app) return;
+  if (!app) {
+    console.error('#app tidak ditemukan');
+    return;
+  }
 
-  // render utama
+  // render layout utama
   app.innerHTML = `
     ${headerView}
     <div class="layout">
@@ -32,7 +35,7 @@ function init() {
     headerRight.insertAdjacentHTML('beforeend', modalprofilView);
   }
 
-  // init UI (LOGIKA LAMA, TIDAK DIUBAH)
+  // init logic lama (AMAN)
   initHeader();
   initSidebar();
   initSettingsModal();
