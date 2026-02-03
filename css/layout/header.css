@@ -52,69 +52,23 @@
 
 
 .header-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.icon-btn {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 1.2rem;
-
-  padding: 6px;
-  border-radius: 8px;
-  cursor: pointer;
-
-  min-width: 40px;
-  min-height: 40px;
-
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.icon-btn:hover {
-  background: rgba(148, 163, 255, 0.15);
-  color: var(--text);
-}
-
-
-.profile-btn img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: block;
-}
-
-
-@media (min-width: 768px) {
-  .menu-btn {
-    display: none;
-  }
-}
-   
-
-
 .app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-
   height: 56px;
   z-index: 1000;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 16px;
 
-  background: #020617;
-  border-bottom: 1px solid #1e293b;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(148, 163, 255, 0.12);
+  backdrop-filter: blur(8px);
 }
-
-
 
 .header-left {
   display: flex;
@@ -122,14 +76,11 @@
   gap: 12px;
 }
 
-.app-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #e5e7eb;
-  white-space: nowrap;
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  /* 🔑 KUNCI */
+  position: relative;
 }
-
-
-.menu-btn {
-  background: transparent;
-  border: none;
