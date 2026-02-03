@@ -28,8 +28,8 @@ function init() {
   // inject modal ke header-right
   const headerRight = document.querySelector('.header-right');
   if (headerRight) {
-    headerRight.insertAdjacentHTML('beforeend', settingsModalView);
-    headerRight.insertAdjacentHTML('beforeend', modalProfilView);
+    headerRight.insertAdjacentHTML('beforeend', modalsettingsView);
+    headerRight.insertAdjacentHTML('beforeend', modalprofilView);
   }
 
   // init UI (LOGIKA LAMA, TIDAK DIUBAH)
