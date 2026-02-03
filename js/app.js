@@ -17,8 +17,7 @@ import { initSettingsModal } from './ui/settingsModal.js';
 async function init() {
   const app = document.getElementById('app');
   if (!app) return;
-
-  // render layout + modal
+                 
   app.innerHTML = `
     ${await load('components/header.html')}
 
