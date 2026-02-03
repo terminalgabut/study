@@ -1,15 +1,11 @@
-/* ===============================
-   CSS RESET (GLOBAL BASE)
-   =============================== */
 
-/* box model konsisten */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* hilangkan margin default browser */
+
 html,
 body {
   margin: 0;
@@ -17,7 +13,7 @@ body {
   height: 100%;
 }
 
-/* body adalah yang scroll */
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -28,7 +24,7 @@ body {
   line-height: 1.5;
 }
 
-/* media default */
+
 img,
 svg,
 video {
@@ -36,14 +32,14 @@ video {
   display: block;
 }
 
-/* list reset */
+
 ul,
 ol {
   margin: 0;
   padding: 0;
 }
 
-/* button & input konsisten */
+
 button,
 input,
 textarea,
