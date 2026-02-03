@@ -1,0 +1,23 @@
+.page-daftar-bab .hero {
+  margin-bottom: 16px;
+}
+
+.bab-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bab-list li {
+  padding: 14px 16px;
+  background: var(--card);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.bab-list li:hover {
+  background: rgba(148,163,255,0.15);
+}
