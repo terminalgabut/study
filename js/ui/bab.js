@@ -35,9 +35,9 @@ export async function initBab(categoryFromUrl) {
   }
 
   list.innerHTML = filtered.map(bab => `
-    <a href="#materi/${categoryFromUrl}/${bab.slug}" class="bab-item">
-      <h4>${bab.category}</h4>
-      <p>${bab.title}</p>
-    </a>
-  `).join('');
+  <a href="#materi/${categoryFromUrl}/${bab.slug}" class="home-card">
+    <h3>${bab.category}</h3>
+    <p class="small">${bab.title}</p>
+  </a>
+`).join('');
 }
