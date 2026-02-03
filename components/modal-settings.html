@@ -1,25 +1,11 @@
-<div class="modal-overlay" id="settingsOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Pengaturan</h3>
-      <button class="modal-close" id="closeSettings">✕</button>
-    </div>
-
-    <div class="modal-body">
-      <div class="setting-item">
-        <span>Dark Mode</span>
-        <input type="checkbox" checked>
-      </div>
-
-      <div class="setting-item">
-        <span>Animasi</span>
-        <input type="checkbox" checked>
-      </div>
-
-      <div class="setting-item">
-        <span>Versi App</span>
-        <small>v1.0.0</small>
-      </div>
-    </div>
+<div class="modal-settings" id="settingsModal">
+  <div class="modal-header">
+    <h3>Pengaturan</h3>
+    <button class="modal-close" aria-label="Close">✕</button>
+  </div>
+  <div class="modal-body">
+    <label><input type="checkbox" id="darkMode"> Dark Mode</label>
+    <label><input type="checkbox" id="animations"> Animasi</label>
+    <p class="version">Versi App v1.0.0</p>
   </div>
 </div>
