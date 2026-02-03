@@ -28,39 +28,84 @@
   z-index: 50;
 }
 
+/* ===============================
+   SIDEBAR OVERLAY (MOBILE)
+   =============================== */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(2px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+
+  z-index: 40;
+}
+
+/* ===============================
+   SIDEBAR
+   =============================== */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+
+  height: calc(100vh - var(--header-height));
+  width: 260px;
+
+  background: #020617;
+  padding: 16px 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+
+  z-index: 50;
+}
+
 /* open state */
 .sidebar.open {
   transform: translateX(0);
 }
 
-.sidebar.open + .sidebar-overlay,
 .sidebar-overlay.show {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* nav item */
+/* ===============================
+   NAV BUTTON
+   =============================== */
 .nav-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
   background: transparent;
   border: none;
-  color: #cbd5f5;
+  color: var(--muted);
+
   padding: 10px 14px;
   border-radius: 10px;
+
   font-size: 0.95rem;
   cursor: pointer;
   position: relative;
-  transition: background 0.2s ease;
+
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .nav-btn:hover {
   background: rgba(148, 163, 255, 0.12);
+  color: var(--text);
 }
 
-/* active indicator */
+/* active */
 .nav-btn.active {
   background: rgba(148, 163, 255, 0.18);
   color: #fff;
@@ -74,16 +119,19 @@
   bottom: 8px;
   width: 4px;
   border-radius: 4px;
-  background: #818cf8;
+  background: var(--accent);
 }
 
-/* DESKTOP */
+/* ===============================
+   DESKTOP MODE
+   =============================== */
 @media (min-width: 768px) {
   .sidebar {
     position: static;
     transform: none;
-    width: 220px;
+
     height: auto;
+    width: 220px;
   }
 
   .sidebar-overlay {
