@@ -1,8 +1,8 @@
 // router/hashRouter.js
 
 // VIEW pages (HTML string)
-import { homeView } from '../pages/homeView.js';
-import { materiView } from '../pages/materiView.js';
+import { homeView } from '../../pages/homeView.js';
+import { materiView } from '../../pages/materiView.js';
 
 export function navigate(page) {
   location.hash = page;
