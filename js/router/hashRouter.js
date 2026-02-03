@@ -25,6 +25,22 @@ export async function handleRoute() {
 
   try {
     // ===== ROUTE DINAMIS: materi/:category =====
+    // ===== ROUTE DINAMIS: materi/:category/:slug =====
+const kontenMatch = hash.match(/^materi\/([^\/]+)\/([^\/]+)$/);
+
+if (kontenMatch) {
+  const [, category, slug] = kontenMatch;
+
+  content.innerHTML = kontenBabView;
+
+  try {
+    initKontenBab(category, slug);
+  } catch (e) {
+    console.error('initKontenBab error:', e);
+  }
+
+}
+   
     const materiMatch = hash.match(/^materi\/([^\/]+)$/);
 
     if (materiMatch) {
