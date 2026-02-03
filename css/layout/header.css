@@ -18,7 +18,7 @@
   backdrop-filter: blur(8px);
 }
 
-/* LEFT */
+
 .header-left {
   display: flex;
   align-items: center;
@@ -32,7 +32,7 @@
   white-space: nowrap;
 }
 
-/* MENU */
+
 .menu-btn {
   background: transparent;
   border: none;
@@ -50,7 +50,7 @@
   background: rgba(148, 163, 255, 0.15);
 }
 
-/* RIGHT */
+
 .header-right {
   display: flex;
   align-items: center;
@@ -78,7 +78,7 @@
   color: var(--text);
 }
 
-/* AVATAR */
+
 .profile-btn img {
   width: 28px;
   height: 28px;
@@ -86,14 +86,14 @@
   display: block;
 }
 
-/* RESPONSIVE */
+
 @media (min-width: 768px) {
   .menu-btn {
     display: none;
   }
-}/* ===============================
-   HEADER (Fixed App Header)
-   =============================== */
+}
+   
+
 
 .app-header {
   position: fixed;
@@ -114,9 +114,7 @@
   border-bottom: 1px solid #1e293b;
 }
 
-/* ===============================
-   LEFT SECTION
-   =============================== */
+
 
 .header-left {
   display: flex;
@@ -131,7 +129,7 @@
   white-space: nowrap;
 }
 
-/* menu (mobile) */
+
 .menu-btn {
   background: transparent;
   border: none;
