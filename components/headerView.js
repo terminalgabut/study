@@ -1,3 +1,4 @@
+export const headerView = `
 <header class="app-header">
   <div class="header-left">
     <button id="menuBtn" class="menu-btn" aria-label="Toggle sidebar">☰</button>
@@ -33,3 +34,4 @@
     </button>
   </div>
 </header>
+`;
