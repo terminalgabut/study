@@ -1,3 +1,4 @@
+export const daftar-babView = `
 <section class="page-daftar-bab">
   <div class="hero">
     <h2 id="materi-title">📚 Materi</h2>
@@ -8,3 +9,4 @@
     <!-- List bab akan di-render otomatis dari JS -->
   </ul>
 </section>
+`;
