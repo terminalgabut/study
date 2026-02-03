@@ -1,3 +1,4 @@
+export const modal-settingsView = `
 <div class="modal-settings" id="settingsModal">
   <div class="modal-header">
     <h3>Pengaturan</h3>
@@ -48,3 +49,4 @@
     <span class="version">Study App v1.0.0</span>
   </div>
 </div>
+`;
