@@ -1,0 +1,38 @@
+.materi {
+  padding: 20px;
+}
+
+.materi .hero {
+  margin-bottom: 16px;
+}
+
+.materi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.materi-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+
+  text-decoration: none;
+  color: var(--text);
+
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.materi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+}
+
+.materi-card h3 {
+  margin-bottom: 6px;
+}
+
+.materi-card .small {
+  color: var(--muted);
+  font-size: 13px;
+}
