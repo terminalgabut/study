@@ -7,6 +7,9 @@ export function initHeader() {
 
   menuBtn.onclick = () => {
     sidebar.classList.toggle('open');
-    overlay?.classList.toggle('show');
+
+    if (overlay) {
+      overlay.classList.toggle('show');
+    }
   };
 }
