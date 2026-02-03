@@ -1,3 +1,5 @@
+import { supabase } from '../services/supabase.js';
+
 export async function initKontenBab(category, slug) {
   const titleEl = document.getElementById('learningTitle');
   const contentEl = document.getElementById('learningContent');
