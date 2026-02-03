@@ -1,20 +1,21 @@
 export function initSettingsModal() {
-  const modal = document.getElementById('settingsModal');
-  const openBtn = document.getElementById('settingsBtn');
+  const overlay = document.getElementById('settingsOverlay');
+  const openBtn = document.querySelector('.icon-btn[aria-label="Settings"]');
   const closeBtn = document.getElementById('closeSettings');
-  const backdrop = modal?.querySelector('.modal-backdrop');
 
-  if (!modal || !openBtn) return;
+  if (!overlay || !openBtn) return;
 
-  openBtn.onclick = () => {
-    modal.classList.remove('hidden');
+  openBtn.onclick = () => overlay.classList.add('show');
+  closeBtn.onclick = close;
+  overlay.onclick = e => {
+    if (e.target === overlay) close();
   };
 
-  closeBtn.onclick = () => {
-    modal.classList.add('hidden');
-  };
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') close();
+  });
 
-  backdrop.onclick = () => {
-    modal.classList.add('hidden');
-  };
+  function close() {
+    overlay.classList.remove('show');
+  }
 }
