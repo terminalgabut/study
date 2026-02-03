@@ -4,11 +4,11 @@ import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileDropdown } from './ui/modalprofil.js';
 
-// VIEW
-import { headerView } from './components/headerView.js';
-import { sidebarView } from './components/sidebarView.js';
-import { modalsettingsView } from './components/modal-settingsView.js';
-import { modalprofilView } from './components/modalprofilView.js';
+// ✅ FIX PATH (NAIK 1 LEVEL)
+import { headerView } from '../components/headerView.js';
+import { sidebarView } from '../components/sidebarView.js';
+import { modalsettingsView } from '../components/modal-settingsView.js';
+import { modalprofilView } from '../components/modalprofilView.js';
 
 function init() {
   const app = document.getElementById('app');
