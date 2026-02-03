@@ -1,8 +1,8 @@
 export const kontenBabView = `
 <section class="konten-page">
   <div class="konten-wrapper">
-    <h1 class="konten-title"></h1>
-    <article class="konten-isi" id="kontenIsi"></article>
+    <h1 id="learningTitle" class="konten-title"></h1>
+    <article id="learningContent" class="konten-isi"></article>
   </div>
 </section>
 `;
