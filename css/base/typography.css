@@ -1,6 +1,4 @@
-/* ===============================
-   TYPOGRAPHY
-   =============================== */
+
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont,
@@ -8,7 +6,7 @@ body {
   font-size: 14px;
 }
 
-/* heading */
+
 h1,
 h2,
 h3,
@@ -20,13 +18,13 @@ h6 {
   color: var(--text);
 }
 
-/* paragraf */
+
 p {
   margin: 0;
   color: var(--text);
 }
 
-/* link */
+
 a {
   color: var(--accent);
   text-decoration: none;
@@ -36,7 +34,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* small text */
+
 small {
   font-size: 12px;
   color: var(--muted);
