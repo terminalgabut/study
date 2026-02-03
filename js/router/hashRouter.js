@@ -4,9 +4,11 @@
 import { homeView } from '../../pages/homeView.js';
 import { materiView } from '../../pages/materiView.js';
 import { babView } from '../../pages/babView.js';
+import { kontenBabView } from '../../pages/kontenBabView.js';
 
 // ===== LOGIC (OPTIONAL, JANGAN BIKIN ROUTER MATI) =====
 import { initBab } from '../ui/bab.js';
+import { initKontenBab } from '../ui/kontenBab.js';
 
 export function navigate(page) {
   location.hash = page;
