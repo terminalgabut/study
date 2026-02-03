@@ -34,7 +34,7 @@
   transform: translateY(0);
 }
 
-/* header */
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -55,7 +55,7 @@
   cursor: pointer;
 }
 
-/* body */
+
 .modal-body {
   display: flex;
   flex-direction: column;
