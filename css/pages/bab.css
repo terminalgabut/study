@@ -1,15 +1,20 @@
-.bab-list {
-  display: grid;
+/* BAB PAGE */
+
+/* wrapper ikut home-grid → JANGAN redefinisi grid */
+.bab-page .home-grid {
   gap: 16px;
 }
 
+/* item bab = card konsisten */
 .bab-item {
   display: block;
   background: var(--card);
   padding: 16px;
-  border-radius: 14px;
+  border-radius: 16px;
+
   color: var(--text);
   text-decoration: none;
+
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
@@ -18,12 +23,17 @@
   transform: translateY(-2px);
 }
 
-.bab-item h4 {
+/* judul bab */
+.bab-item h3 {
   margin-bottom: 6px;
   color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
 }
 
+/* deskripsi */
 .bab-item p {
   color: var(--text-muted);
   font-size: 14px;
+  line-height: 1.5;
 }
