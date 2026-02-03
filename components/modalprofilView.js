@@ -1,3 +1,4 @@
+export const modalprofilView = `
 <div class="profile-dropdown" id="profileDropdown">
   <div class="profile-info">
     <img src="https://i.pravatar.cc/48" alt="User Avatar">
@@ -12,3 +13,4 @@
     <button class="dropdown-btn danger">Hapus Akun</button>
   </div>
 </div>
+`;
