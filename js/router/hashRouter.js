@@ -7,7 +7,7 @@ export function navigate(page) {
 }
 
 export async function handleRoute() {
-  const hash = location.hash.replace('#', '') || 'home';
+  let hash = location.hash.replace('#', '') || 'home';
   const content = document.getElementById('content');
   if (!content) return;
 
@@ -15,18 +15,20 @@ export async function handleRoute() {
   await new Promise(r => setTimeout(r, 200));
 
   try {
-    // cek route dinamis
+    // ======= Route Dinamis =======
+    // materi/:slug/:bab
     const materiBabMatch = hash.match(/^materi\/([^\/]+)\/([^\/]+)$/);
+    // materi/:slug
     const materiMatch = hash.match(/^materi\/([^\/]+)$/);
 
     if (materiBabMatch) {
       const [, slugMateri, slugBab] = materiBabMatch;
-      await renderKontenBab(slugMateri, slugBab); // tampilkan konten bab
+      await renderKontenBab(slugMateri, slugBab); // render konten bab
     } else if (materiMatch) {
       const [, slugMateri] = materiMatch;
-      await renderDaftarBab(slugMateri); // tampilkan daftar bab
+      await renderDaftarBab(slugMateri); // render daftar bab otomatis
     } else {
-      // default load HTML page
+      // default load HTML statis: home, about, dll
       content.innerHTML = await load(`./pages/${hash}.html`);
     }
   } catch (err) {
@@ -36,13 +38,17 @@ export async function handleRoute() {
 
   content.classList.remove('fade-out');
 
-  // update active nav button
+  // ======= Update active nav-btn =======
+  const rootPage = hash.split('/')[0]; // ambil bagian pertama dari hash
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.page === hash.split('/')[0]);
+    btn.classList.toggle('active', btn.dataset.page === rootPage);
   });
 }
 
 export function initRouter() {
+  // load route pertama
   handleRoute();
+
+  // listen hash change
   window.addEventListener('hashchange', handleRoute);
 }
