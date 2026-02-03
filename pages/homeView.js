@@ -1,3 +1,4 @@
+export const homeView = `
 <section class="home">
   <!-- HERO -->
   <div class="home-card hero">
@@ -64,3 +65,4 @@
 
   </div>
 </section>
+`;
