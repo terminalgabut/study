@@ -1,41 +1,38 @@
-import { load } from './utils/loader.js';
+// app.js
+
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileDropdown } from './ui/modalprofil.js';
 
-async function init() {
+// import VIEW (HTML sebagai string)
+import { headerView } from './components/headerView.js';
+import { sidebarView } from './components/sidebarView.js';
+import { settingsModalView } from './components/modal-settingsView.js';
+import { modalProfilView } from './components/modalprofilView.js';
+
+function init() {
   const app = document.getElementById('app');
   if (!app) return;
 
-  // load komponen
-  const headerHTML = await load('components/header.html');
-  const sidebarHTML = await load('components/sidebar.html');
-  const modalHTML = await load('components/modal-settings.html');
-
-  // render utama (TANPA modal)
+  // render utama
   app.innerHTML = `
-    ${headerHTML}
+    ${headerView}
     <div class="layout">
-      ${sidebarHTML}
+      ${sidebarView}
       <main id="content"></main>
     </div>
   `;
 
-  // inject modal ke header-right (KUNCI)
+  // inject modal ke header-right
   const headerRight = document.querySelector('.header-right');
   if (headerRight) {
-    headerRight.insertAdjacentHTML('beforeend', modalHTML);
+    headerRight.insertAdjacentHTML('beforeend', settingsModalView);
+    headerRight.insertAdjacentHTML('beforeend', modalProfilView);
   }
 
-  const profileHTML = await load('components/modalprofil.html');
-  // inject modal profil
-  if (headerRight) {
-  headerRight.insertAdjacentHTML('beforeend', profileHTML);
-}
-
-  // init UI
+  // init UI (LOGIKA LAMA, TIDAK DIUBAH)
   initHeader();
   initSidebar();
   initSettingsModal();
