@@ -33,6 +33,22 @@
 
   padding: 0 16px;
 
+/* ================= HEADER ================= */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 56px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 16px;
+
   background: var(--bg);
   border-bottom: 1px solid rgba(148, 163, 255, 0.12);
   backdrop-filter: blur(8px);
@@ -76,7 +92,7 @@
   align-items: center;
   gap: 8px;
 
-  /* 🔑 PENTING UNTUK MODAL */
+  /* penting untuk positioning modal */
   position: relative;
 }
 
