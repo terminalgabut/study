@@ -1,13 +1,13 @@
 export const babView = `
-<section class="bab-page">
+<section class="home bab-page">
   <div class="hero">
-    <h2 class="bab-title">📖 Daftar Bab</h2>
+    <h2>📖 Daftar Bab</h2>
     <p class="desc">
-      Pilih bab untuk mulai mempelajari materi secara bertahap
+      Pilih bab untuk mulai mempelajari materi
     </p>
   </div>
 
-  <div id="babList" class="bab-list">
+  <div id="babList" class="home-grid">
     <!-- daftar bab diisi dinamis -->
   </div>
 </section>
