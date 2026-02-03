@@ -158,3 +158,37 @@
 g-content td {
   color: var(--text-muted);
 }
+
+   /* ===== TABLE STYLING (KONTEN MATERI) ===== */
+.konten-isi table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: var(--card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.konten-isi th,
+.konten-isi td {
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text);
+}
+
+.konten-isi th {
+  background: rgba(255,255,255,0.04);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.konten-isi td {
+  background: transparent;
+  color: var(--text);
+}
+
+/* zebra halus */
+.konten-isi tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
+}
