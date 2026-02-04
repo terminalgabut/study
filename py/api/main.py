@@ -18,7 +18,7 @@ def call_ai():
     }
 
     payload = {
-        "model": "openai/gpt-oss-120b:nitro",
+        "model": "openai/gpt-oss-120b",
         "messages": [
             {"role": "user", "content": "Hello"}
         ]
