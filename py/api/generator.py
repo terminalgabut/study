@@ -3,7 +3,7 @@ import json
 import re  # WAJIB TAMBAHKAN INI
 from fastapi import APIRouter
 from .prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
-from .client import call_ai
+
 
 router = APIRouter()
 
