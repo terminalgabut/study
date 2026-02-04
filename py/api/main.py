@@ -1,8 +1,20 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import requests
 
 app = FastAPI()
+
+# =========================
+# CORS (WAJIB untuk browser)
+# =========================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],       # boleh nanti dipersempit
+    allow_credentials=True,
+    allow_methods=["*"],       # POST, GET, OPTIONS
+    allow_headers=["*"],
+)
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
