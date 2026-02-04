@@ -71,7 +71,7 @@ async def quiz_generate(request: Request):
         logging.info(f"Generating quiz for category: {category}")
 
         prompt_quiz = f"""
-Buatkan 5 soal test IQ pilihan ganda berbasis teks berikut:
+Buatkan 10 soal test IQ pilihan ganda berbasis teks berikut:
 {materi}
 
 ATURAN WAJIB:
