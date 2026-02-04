@@ -4,15 +4,15 @@ import requests
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from api import -
-from api import -
+from api import client
+from api import generator
 from api import -
 
 app = FastAPI()
 
 # TANPA prefix
-app.include_router(-.router)
-app.include_router(-.router)
+app.include_router(client.router)
+app.include_router(generator.router)
 app.include_router(-.router)
 
 app.add_middleware(
