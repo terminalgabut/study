@@ -1,10 +1,15 @@
-import sys
 import os
-sys.path.append(os.path.dirname(__file__))
+import sys
+
+# Tambahkan baris ini untuk memastikan folder api masuk ke dalam path pencarian python
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from generator import generate_quiz, QuizGenerationError [cite: 1]
+
+# PERBAIKAN: Gunakan import langsung tanpa titik
+from generator import generate_quiz, QuizGenerationError
 
 app = FastAPI()
 
