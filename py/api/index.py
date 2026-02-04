@@ -9,45 +9,6 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-# Import modul lokal yang tersisa
-from . import generator
-from .prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
-
-app = FastAPI()
-
-# --- CONFIGURATION ---
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_MODEL = "google/gemini-2.0-flash-exp"
-
-# --- MIDDLEWARE ---
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# --- AI CLIENT LOGIC (Pindahan dari client.py) ---
-class AIClientError(Exception):
-    pass
-
-def call_ai(
-    messages: List[Dict[str, str]],
-    model: str = DEFAULT_MODEL,
-    temperature: float = 0.7
-import os
-import logging
-import requests
-import json
-import re
-from typing import List, Dict, Any, Optional
-from fastapi import FastAPI, Request, HTTPException
-from pydantic import BaseModel
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-
 # Import hanya prompts (pastikan file api/prompts.py ada)
 try:
     from .prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
@@ -77,7 +38,7 @@ def call_ai(messages: List[Dict[str, str]]):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://study-app.vercel.app",
+        "HTTP-Referer": "https://pystudy-flame.vercel.app/",
         "X-Title": "Study AI"
     }
     payload = {
@@ -140,15 +101,4 @@ async def quiz_generate(payload: QuizRequest):
         logging.error(f"Error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
-handler = app
-
-deError:
-        raise HTTPException(status_code=500, detail="AI menghasilkan format data yang rusak")
-    except AIClientError as e:
-        raise HTTPException(status_code=502, detail=str(e))
-    except Exception as e:
-        logging.error(f"General Error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Vercel Handler
 handler = app
