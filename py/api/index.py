@@ -33,7 +33,7 @@ class QuizRequest(BaseModel):
     slug: str
     order: int
 
-@app.post("/quiz/generate")
+@app.post("/generator")
 def quiz_generate(payload: QuizRequest):
     try:
         return generate_quiz(
