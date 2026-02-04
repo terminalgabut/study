@@ -1,15 +1,16 @@
+import logging
 import json
-import re
-from client import call_ai
-from prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
+from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
+# Pastikan path impor ini sesuai dengan struktur folder Anda
+from prompt import BASE_SYSTEM_PROMPT, call_openrouter_api
 
-# ... (sisa fungsi generate_quiz tetap sama)
+# Konfigurasi logging dasar
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 
+router = APIRouter()
 
-class QuizGenerationError(Exception):
-    pass
-
-
+@router.post("/quiz")
 def generate_quiz(materi: str, category: str, slug: str, order: int):
     messages = [
         {"role": "system", "content": BASE_SYSTEM_PROMPT},
