@@ -1,0 +1,97 @@
+/* =========================
+   QUIZ / LATIHAN SOAL
+   ========================= */
+
+/* wrapper quiz (default tersembunyi) */
+.quiz-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+/* ketika quiz aktif */
+.konten-page.show-quiz .quiz-section {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* judul quiz */
+.quiz-section h3 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+/* container soal */
+.quiz-container {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+/* placeholder / soal */
+.quiz-placeholder {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+/* =========================
+   INTERAKSI DENGAN MATERI
+   ========================= */
+
+/* saat quiz muncul, materi sedikit "ditutup" */
+.konten-page.show-quiz .konten-isi {
+  opacity: 0.35;
+  filter: blur(0.5px);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* tombol latihan soal */
+.konten-actions {
+  margin: 40px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 768px) {
+  .quiz-section {
+    margin-top: 36px;
+    padding-top: 24px;
+  }
+
+  .quiz-container {
+    padding: 20px;
+  }
+
+  .quiz-section h3 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-container {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .quiz-section h3 {
+    font-size: 18px;
+  }
+}
