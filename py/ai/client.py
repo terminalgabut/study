@@ -1,6 +1,6 @@
 import os
 import requests
-from typing import List, Dict, Any
+from typing import Optional
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -17,7 +17,7 @@ def call_ai(
     messages: List[Dict[str, str]],
     model: str = DEFAULT_MODEL,
     temperature: float = 0.7,
-    max_tokens: int | None = None
+    max_tokens: Optional[int] = None
 ) -> Dict[str, Any]:
     """
     Panggil OpenRouter AI
