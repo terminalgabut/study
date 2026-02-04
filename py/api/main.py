@@ -1,53 +1,34 @@
+from fastapi import FastAPI
 import os
 import requests
 
+app = FastAPI()
 
-# =========================
-# CONFIG
-# =========================
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+@app.get("/")
+def health_check():
+    return {"status": "AI API is running"}
 
-DEFAULT_MODEL = "openai/gpt-oss-120b:nitro"
-
-
-# =========================
-# OPENROUTER CLIENT
-# =========================
-
-def call_openrouter(
-    messages: list,
-    model: str = DEFAULT_MODEL,
-    temperature: float = 0.4
-) -> dict:
-    """
-    Kirim request ke OpenRouter.
-    Tidak peduli isi prompt atau output.
-    """
-
-    if not OPENROUTER_API_KEY:
-        raise RuntimeError("OPENROUTER_API_KEY belum diset")
-
+@app.post("/call-ai")
+def call_ai():
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://terminalgabut.github.io/study",
-        "X-Title": "Study AI Engine"
+        "Content-Type": "application/json"
     }
 
     payload = {
-        "model": model,
-        "messages": messages,
-        "temperature": temperature
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "user", "content": "Hello"}
+        ]
     }
 
     response = requests.post(
-        OPENROUTER_API_URL,
+        "https://openrouter.ai/api/v1/chat/completions",
         headers=headers,
         json=payload,
-        timeout=60
+        timeout=30
     )
 
-    response.raise_for_status()
     return response.json()
