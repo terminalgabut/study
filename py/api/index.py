@@ -1,14 +1,15 @@
 import os
 import sys
 
-# Trik HmmzBot: Tambahkan folder saat ini ke sys.path agar modul lain bisa di-import
+# PENTING: Tambahkan path folder api agar module tetangga bisa diimport
 sys.path.append(os.path.dirname(__file__))
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# Import langsung dari file tetangga
+# Import langsung dari file di folder yang sama
+# Pastikan file generator.py, client.py, prompts.py ada di folder api/
 from generator import generate_quiz, QuizGenerationError
 
 app = FastAPI()
@@ -21,15 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def health_check():
+    return {"status": "AI API is Online", "framework": "FastAPI"}
+
 class QuizRequest(BaseModel):
     materi: str
     category: str
     slug: str
     order: int
-
-@app.get("/")
-def home():
-    return {"message": "Study AI API is Online"}
 
 @app.post("/quiz/generate")
 def quiz_generate(payload: QuizRequest):
@@ -43,5 +44,5 @@ def quiz_generate(payload: QuizRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Penting untuk Vercel
+# SANGAT PENTING: Vercel mencari variabel 'app'
 handler = app
