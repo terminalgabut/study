@@ -7,7 +7,14 @@ from .prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
 class QuizGenerationError(Exception):
     pass
 
-
+@app.post("/quiz/generate")
+def generate_quiz_endpoint(payload: dict):
+    return generate_quiz(
+        materi=payload["materi"],
+        category=payload["category"],
+        slug=payload["slug"],
+        order=payload["order"]
+    )
 def generate_quiz(materi: str, category: str, slug: str, order: int):
     messages = [
         {"role": "system", "content": BASE_SYSTEM_PROMPT},
