@@ -1,18 +1,19 @@
 import os
-import sys
-
-# PENTING: Tambahkan path folder api agar module tetangga bisa diimport
-sys.path.append(os.path.dirname(__file__))
-
-from fastapi import FastAPI, HTTPException
+import logging
+import requests
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-
-# Import langsung dari file di folder yang sama
-# Pastikan file generator.py, client.py, prompts.py ada di folder api/
-from generator import generate_quiz, QuizGenerationError
+from api import -
+from api import -
+from api import -
 
 app = FastAPI()
+
+# TANPA prefix
+app.include_router(-.router)
+app.include_router(-.router)
+app.include_router(-.router)
 
 app.add_middleware(
     CORSMiddleware,
