@@ -2,10 +2,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from quiz.generator import generate_quiz, QuizGenerationError
+# PERBAIKAN: Menggunakan relative import (.) karena generator.py 
+# sekarang berada di folder yang sama (api/)
+from .generator import generate_quiz, QuizGenerationError [cite: 1]
 
 app = FastAPI()
 
+# Middleware tetap dipertahankan untuk mengizinkan akses dari frontend/CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -27,6 +30,7 @@ class QuizRequest(BaseModel):
 @app.post("/quiz/generate")
 def quiz_generate(payload: QuizRequest):
     try:
+        # Memanggil fungsi dari generator.py 
         return generate_quiz(
             materi=payload.materi,
             category=payload.category,
@@ -34,6 +38,11 @@ def quiz_generate(payload: QuizRequest):
             order=payload.order
         )
     except QuizGenerationError as e:
+        # Menangani error spesifik dari logika quiz
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        # Menangani error server umum
         raise HTTPException(status_code=500, detail=str(e))
+
+# Penting untuk Vercel: mendaftarkan instance app
+handler = app
