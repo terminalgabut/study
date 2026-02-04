@@ -1,6 +1,6 @@
 import os
 import requests
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -33,7 +33,7 @@ def call_ai(
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://study.app",   # opsional tapi direkomendasikan
+        "HTTP-Referer": "https://study.app",
         "X-Title": "Study AI"
     }
 
@@ -43,7 +43,7 @@ def call_ai(
         "temperature": temperature
     }
 
-    if max_tokens:
+    if max_tokens is not None:
         payload["max_tokens"] = max_tokens
 
     try:
