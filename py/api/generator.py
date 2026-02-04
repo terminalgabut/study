@@ -1,9 +1,7 @@
 import json
 import re
-# PERBAIKAN: Gunakan tanda titik (.) karena client.py dan prompts.py 
-# sekarang bertetangga langsung di folder /api
-from .client import call_ai
-from .prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
+from client import call_ai
+from prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
 
 
 class QuizGenerationError(Exception):
