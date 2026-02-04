@@ -4,8 +4,6 @@ from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-
-# Gunakan relative import yang aman
 from . import client
 from . import generator
 
@@ -19,7 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Pastikan di client.py dan generator.py sudah ada objek 'router'
 app.include_router(client.router)
 app.include_router(generator.router)
 
@@ -31,12 +28,12 @@ class QuizRequest(BaseModel):
 
 @app.get("/")
 def health_check():
-    return {"status": "AI API is Online"}
+    return {"status": "AI API Online"}
 
 @app.post("/generator")
-async def quiz_generate(payload: QuizRequest):
+def quiz_generate(payload: QuizRequest):
     try:
-        # Panggil fungsi dari modul generator
+        # Panggil fungsi dari modul generator yang sudah diimport
         return generator.generate_quiz(
             materi=payload.materi,
             category=payload.category,
@@ -44,7 +41,6 @@ async def quiz_generate(payload: QuizRequest):
             order=payload.order
         )
     except Exception as e:
-        logging.error(f"Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 handler = app
