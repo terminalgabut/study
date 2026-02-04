@@ -39,7 +39,7 @@ def call_openrouter_api(messages: list):
             "X-Title": "Study AI"
         },
         json={
-            "model": "google/gemini-2.0-flash-001", 
+            "model": "openai/gpt-oss-120b:nitro", 
             "messages": messages,
             "temperature": 0.7
         },
