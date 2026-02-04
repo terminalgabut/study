@@ -82,7 +82,7 @@ async def quiz_generate(payload: QuizRequest):
                 "X-Title": "Study AI"
             },
             json={
-                "model": "openai/gpt-oss-120b:nitro",
+                "model": "openai/gpt-oss-120b",
                 "messages": messages,
                 "temperature": 0.7
             },
