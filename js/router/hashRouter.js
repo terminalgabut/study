@@ -45,6 +45,60 @@ export async function handleRoute() {
 
     }
 
+// js/router/hashRouter.js
+
+// ===== VIEW pages =====
+import { homeView } from '../../pages/homeView.js';
+import { materiView } from '../../pages/materiView.js';
+import { babView } from '../../pages/babView.js';
+import { kontenBabView } from '../../pages/kontenBabView.js';
+
+// ===== LOGIC =====
+import { initBab } from '../ui/bab.js';
+import { initKontenBab } from '../ui/kontenBab.js';
+import { initQuizGenerator } from '../ui/generator.js'; // 🔥 TAMBAHAN
+
+export function navigate(page) {
+  location.hash = page;
+}
+
+export async function handleRoute() {
+  const rawHash = location.hash || '#home';
+  const hash = rawHash.replace(/^#\/?/, ''); // fix #/ vs #
+  const content = document.getElementById('content');
+  if (!content) return;
+
+  // animasi keluar
+  content.classList.add('fade-out');
+  await new Promise(r => setTimeout(r, 150));
+
+  try {
+    // ==================================================
+    // 1️⃣ ROUTE: materi/:category/:slug  (ISI MATERI)
+    // ==================================================
+    const kontenMatch = hash.match(/^materi\/([^\/]+)\/([^\/]+)$/);
+
+    if (kontenMatch) {
+      const [, category, slug] = kontenMatch;
+
+      // render VIEW dulu
+      content.innerHTML = kontenBabView;
+
+      // ===== LOGIC KONTEN =====
+      try {
+        initKontenBab(category, slug);
+      } catch (e) {
+        console.error('initKontenBab error:', e);
+      }
+
+      // ===== LOGIC QUIZ (UI ONLY) =====
+      try {
+        initQuizGenerator();
+      } catch (e) {
+        console.error('initQuizGenerator error:', e);
+      }
+    }
+
     // ==================================================
     // 2️⃣ ROUTE: materi/:category  (DAFTAR BAB)
     // ==================================================
@@ -61,7 +115,6 @@ export async function handleRoute() {
         } catch (e) {
           console.error('initBab error:', e);
         }
-
       }
 
       // ==================================================
@@ -82,7 +135,6 @@ export async function handleRoute() {
         }
       }
     }
-
   } catch (err) {
     console.error('Router error:', err);
     content.innerHTML = '<h2>Router error</h2>';
