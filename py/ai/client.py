@@ -35,7 +35,7 @@ def call_ai(
         "temperature": temperature
     }
 
-    if max_tokens:
+    if max_tokens is not None:
         payload["max_tokens"] = max_tokens
 
     response = requests.post(
@@ -46,6 +46,8 @@ def call_ai(
     )
 
     if response.status_code != 200:
-        raise AIClientError(response.text)
+        raise AIClientError(
+            f"OpenRouter error {response.status_code}: {response.text}"
+        )
 
     return response.json()
