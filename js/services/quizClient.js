@@ -1,4 +1,4 @@
-const QUIZ_API_URL = 'https://pystudy-flame.vercel.app/quiz/generate';
+const QUIZ_API_URL = 'https://pystudy-flame.vercel.app/quiz/generator';
 // ⚠️ ganti path jika endpoint kamu beda
 
 /**
