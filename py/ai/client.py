@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
-DEFAULT_MODEL = "openai/gpt-oss-120b:nitro"
+DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 
 class AIClientError(Exception):
