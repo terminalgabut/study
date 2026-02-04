@@ -1,4 +1,4 @@
-import { generateQuiz } from '../api/quizClient.js';
+import { generateQuiz } from '../services/quizClient.js';
 
 export function initQuizGenerator() {
   const pageEl = document.querySelector('.konten-page');
