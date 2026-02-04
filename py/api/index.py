@@ -3,13 +3,12 @@ import logging
 import requests
 import json
 import re
-from typing import List, Dict, Any, Optional
-from fastapi import FastAPI, Request, HTTPException
+from typing import List, Dict, Any
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-# Import hanya prompts (pastikan file api/prompts.py ada)
+# Pastikan file prompts.py tetap ada di folder api
 try:
     from .prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
 except ImportError:
@@ -30,29 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- AI CLIENT FUNCTION ---
-def call_ai(messages: List[Dict[str, str]]):
-    if not OPENROUTER_API_KEY:
-        raise HTTPException(status_code=500, detail="API Key belum dikonfigurasi di Vercel")
-
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://pystudy-flame.vercel.app/",
-        "X-Title": "Study AI"
-    }
-    payload = {
-        "model": DEFAULT_MODEL,
-        "messages": messages,
-        "temperature": 0.7
-    }
-
-    response = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=60)
-    if response.status_code != 200:
-        logging.error(f"OpenRouter Error: {response.text}")
-        raise HTTPException(status_code=502, detail="Gagal mendapatkan respon dari AI")
-    return response.json()
-
 # --- SCHEMAS ---
 class QuizRequest(BaseModel):
     materi: str
@@ -60,33 +36,66 @@ class QuizRequest(BaseModel):
     slug: str
     order: int
 
+# --- CORE LOGIC ---
+def call_openrouter(messages: List[Dict[str, str]]):
+    if not OPENROUTER_API_KEY:
+        raise HTTPException(status_code=500, detail="OPENROUTER_API_KEY is missing in Vercel env")
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://study-app.vercel.app",
+        "X-Title": "Study AI Generator"
+    }
+    
+    payload = {
+        "model": DEFAULT_MODEL,
+        "messages": messages,
+        "temperature": 0.7
+    }
+
+    try:
+        response = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=60)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        logging.error(f"AI API Error: {str(e)}")
+        raise HTTPException(status_code=502, detail=f"AI Service Error: {str(e)}")
+
 # --- ROUTES ---
 @app.get("/")
 def health_check():
-    return {"status": "Online", "version": "2.0-merged"}
+    return {"status": "Online", "mode": "Unified"}
 
 @app.post("/generator")
 async def quiz_generate(payload: QuizRequest):
     try:
-        # 1. Siapkan Prompt
+        # 1. Build messages
         messages = [
             {"role": "system", "content": BASE_SYSTEM_PROMPT},
             {"role": "user", "content": build_quiz_prompt(payload.materi)}
         ]
 
-        # 2. Panggil AI
-        ai_data = call_ai(messages)
+        # 2. Call AI
+        ai_data = call_openrouter(messages)
+        
+        if "choices" not in ai_data:
+            raise HTTPException(status_code=500, detail="Invalid AI Response")
+
         raw_content = ai_data["choices"][0]["message"]["content"]
         
-        # 3. Bersihkan & Parse JSON
+        # 3. Clean and Parse JSON
+        # Regex untuk membersihkan tag ```json ... ```
         cleaned_json = re.sub(r"^```json|```$", "", raw_content.strip(), flags=re.MULTILINE)
-        parsed_data = json.loads(cleaned_json)
+        data = json.loads(cleaned_json)
         
-        questions = parsed_data.get("questions", [])
+        questions = data.get("questions", [])
         
-        # 4. Format Output
+        # 4. Standardize output
         for i, q in enumerate(questions, start=1):
             q["id"] = f"q{i}"
+            if "answer" in q and "correct_answer" not in q:
+                q["correct_answer"] = q.pop("answer")
             if not q.get("category"):
                 q["category"] = payload.category
 
@@ -97,8 +106,13 @@ async def quiz_generate(payload: QuizRequest):
             "questions": questions
         }
 
+    except json.JSONDecodeError:
+        logging.error(f"Failed to parse JSON: {raw_content}")
+        raise HTTPException(status_code=500, detail="AI produced broken JSON")
     except Exception as e:
-        logging.error(f"Error: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+        logging.error(f"Generator Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Vercel handler
 
 handler = app
