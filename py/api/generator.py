@@ -3,7 +3,7 @@ import json
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 # Pastikan path impor ini sesuai dengan struktur folder Anda
-from .prompt import BASE_SYSTEM_PROMPT, call_openrouter_api
+from .prompts import BASE_SYSTEM_PROMPT, call_openrouter_api
 
 # Konfigurasi logging dasar
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
