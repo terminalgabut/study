@@ -78,11 +78,11 @@ async def quiz_generate(payload: QuizRequest):
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
-                "HTTP-Referer": "https://study-app.vercel.app",
+                "HTTP-Referer": "https://terminalgabut.github.io",
                 "X-Title": "Study AI"
             },
             json={
-                "model": "google/gemini-2.0-flash-exp",
+                "model": "openai/gpt-oss-120b:nitro",
                 "messages": messages,
                 "temperature": 0.7
             },
