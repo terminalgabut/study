@@ -1,10 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-# PERBAIKAN: Menggunakan relative import (.) karena generator.py 
-# sekarang berada di folder yang sama (api/)
-from .generator import generate_quiz, QuizGenerationError [cite: 1]
+from generator import generate_quiz, QuizGenerationError [cite: 1]
 
 app = FastAPI()
 
