@@ -1,0 +1,10 @@
+requests
+flask
+flask-cors
+requests
+flask-sqlalchemy
+fastapi
+uvicorn
+python-multipart
+supabase
+python-dotenv
