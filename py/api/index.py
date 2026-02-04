@@ -116,6 +116,3 @@ async def quiz_generate(payload: QuizRequest):
     except Exception as e:
         logging.error(f"Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
-
-handler = app
