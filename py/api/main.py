@@ -1,19 +1,18 @@
 import os
 import sys
 
-# Tambahkan baris ini untuk memastikan folder api masuk ke dalam path pencarian python
-sys.path.append(os.path.join(os.path.dirname(__file__)))
+# Trik HmmzBot: Tambahkan folder saat ini ke sys.path agar modul lain bisa di-import
+sys.path.append(os.path.dirname(__file__))
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# PERBAIKAN: Gunakan import langsung tanpa titik
+# Import langsung dari file tetangga
 from generator import generate_quiz, QuizGenerationError
 
 app = FastAPI()
 
-# Middleware tetap dipertahankan untuk mengizinkan akses dari frontend/CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,32 +21,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def health_check():
-    return {"status": "AI API is running"}
-
 class QuizRequest(BaseModel):
     materi: str
     category: str
     slug: str
     order: int
 
+@app.get("/")
+def home():
+    return {"message": "Study AI API is Online"}
+
 @app.post("/quiz/generate")
 def quiz_generate(payload: QuizRequest):
     try:
-        # Memanggil fungsi dari generator.py 
         return generate_quiz(
             materi=payload.materi,
             category=payload.category,
             slug=payload.slug,
             order=payload.order
         )
-    except QuizGenerationError as e:
-        # Menangani error spesifik dari logika quiz
-        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        # Menangani error server umum
         raise HTTPException(status_code=500, detail=str(e))
 
-# Penting untuk Vercel: mendaftarkan instance app
+# Penting untuk Vercel
 handler = app
