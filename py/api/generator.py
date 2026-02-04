@@ -1,7 +1,11 @@
 import json
 import re
+
+# PERBAIKAN: Gunakan import langsung
 from client import call_ai
 from prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
+
+# ... sisa kode tetap sama
 
 
 class QuizGenerationError(Exception):
