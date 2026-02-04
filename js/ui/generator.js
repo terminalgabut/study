@@ -1,129 +1,78 @@
 import { generateQuiz } from '../services/quizClient.js';
 
-/**
- * Inisialisasi generator kuis
- */
 export function initQuizGenerator() {
-  const pageEl = document.querySelector('.konten-page');
   const btnEl = document.getElementById('generateQuizBtn');
   const quizEl = document.getElementById('quizSection');
+  const pageEl = document.querySelector('.konten-page');
 
-  if (!pageEl || !btnEl || !quizEl) {
-    console.error("Elemen UI Quiz tidak ditemukan di DOM.");
-    return;
-  }
+  if (!btnEl || !quizEl) return;
 
-  btnEl.addEventListener('click', async () => {
-    // 1. Tampilkan UI State
+  // Hapus listener lama jika ada (mencegah double click/error)
+  btnEl.onclick = async () => {
+    // 1. Ambil elemen konten secara REAL-TIME saat klik terjadi
+    const contentEl = document.getElementById('learningContent');
+    
+    // 2. Ambil teks murni, bersihkan spasi/newline berlebih
+    const contentText = contentEl ? contentEl.textContent.trim() : "";
+
+    // DEBUG: Cek di console apakah teksnya muncul saat tombol diklik
+    console.log("Konten yang ditangkap saat klik:", contentText);
+
+    // 3. Validasi sebelum kirim ke API
+    if (!contentText || contentText.length < 10) {
+      alert("Materi belum dimuat sempurna. Tunggu sebentar.");
+      return;
+    }
+
+    // 4. UI State: Tampilkan loading
     pageEl.classList.add('show-quiz');
     quizEl.removeAttribute('hidden');
-    quizEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    quizEl.scrollIntoView({ behavior: 'smooth' });
+    quizEl.innerHTML = `<h3>Latihan Soal</h3><p>Sedang menyusun soal dari materi di atas...</p>`;
 
-    // 2. Tampilkan Loading
-    quizEl.innerHTML = `
-      <h3>Latihan Soal</h3>
-      <div class="loading-state">
-        <p>Sedang menyusun soal kritis menggunakan AI...</p>
-        <progress style="width: 100%"></progress>
-      </div>
-    `;
-
-    // 3. Ambil Data dari Elemen Content & URL
-    const contentEl = document.getElementById('learningContent');
-    const content = contentEl ? contentEl.innerText : "";
-    
-    // Ambil data dari hash URL (#/kategori/slug)
+    // 5. Ambil data pendukung dari URL
     const hash = window.location.hash.replace(/^#\/?/, '');
-    const parts = hash.split('/');
-    const category = parts[0] || 'Umum';
-    const slug = parts[1] || 'default';
+    const [category, slug] = hash.split('/');
 
     try {
-      // 4. Hit ke API Backend (/quiz)
-      // Payload disesuaikan agar tidak memicu Error 422
+      // 6. Kirim ke API
       const result = await generateQuiz({
-        materi: content,
-        category: category,
-        slug: slug,
+        materi: contentText, // Pastikan variabel ini yang dikirim
+        category: category || "Umum",
+        slug: slug || "default",
         order: 1
       });
 
-      // 5. Render Hasil
-      // Sesuai index.py terbaru: data soal ada di dalam 'result.quiz'
-      if (result && result.quiz) {
-        renderQuiz(result.quiz, quizEl);
-      } else {
-        throw new Error("Format data dari server tidak sesuai (Missing 'quiz' object)");
-      }
+      // 7. Render (Pastikan ambil result.quiz)
+      renderQuiz(result.quiz, quizEl);
 
     } catch (err) {
-      console.error("Quiz Error Detail:", err);
-      quizEl.innerHTML = `
-        <h3>Latihan Soal</h3>
-        <div class="error-box" style="color: red; padding: 20px; border: 1px solid red; border-radius: 8px;">
-          <p><strong>Gagal Memuat Soal</strong></p>
-          <p>${err.message}</p>
-          <button onclick="location.reload()" style="margin-top:10px;">Coba Lagi</button>
-        </div>
-      `;
+      console.error("Generator Error:", err);
+      quizEl.innerHTML = `<h3>Latihan Soal</h3><p style="color:red">Gagal: ${err.message}</p>`;
     }
-  });
+  };
 }
 
-/**
- * Merender data soal ke dalam kontainer HTML
- * @param {Object} data - Objek 'quiz' dari backend
- * @param {HTMLElement} container - Elemen tempat soal muncul
- */
 function renderQuiz(data, container) {
-  // Validasi apakah questions ada dan berbentuk array
-  if (!data || !data.questions || !Array.isArray(data.questions)) {
-    container.innerHTML = '<h3>Latihan Soal</h3><p>Maaf, tidak ada soal yang tersedia saat ini.</p>';
+  if (!data || !data.questions) {
+    container.innerHTML = '<p>Soal gagal dibuat.</p>';
     return;
   }
 
-  let html = `
-    <div class="quiz-header" style="margin-bottom: 20px;">
-      <h3>Latihan Soal: ${data.category || 'Materi'}</h3>
-      <p style="color: #666;">Pilihlah jawaban yang paling tepat berdasarkan materi.</p>
-    </div>
-  `;
-
-  // Loop setiap soal
-  data.questions.forEach((q, index) => {
-    // Bangun opsi jawaban
-    const optionsHtml = (q.options || []).map(opt => `
-      <li style="margin: 10px 0;">
-        <label style="display: flex; align-items: center; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.3s;">
-          <input type="radio" name="question-${index}" value="${opt.replace(/"/g, '&quot;')}" style="margin-right: 10px;">
-          <span>${opt}</span>
-        </label>
-      </li>
-    `).join('');
-
+  let html = `<h3>Latihan Soal: ${data.category}</h3>`;
+  data.questions.forEach((q, i) => {
     html += `
-      <div class="quiz-card" style="margin-bottom: 30px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-        <p style="font-size: 1.1rem;"><strong>${index + 1}. ${q.question}</strong></p>
-        <div style="margin-bottom: 10px;">
-          <span style="font-size: 0.75rem; background: #e0f0ff; color: #007bff; padding: 3px 8px; border-radius: 5px;">
-            Dimensi: ${q.dimension || 'Analisa'}
-          </span>
-        </div>
-        <ul style="list-style: none; padding: 0;">
-          ${optionsHtml}
+      <div class="quiz-item" style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px;">
+        <p><strong>${i+1}. ${q.question}</strong></p>
+        <ul style="list-style:none; padding:0;">
+          ${q.options.map(opt => `
+            <li>
+              <label><input type="radio" name="q${i}" value="${opt}"> ${opt}</label>
+            </li>
+          `).join('')}
         </ul>
       </div>
     `;
   });
-
-  // Tombol aksi akhir
-  html += `
-    <div class="quiz-footer" style="margin-top: 20px; text-align: center;">
-      <button id="checkAnswersBtn" style="padding: 15px 30px; background-color: #28a745; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1rem;">
-        Kirim & Cek Jawaban
-      </button>
-    </div>
-  `;
-
   container.innerHTML = html;
 }
