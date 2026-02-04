@@ -1,23 +1,18 @@
-const QUIZ_API_URL = 'https://pystudy-flame.vercel.app/quiz';
-// ⚠️ ganti path jika endpoint kamu beda
+// services/quizClient.js
 
-/**
- * Generate quiz dari materi
- * @param {Object} payload
- * @param {string} payload.content   - isi materi (HTML / text)
- * @param {string} payload.slug      - slug bab
- * @param {string} payload.category  - kategori materi
- */
-export async function generateQuiz({ content, slug, category }) {
+export async function generateQuiz({ materi, slug, category }) { // Ubah 'content' jadi 'materi'
+  const QUIZ_API_URL = 'https://pystudy-flame.vercel.app/quiz';
+  
   const res = await fetch(QUIZ_API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      content,
+      materi, // Sekarang sudah sesuai dengan yang dicari oleh index.py
       slug,
-      category
+      category,
+      order: 1 // Tambahkan default order jika perlu
     })
   });
 
