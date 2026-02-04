@@ -1,46 +1,50 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import os
-import requests
+
+from quiz.generator import generate_quiz, QuizGenerationError
 
 app = FastAPI()
 
 # =========================
-# CORS (WAJIB untuk browser)
+# CORS
 # =========================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],       # boleh nanti dipersempit
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],       # POST, GET, OPTIONS
+    allow_methods=["*"],
     allow_headers=["*"],
 )
-
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
 @app.get("/")
 def health_check():
     return {"status": "AI API is running"}
 
-@app.post("/call-ai")
-def call_ai():
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json"
-    }
+# =========================
+# REQUEST SCHEMA
+# =========================
+class QuizRequest(BaseModel):
+    materi: str
+    category: str
+    slug: str
+    order: int
 
-    payload = {
-        "model": "openai/gpt-oss-120b",
-        "messages": [
-            {"role": "user", "content": "Hello"}
-        ]
-    }
-
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers,
-        json=payload,
-        timeout=30
-    )
-
-    return response.json()
+# =========================
+# QUIZ GENERATE ENDPOINT
+# =========================
+@app.post("/quiz/generate")
+def quiz_generate(payload: QuizRequest):
+    try:
+        result = generate_quiz(
+            materi=payload.materi,
+            category=payload.category,
+            slug=payload.slug,
+            order=payload.order
+        )
+        return result
+    except QuizGenerationError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
