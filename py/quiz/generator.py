@@ -7,14 +7,7 @@ from .prompts import BASE_SYSTEM_PROMPT, build_quiz_prompt
 class QuizGenerationError(Exception):
     pass
 
-@app.post("/quiz/generate")
-def generate_quiz_endpoint(payload: dict):
-    return generate_quiz(
-        materi=payload["materi"],
-        category=payload["category"],
-        slug=payload["slug"],
-        order=payload["order"]
-    )
+
 def generate_quiz(materi: str, category: str, slug: str, order: int):
     messages = [
         {"role": "system", "content": BASE_SYSTEM_PROMPT},
@@ -36,11 +29,8 @@ def generate_quiz(materi: str, category: str, slug: str, order: int):
 
     for i, q in enumerate(questions, start=1):
         q["id"] = f"q{i}"
-
-        # toleransi AI salah key
         if "answer" in q and "correct_answer" not in q:
             q["correct_answer"] = q.pop("answer")
-
         if not q.get("category"):
             q["category"] = category
 
