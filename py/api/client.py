@@ -32,7 +32,7 @@ def call_ai(
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://study-app.vercel.app", # Sesuaikan dengan domainmu
+        "HTTP-Referer": "https://pystudy-flame.vercel.app/", # Sesuaikan dengan domainmu
         "X-Title": "Study AI Generator"
     }
 
