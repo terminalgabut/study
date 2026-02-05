@@ -26,7 +26,7 @@ export function initQuizGenerator() {
     quizEl.innerHTML = `
       <div class="quiz-container">
         <div class="quiz-placeholder">
-          <p>Sedang menyusun soal latihan...</p>
+          <p>Bismillahirrahmanirrahim...</p>
         </div>
       </div>
     `;
