@@ -72,7 +72,7 @@ Buatkan 10 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks mat
 {materi}
 
 ATURAN WAJIB:
-1. Setiap soal harus menguji pemahaman konsep secara mendalam.
+1. Setiap 10 soal fokus pada dimensi: Analisa, Logika, Pemecahan Masalah, Konsentrasi, dan Memori, Analisa, Logika, Pemecahan Masalah, Konsentrasi, dan Memori
 2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat namun padat yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
 3. Kembalikan HANYA JSON VALID.
 4. Struktur:
