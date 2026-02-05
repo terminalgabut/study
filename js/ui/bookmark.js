@@ -1,37 +1,70 @@
-import { supabase } from '../services/supabase.js';
+// js/ui/bookmark.js
+// Pastikan path ini benar sesuai struktur folder Anda (naik satu level ke js/ lalu masuk ke services/)
+import { supabase } from '../services/supabase.js'; 
 
 /**
- * Menginisialisasi halaman Bookmark
- * Mengambil data dari tabel 'bookmark' dan merender ke 'bookmarkListContainer'
+ * Logika Toggle Bookmark untuk halaman Konten Materi
+ */
+export async function handleBookmarkToggle(slug, category) {
+  const btn = document.getElementById('bookmarkBtn');
+  if (!btn) return;
+
+  // Cek status bookmark saat halaman dimuat
+  const { data: existing } = await supabase
+    .from('bookmark')
+    .select('material_slug')
+    .eq('material_slug', slug)
+    .maybeSingle();
+
+  // Jika sudah ada, aktifkan indikator visual (misal class active)
+  if (existing) btn.classList.add('active');
+
+  btn.onclick = async () => {
+    const isActive = btn.classList.contains('active');
+
+    if (isActive) {
+      // Hapus jika sudah aktif
+      const { error } = await supabase
+        .from('bookmark')
+        .delete()
+        .eq('material_slug', slug);
+      
+      if (!error) btn.classList.remove('active');
+    } else {
+      // Tambah jika belum aktif
+      const { error } = await supabase
+        .from('bookmark')
+        .insert([{ material_slug: slug, category: category }]);
+      
+      if (!error) btn.classList.add('active');
+    }
+  };
+}
+
+/**
+ * Menampilkan daftar Bookmark di halaman BookmarkView
  */
 export async function initBookmarkPage() {
   const container = document.getElementById('bookmarkListContainer');
   if (!container) return;
 
-  // State loading agar user tahu proses sedang berjalan
-  container.innerHTML = '<div class="home-card"><p>Menghubungkan ke perpustakaan...</p></div>';
+  container.innerHTML = '<div class="home-card"><p>Memuat daftar simpanan...</p></div>';
 
   try {
-    // 1. Ambil data (kolom category berisi Judul Materi) [cite: 10, 17]
     const { data: bookmarks, error } = await supabase
       .from('bookmark')
       .select('material_slug, category');
 
     if (error) throw error;
 
-    // 2. Jika belum ada materi yang disimpan [cite: 12]
     if (!bookmarks || bookmarks.length === 0) {
       container.innerHTML = `
         <div class="home-card">
           <p class="small">Belum ada materi yang disimpan.</p>
-          <button class="primary-btn" onclick="window.location.hash='#/'" style="margin-top:12px;">
-            Jelajahi Materi
-          </button>
         </div>`;
       return;
     }
 
-    // 3. Render Grid Kartu (Konsisten dengan homeView) [cite: 23, 26]
     container.innerHTML = bookmarks.map(b => `
       <div class="home-card">
         <h3>📌 Tersimpan</h3>
@@ -45,7 +78,7 @@ export async function initBookmarkPage() {
           </button>
           <button class="secondary-btn" 
                   onclick="deleteBookmark('${b.material_slug}')" 
-                  style="flex:1; background:rgba(255,255,255,0.05); color:var(--text-muted); border:none; cursor:pointer;">
+                  style="flex:1; border:none; cursor:pointer; background:rgba(255,255,255,0.1); color:inherit;">
             🗑️
           </button>
         </div>
@@ -54,22 +87,14 @@ export async function initBookmarkPage() {
 
   } catch (err) {
     console.error('Gagal memuat bookmark:', err);
-    container.innerHTML = `<div class="home-card"><p style="color:red;">Error: ${err.message}</p></div>`;
+    container.innerHTML = `<div class="home-card"><p>Error: ${err.message}</p></div>`;
   }
 }
 
-/**
- * Fungsi untuk menghapus bookmark langsung dari daftar halaman ini
- */
+// Global function untuk hapus cepat dari grid
 window.deleteBookmark = async (slug) => {
-  if (confirm('Hapus dari daftar simpanan?')) {
-    const { error } = await supabase
-      .from('bookmark')
-      .delete()
-      .eq('material_slug', slug);
-    
-    if (!error) {
-      initBookmarkPage(); // Muat ulang daftar agar kartu hilang dari grid
-    }
+  if (confirm('Hapus materi ini?')) {
+    const { error } = await supabase.from('bookmark').delete().eq('material_slug', slug);
+    if (!error) initBookmarkPage();
   }
 };
