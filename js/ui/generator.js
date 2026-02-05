@@ -17,18 +17,18 @@ export function initQuizGenerator() {
       return;
     }
 
-    // 1. UI STATE: Sembunyikan materi & tampilkan loading kuis
+    // 1. UI STATE: Sembunyikan materi secara total & tampilkan loading
     if (materiContainer) materiContainer.style.display = 'none';
     pageEl.classList.add('show-quiz');
     quizEl.removeAttribute('hidden');
     
-    // Scroll ke atas agar user fokus ke judul/mulai kuis
+    // Scroll ke atas agar fokus ke area kuis
     document.getElementById('learningTitle').scrollIntoView({ behavior: 'smooth' });
 
     quizEl.innerHTML = `
       <div class="quiz-container">
         <div class="quiz-placeholder">
-          <p>Sedang menyusun soal untukmu...</p>
+          <p>Sedang menyusun soal latihan...</p>
         </div>
       </div>
     `;
@@ -37,6 +37,7 @@ export function initQuizGenerator() {
       const hash = window.location.hash.replace(/^#\/?/, '');
       const [category, slug] = hash.split('/');
 
+      // Logic pengiriman ke client tetap sama sesuai file aslimu
       const result = await generateQuiz({
         materi: contentText,
         category: category || "Umum",
@@ -50,7 +51,7 @@ export function initQuizGenerator() {
     } catch (err) {
       console.error("Generator Error:", err);
       if (materiContainer) materiContainer.style.display = 'block';
-      quizEl.innerHTML = `<p style="color:var(--accent); text-align:center;">Gagal: ${err.message}</p>`;
+      quizEl.innerHTML = `<p style="color:var(--accent); text-align:center; padding:20px;">Gagal memuat soal: ${err.message}</p>`;
     }
   };
 }
@@ -59,54 +60,77 @@ function renderStepByStepQuiz(data, container) {
   let currentStep = 0;
   const questions = data.questions;
   const total = questions.length;
+  
+  // Variabel penampung jawaban untuk dikirim ke backend nanti
+  const userAnswers = [];
 
-  // Fungsi utama untuk merender frame kuis
   const initFrame = () => {
     container.innerHTML = `
-      <div class="quiz-progress-container" style="margin-bottom: 20px;">
-        <div class="quiz-progress-bar" id="quizBar" style="height:6px; background:var(--accent); width:0%; border-radius:10px; transition: width 0.3s ease;"></div>
+      <div class="quiz-progress-container" style="height:6px; background:rgba(255,255,255,0.1); border-radius:10px; margin-bottom:25px; overflow:hidden;">
+        <div id="quizBar" style="height:100%; background:var(--accent); width:0%; transition: width 0.3s ease;"></div>
       </div>
       <div id="activeQuestionContainer"></div>
     `;
     displayQuestion();
   };
 
-  // Fungsi untuk menampilkan satu soal saja
   const displayQuestion = () => {
     const q = questions[currentStep];
     const target = document.getElementById('activeQuestionContainer');
     const progressBar = document.getElementById('quizBar');
 
     // Update Progress Bar
-    const progressPercent = ((currentStep) / total) * 100;
-    progressBar.style.width = `${progressPercent}%`;
+    progressBar.style.width = `${(currentStep / total) * 100}%`;
 
     target.innerHTML = `
       <div class="quiz-container">
         <div class="quiz-item active">
-          <h3 style="color:var(--accent); margin-bottom:10px; text-align:left;">Soal ${currentStep + 1} dari ${total}</h3>
-          <p class="quiz-question" style="font-size:18px; font-weight:bold; margin-bottom:20px;">${q.question}</p>
+          <span style="color:var(--text-muted); font-size:14px;">Pertanyaan ${currentStep + 1} dari ${total}</span>
+          <p class="quiz-question" style="margin-top:10px; margin-bottom:20px; font-weight:600; font-size:18px;">${q.question}</p>
+          
           <div class="quiz-options" style="display:flex; flex-direction:column; gap:12px;">
-            ${q.options.map((opt, index) => `
-              <label class="option-label" style="display:flex; align-items:center; padding:15px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; cursor:pointer;">
-                <input type="radio" name="answer" value="${opt}" style="margin-right:15px; accent-color:var(--accent);">
+            ${q.options.map((opt, idx) => `
+              <label class="option-label" style="display:flex; align-items:center; padding:15px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; cursor:pointer; transition: 0.2s;">
+                <input type="radio" name="answer" value="${opt}" style="margin-right:12px; accent-color:var(--accent);">
                 <span>${opt}</span>
               </label>
             `).join('')}
+          </div>
+
+          <div id="feedbackContainer" class="quiz-feedback" style="display:none; margin-top:20px; padding:15px; border-radius:10px; border:1px solid var(--border);">
+            <p id="feedbackText"></p>
+          </div>
+
+          <div id="actionContainer" style="margin-top:25px; display:none;">
+            <button id="nextBtn" class="primary-btn" style="width:100%;">Lanjut ke Soal Berikutnya</button>
           </div>
         </div>
       </div>
     `;
 
-    // Pasang Event Listener: Otomatis pindah saat diklik
+    // Listener Jawaban
     const inputs = target.querySelectorAll('input[name="answer"]');
     inputs.forEach(input => {
-      input.addEventListener('change', () => {
-        // Beri jeda 400ms agar user bisa melihat pilihannya sebelum pindah
-        setTimeout(() => {
-          handleNext();
-        }, 400);
+      input.addEventListener('change', (e) => {
+        const selectedValue = e.target.value;
+        
+        // Simpan jawaban (urusan backend nanti)
+        userAnswers[currentStep] = selectedValue;
+
+        // Nonaktifkan semua pilihan agar tidak bisa ganti jawaban saat koreksi muncul
+        inputs.forEach(i => i.disabled = true);
+
+        // Tampilkan Wadah Koreksi & Tombol Next
+        // (Logika isi koreksi dari AI backend bisa dimasukkan di sini nanti)
+        document.getElementById('feedbackContainer').style.display = 'block';
+        document.getElementById('feedbackText').innerText = "Jawaban terpilih: " + selectedValue + ". Menunggu koreksi AI...";
+        document.getElementById('actionContainer').style.display = 'block';
       });
+    });
+
+    // Listener Tombol Next
+    document.getElementById('nextBtn')?.addEventListener('click', () => {
+      handleNext();
     });
   };
 
@@ -114,18 +138,19 @@ function renderStepByStepQuiz(data, container) {
     currentStep++;
     if (currentStep < total) {
       displayQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      showResult();
+      showFinalResult();
     }
   };
 
-  const showResult = () => {
+  const showFinalResult = () => {
     document.getElementById('quizBar').style.width = "100%";
     container.innerHTML = `
       <div class="quiz-container" style="text-align:center; padding:40px;">
         <h2 style="color:var(--accent); margin-bottom:15px;">Latihan Selesai!</h2>
-        <p style="margin-bottom:25px;">Kamu telah menyelesaikan semua soal untuk bab ini.</p>
-        <button class="primary-btn" onclick="location.reload()">Selesai & Kembali</button>
+        <p>Semua jawaban telah terkumpul untuk dikoreksi oleh AI.</p>
+        <button class="primary-btn" onclick="location.reload()" style="margin-top:25px;">Kembali ke Materi</button>
       </div>
     `;
   };
