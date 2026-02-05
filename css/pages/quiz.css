@@ -74,6 +74,7 @@
 }
 
 .option-label input[type="radio"] {
+  display: none;
   accent-color: var(--accent);
   width: 18px;
   height: 18px;
