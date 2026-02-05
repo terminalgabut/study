@@ -78,9 +78,16 @@ export async function initBookmarkPage() {
           <button class="secondary-btn" 
                   onclick="deleteBookmark('${m.slug}')" 
                   style="flex:1; background:rgba(255,255,255,0.05); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-            </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                  width="18" height="18" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="#ff4d4d"  /* GANTI DI SINI */
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round">
+                   <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                 </svg>
           </button>
         </div>
       </div>
