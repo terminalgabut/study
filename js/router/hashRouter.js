@@ -11,7 +11,7 @@ import { bookmarkView } from '../../pages/bookmarkView.js';
 import { initBab } from '../ui/bab.js';
 import { initKontenBab } from '../ui/kontenBab.js';
 import { initQuizGenerator } from '../ui/generator.js';
-import { initBookmarkPage } from '../ui/bookmark.js'; 
+import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 
 export function navigate(page) {
   location.hash = page;
