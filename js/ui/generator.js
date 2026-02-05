@@ -2,34 +2,6 @@ import { generateQuiz } from '../services/quizClient.js';
 
 export function initQuizGenerator() {
   const btnEl = document.getElementById('generateQuizBtn');
-  const quizSection = document.getElementById('quizSection');
-  const materiContainer = document.getElementById('materiContainer');
-  const titleEl = document.getElementById('learningTitle');
-
-  if (!btnEl || !quizSection) return;
-
-  btnEl.onclick = async () => {
-    const contentEl = document.getElementById('learningContent');
-    const contentText = contentEl ? contentEl.textContent.trim() : "";
-
-    if (!contentText || contentText.length < 10) {
-      alert("Materi belum dimuat sempurna.");
-      return;
-    }
-
-    // TRANSISI UI: Sembunyikan materi & Scroll ke atas
-    if (materiContainer) materiContainer.classList.add('hidden');
-    quizSection.classList.remove('hidden');
-    quizSection.removeAttribute('hidden');
-    titleEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    const quizUI = document.getElementById('quiz-ui') || quizSection;
-    quizUI.innerHTML = `
-      <div class="flex flex-col items-center py-12">
-import { generateQuiz } from '../services/quizClient.js';
-
-export function initQuizGenerator() {
-  const btnEl = document.getElementById('generateQuizBtn');
   const quizEl = document.getElementById('quizSection');
   const materiContainer = document.getElementById('materiContainer');
   const pageEl = document.querySelector('.konten-page');
@@ -40,57 +12,123 @@ export function initQuizGenerator() {
     const contentEl = document.getElementById('learningContent');
     const contentText = contentEl ? contentEl.textContent.trim() : "";
 
-    if (!contentText) return;
+    if (!contentText || contentText.length < 10) {
+      alert("Materi belum dimuat sempurna.");
+      return;
+    }
 
-    // --- INTERAKSI: TUTUP MATERI TOTAL ---
-    if (materiContainer) materiContainer.style.display = 'none'; 
+    // 1. UI STATE: Sembunyikan materi & tampilkan loading kuis
+    if (materiContainer) materiContainer.style.display = 'none';
     pageEl.classList.add('show-quiz');
     quizEl.removeAttribute('hidden');
-    quizEl.scrollIntoView({ behavior: 'smooth' });
+    
+    // Scroll ke atas agar user fokus ke judul/mulai kuis
+    document.getElementById('learningTitle').scrollIntoView({ behavior: 'smooth' });
 
-    quizEl.innerHTML = `<div class="quiz-placeholder"><p>Sedang menyusun soal...</p></div>`;
+    quizEl.innerHTML = `
+      <div class="quiz-container">
+        <div class="quiz-placeholder">
+          <p>Sedang menyusun soal untukmu...</p>
+        </div>
+      </div>
+    `;
 
     try {
       const hash = window.location.hash.replace(/^#\/?/, '');
       const [category, slug] = hash.split('/');
 
-      // Logic pengiriman tetap sama (tidak mengubah client)
       const result = await generateQuiz({
-        materi: contentText, 
+        materi: contentText,
         category: category || "Umum",
         slug: slug || "default",
         order: 1
       });
 
       if (result && result.quiz) {
-        renderQuizTampilanBaru(result.quiz, quizEl);
+        renderStepByStepQuiz(result.quiz, quizEl);
       }
     } catch (err) {
+      console.error("Generator Error:", err);
       if (materiContainer) materiContainer.style.display = 'block';
-      quizEl.innerHTML = `<p style="color:red; text-align:center;">Gagal: ${err.message}</p>`;
+      quizEl.innerHTML = `<p style="color:var(--accent); text-align:center;">Gagal: ${err.message}</p>`;
     }
   };
 }
 
-function renderQuizTampilanBaru(data, container) {
-  let html = `<h3 style="margin-bottom:20px;">Latihan Soal: ${data.category}</h3>`;
-  
-  // Menggunakan struktur item yang bersih namun tetap dengan CSS asli Anda
-  data.questions.forEach((q, i) => {
-    html += `
-      <div class="quiz-item" style="margin-bottom:30px; padding:20px; border:1px solid rgba(255,255,255,0.1); border-radius:12px;">
-        <p style="font-size:18px; margin-bottom:15px;"><strong>${i+1}. ${q.question}</strong></p>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          ${q.options.map(opt => `
-            <label style="display:flex; align-items:center; padding:12px; border:1px solid rgba(255,255,255,0.05); border-radius:8px; cursor:pointer;">
-              <input type="radio" name="q${i}" value="${opt}" style="margin-right:12px;"> 
-              <span>${opt}</span>
-            </label>
-          `).join('')}
+function renderStepByStepQuiz(data, container) {
+  let currentStep = 0;
+  const questions = data.questions;
+  const total = questions.length;
+
+  // Fungsi utama untuk merender frame kuis
+  const initFrame = () => {
+    container.innerHTML = `
+      <div class="quiz-progress-container" style="margin-bottom: 20px;">
+        <div class="quiz-progress-bar" id="quizBar" style="height:6px; background:var(--accent); width:0%; border-radius:10px; transition: width 0.3s ease;"></div>
+      </div>
+      <div id="activeQuestionContainer"></div>
+    `;
+    displayQuestion();
+  };
+
+  // Fungsi untuk menampilkan satu soal saja
+  const displayQuestion = () => {
+    const q = questions[currentStep];
+    const target = document.getElementById('activeQuestionContainer');
+    const progressBar = document.getElementById('quizBar');
+
+    // Update Progress Bar
+    const progressPercent = ((currentStep) / total) * 100;
+    progressBar.style.width = `${progressPercent}%`;
+
+    target.innerHTML = `
+      <div class="quiz-container">
+        <div class="quiz-item active">
+          <h3 style="color:var(--accent); margin-bottom:10px; text-align:left;">Soal ${currentStep + 1} dari ${total}</h3>
+          <p class="quiz-question" style="font-size:18px; font-weight:bold; margin-bottom:20px;">${q.question}</p>
+          <div class="quiz-options" style="display:flex; flex-direction:column; gap:12px;">
+            ${q.options.map((opt, index) => `
+              <label class="option-label" style="display:flex; align-items:center; padding:15px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; cursor:pointer;">
+                <input type="radio" name="answer" value="${opt}" style="margin-right:15px; accent-color:var(--accent);">
+                <span>${opt}</span>
+              </label>
+            `).join('')}
+          </div>
         </div>
       </div>
     `;
-  });
 
-  container.innerHTML = `<div class="quiz-container">${html}</div>`;
+    // Pasang Event Listener: Otomatis pindah saat diklik
+    const inputs = target.querySelectorAll('input[name="answer"]');
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
+        // Beri jeda 400ms agar user bisa melihat pilihannya sebelum pindah
+        setTimeout(() => {
+          handleNext();
+        }, 400);
+      });
+    });
+  };
+
+  const handleNext = () => {
+    currentStep++;
+    if (currentStep < total) {
+      displayQuestion();
+    } else {
+      showResult();
+    }
+  };
+
+  const showResult = () => {
+    document.getElementById('quizBar').style.width = "100%";
+    container.innerHTML = `
+      <div class="quiz-container" style="text-align:center; padding:40px;">
+        <h2 style="color:var(--accent); margin-bottom:15px;">Latihan Selesai!</h2>
+        <p style="margin-bottom:25px;">Kamu telah menyelesaikan semua soal untuk bab ini.</p>
+        <button class="primary-btn" onclick="location.reload()">Selesai & Kembali</button>
+      </div>
+    `;
+  };
+
+  initFrame();
 }
