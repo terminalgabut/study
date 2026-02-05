@@ -2,135 +2,98 @@
 import { supabase } from '../services/supabase.js';
 
 /**
- * LOGIKA 1: Menangani Tombol Bookmark di Halaman Materi
+ * LOGIKA 1: Tombol Bookmark (Materi Page)
+ * Kita simpan slug-nya saja, judul diambil saat load halaman bookmark.
  */
-export async function handleBookmarkToggle(slug, categoryFromUrl) {
+export async function handleBookmarkToggle(slug) {
   const btn = document.getElementById('bookmarkBtn');
   if (!btn) return;
 
-  try {
-    // Cek apakah materi ini sudah pernah di-bookmark sebelumnya
-    const { data: existing } = await supabase
-      .from('bookmark')
-      .select('material_slug')
-      .eq('material_slug', slug)
-      .maybeSingle();
+  // Cek status awal
+  const { data: existing } = await supabase
+    .from('bookmark')
+    .select('material_slug')
+    .eq('material_slug', slug)
+    .maybeSingle();
 
-    if (existing) btn.classList.add('active');
+  if (existing) btn.classList.add('active');
 
-    // Event Klik
-    btn.onclick = async () => {
-      const isActive = btn.classList.contains('active');
+  btn.onclick = async () => {
+    const isActive = btn.classList.contains('active');
 
-      if (isActive) {
-        // PROSES HAPUS
-        const { error } = await supabase
-          .from('bookmark')
-          .delete()
-          .eq('material_slug', slug);
-        
-        if (!error) btn.classList.remove('active');
-      } else {
-        // PROSES SIMPAN
-        // 🔑 MENGAMBIL JUDUL LENGKAP dari elemen #learningTitle yang sudah diisi oleh initKontenBab
-        const titleEl = document.getElementById('learningTitle');
-        const fullCategoryName = titleEl ? titleEl.textContent : categoryFromUrl;
-
-        const { error } = await supabase
-          .from('bookmark')
-          .insert([{ 
-            material_slug: slug, 
-            category: fullCategoryName // Menyimpan judul lengkap (ex: "Bahasa Indonesia B1")
-          }]);
-        
-        if (!error) {
-          btn.classList.add('active');
-        } else {
-          console.error("Gagal simpan:", error.message);
-        }
-      }
-    };
-  } catch (err) {
-    console.error('Bookmark error:', err);
-  }
+    if (isActive) {
+      const { error } = await supabase.from('bookmark').delete().eq('material_slug', slug);
+      if (!error) btn.classList.remove('active');
+    } else {
+      // Kita hanya simpan slug-nya, seperti pada baris [cite: 10]
+      const { error } = await supabase
+        .from('bookmark')
+        .insert([{ material_slug: slug }]);
+      
+      if (!error) btn.classList.add('active');
+    }
+  };
 }
 
 /**
- * LOGIKA 2: Inisialisasi Halaman Daftar Bookmark (#/bookmark)
+ * LOGIKA 2: Halaman Daftar Bookmark
+ * Mengikuti sampel: Ambil slug dulu, lalu cari category-nya di tabel materi 
  */
 export async function initBookmarkPage() {
   const container = document.getElementById('bookmarkListContainer');
   if (!container) return;
 
-  container.innerHTML = '<div class="home-card"><p>Memuat perpustakaan...</p></div>';
+  container.innerHTML = '<div class="home-card"><p>Memuat...</p></div>';
 
   try {
-    const { data: bookmarks, error } = await supabase
+    // 1. Ambil semua slug dari tabel bookmark [cite: 10]
+    const { data: bookmarkRows, error: e1 } = await supabase
       .from('bookmark')
-      .select('material_slug, category');
+      .select('material_slug');
 
-    if (error) throw error;
-
-    if (!bookmarks || bookmarks.length === 0) {
-      container.innerHTML = `
-        <div class="home-card">
-          <p class="small">Belum ada materi yang disimpan.</p>
-        </div>`;
+    if (e1 || !bookmarkRows || bookmarkRows.length === 0) {
+      container.innerHTML = '<div class="home-card"><p>Belum ada bookmark.</p></div>';
       return;
     }
 
-    // Render Grid Kartu
-    container.innerHTML = bookmarks.map(b => `
+    // 2. Ambil detail Judul (category) dari tabel 'materi' berdasarkan slug 
+    const slugs = bookmarkRows.map(b => b.material_slug);
+    const { data: materials, error: e2 } = await supabase
+      .from('materi') // Sesuaikan nama tabel materi Anda
+      .select('slug, category')
+      .in('slug', slugs);
+
+    if (e2) throw e2;
+
+    // 3. Render daftar menggunakan category yang didapat dari tabel materi 
+    container.innerHTML = materials.map(m => `
       <div class="home-card">
         <h3>📌 Tersimpan</h3>
-        <p class="small">Judul Materi</p>
-        <p class="highlight">${b.category}</p> 
-        <div style="display:flex; gap:10px; margin-top:15px;">
+        <p class="highlight">${m.category}</p> <div style="display:flex; gap:10px; margin-top:15px;">
           <button class="primary-btn" 
-                  onclick="window.location.hash='#/materi/redirect/${b.material_slug}'" 
+                  onclick="window.location.hash='#/materi/redirect/${m.slug}'" 
                   style="flex:2;">
             Lanjutkan
           </button>
           <button class="secondary-btn" 
-        onclick="deleteBookmark('${b.material_slug}')" 
-        title="Hapus bookmark"
-        style="flex:1; background:rgba(255,255,255,0.05); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; padding: 8px; border-radius: 8px;">
-  <svg xmlns="http://www.w3.org/2000/svg" 
-       width="18" height="18" 
-       viewBox="0 0 24 24" 
-       fill="none" 
-       stroke="currentColor" 
-       stroke-width="2" 
-       stroke-linecap="round" 
-       stroke-linejoin="round">
-    <path d="M3 6h18"></path>
-    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-    <line x1="10" y1="11" x2="10" y2="17"></line>
-    <line x1="14" y1="11" x2="14" y2="17"></line>
-  </svg>
-</button>
+                  onclick="deleteBookmark('${m.slug}')" 
+                  style="flex:1; background:rgba(255,255,255,0.05); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            </svg>
+          </button>
         </div>
       </div>
     `).join('');
 
   } catch (err) {
-    console.error('Gagal memuat daftar bookmark:', err);
+    console.error('Error load bookmark:', err);
   }
 }
 
-/**
- * LOGIKA 3: Fungsi Hapus Global (Hapus langsung dari list)
- */
 window.deleteBookmark = async (slug) => {
-  if (confirm('Hapus materi ini dari daftar simpanan?')) {
-    const { error } = await supabase
-      .from('bookmark')
-      .delete()
-      .eq('material_slug', slug);
-    
-    if (!error) {
-      initBookmarkPage(); // Refresh tampilan list
-    }
+  if (confirm('Hapus?')) {
+    const { error } = await supabase.from('bookmark').delete().eq('material_slug', slug);
+    if (!error) initBookmarkPage();
   }
 };
