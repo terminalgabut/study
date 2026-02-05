@@ -34,6 +34,7 @@ function init() {
   initSidebar();
   initSettingsModal();
   initProfileDropdown();
+  initBookmarkPage();
   initRouter();
 }
 
