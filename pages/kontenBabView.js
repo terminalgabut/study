@@ -1,10 +1,10 @@
 export const kontenBabView = `
-<section class="konten-page bg-gray-50 min-h-screen">
-  <div class="konten-wrapper max-w-2xl mx-auto px-4 py-10">
+<section class="konten-page">
+  <div class="konten-wrapper">
 
-    <div class="konten-header mb-8 flex justify-between items-center">
-      <h1 id="learningTitle" class="text-3xl font-bold text-gray-800"></h1>
-      <button id="bookmarkBtn" class="text-gray-400 hover:text-blue-600 transition">
+    <div class="konten-header">
+      <h1 id="learningTitle" class="konten-title"></h1>
+      <button id="bookmarkBtn" class="bookmark-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
         </svg>
@@ -12,17 +12,17 @@ export const kontenBabView = `
     </div>
 
     <div id="materiContainer">
-      <article id="learningContent" class="bg-white p-6 rounded-xl shadow-sm mb-6 prose max-w-none text-gray-700"></article>
-      <div class="konten-actions flex justify-center mb-10">
-        <button id="generateQuizBtn" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition shadow-lg transform active:scale-95">
-          🎯 Mulai Latihan Soal
+      <article id="learningContent" class="konten-isi"></article>
+      <div class="konten-actions">
+        <button class="primary-btn" id="generateQuizBtn">
+          Latihan Soal
         </button>
       </div>
     </div>
 
-    <section id="quizSection" class="hidden space-y-8" hidden>
-      <div id="quiz-ui" class="bg-white rounded-xl shadow-xl p-6 sm:p-8">
-         </div>
+    <section class="quiz-section" id="quizSection" hidden>
+      <div id="quiz-ui" class="quiz-container">
+        </div>
     </section>
 
   </div>
