@@ -12,13 +12,11 @@ export const kontenBabView = `
     </div>
 
     <div id="materiContainer">
-      <article id="learningContent" class="konten-isi"></article>
-      <div class="konten-actions">
-        <button class="primary-btn" id="generateQuizBtn">
-          Latihan Soal
-        </button>
-      </div>
-    </div>
+  <article id="learningContent" class="konten-isi"></article>
+  <div class="konten-actions">
+    <button id="generateQuizBtn" class="primary-btn">Latihan Soal</button>
+  </div>
+</div>
 
     <section class="quiz-section" id="quizSection" hidden>
       <div id="quiz-ui" class="quiz-container">
