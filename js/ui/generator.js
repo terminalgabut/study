@@ -17,12 +17,10 @@ export function initQuizGenerator() {
       return;
     }
 
-    // 1. UI STATE: Sembunyikan materi secara total & tampilkan loading
     if (materiContainer) materiContainer.style.display = 'none';
     pageEl.classList.add('show-quiz');
     quizEl.removeAttribute('hidden');
     
-    // Scroll ke atas agar fokus ke area kuis
     document.getElementById('learningTitle').scrollIntoView({ behavior: 'smooth' });
 
     quizEl.innerHTML = `
@@ -34,19 +32,18 @@ export function initQuizGenerator() {
     `;
 
     try {
-      const hash = window.location.hash.replace(/^#\/?/, '');
-      const [category, slug] = hash.split('/');
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug') || "default";
 
-      // Logic pengiriman ke client tetap sama sesuai file aslimu
       const result = await generateQuiz({
         materi: contentText,
-        category: category || "Umum",
-        slug: slug || "default",
+        category: "Materi",
+        slug: slug,
         order: 1
       });
 
       if (result && result.quiz) {
-        renderStepByStepQuiz(result.quiz, quizEl);
+        renderStepByStepQuiz(result.quiz, quizEl, slug);
       }
     } catch (err) {
       console.error("Generator Error:", err);
@@ -56,16 +53,21 @@ export function initQuizGenerator() {
   };
 }
 
-function renderStepByStepQuiz(data, container) {
+function renderStepByStepQuiz(data, container, slug) {
   let currentStep = 0;
+  let correctCount = 0;
+  let timerInterval;
   const questions = data.questions;
   const total = questions.length;
-  
-  // Variabel penampung jawaban untuk dikirim ke backend nanti
-  const userAnswers = [];
 
   const initFrame = () => {
     container.innerHTML = `
+      <div class="quiz-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+         <div class="timer-box" style="color:var(--accent); font-weight:bold; font-family:monospace; font-size:1.2rem;">
+            ⏱ <span id="timerDisplay">60</span>s
+         </div>
+         <div style="color:var(--text-muted)">Skor: <span id="liveScore">0</span></div>
+      </div>
       <div class="quiz-progress-container" style="height:6px; background:rgba(255,255,255,0.1); border-radius:10px; margin-bottom:25px; overflow:hidden;">
         <div id="quizBar" style="height:100%; background:var(--accent); width:0%; transition: width 0.3s ease;"></div>
       </div>
@@ -78,61 +80,105 @@ function renderStepByStepQuiz(data, container) {
     const q = questions[currentStep];
     const target = document.getElementById('activeQuestionContainer');
     const progressBar = document.getElementById('quizBar');
+    const timerDisplay = document.getElementById('timerDisplay');
+    
+    let timeLeft = 60; // Set 1 Menit [sampel: 61]
+    let startTime = Date.now(); // [sampel: 50]
 
-    // Update Progress Bar
     progressBar.style.width = `${(currentStep / total) * 100}%`;
 
     target.innerHTML = `
-      <div class="quiz-container">
-        <div class="quiz-item active">
-          <span style="color:var(--text-muted); font-size:14px;">Pertanyaan ${currentStep + 1} dari ${total}</span>
-          <p class="quiz-question" style="margin-top:10px; margin-bottom:20px; font-weight:600; font-size:18px;">${q.question}</p>
-          
-          <div class="quiz-options" style="display:flex; flex-direction:column; gap:12px;">
-            ${q.options.map((opt, idx) => `
-              <label class="option-label" style="display:flex; align-items:center; padding:15px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; cursor:pointer; transition: 0.2s;">
-                <input type="radio" name="answer" value="${opt}" style="margin-right:12px; accent-color:var(--accent);">
-                <span>${opt}</span>
-              </label>
-            `).join('')}
-          </div>
+      <div class="quiz-item active">
+        <span style="color:var(--text-muted); font-size:14px;">Soal ${currentStep + 1} / ${total}</span>
+        <p class="quiz-question" style="margin-top:10px; margin-bottom:20px; font-weight:600; font-size:18px;">${q.question}</p>
+        
+        <div class="quiz-options" style="display:flex; flex-direction:column; gap:12px;">
+          ${q.options.map(opt => `
+            <label class="option-label">
+              <input type="radio" name="answer" value="${opt}">
+              <span>${opt}</span>
+            </label>
+          `).join('')}
+        </div>
 
-          <div id="feedbackContainer" class="quiz-feedback" style="display:none; margin-top:20px; padding:15px; border-radius:10px; border:1px solid var(--border);">
-            <p id="feedbackText"></p>
-          </div>
+        <div id="feedbackContainer" class="quiz-feedback" style="display:none; margin-top:20px; padding:15px; border-radius:10px; border:1px solid var(--border);">
+          <p id="feedbackText" style="margin:0;"></p>
+        </div>
 
-          <div id="actionContainer" style="margin-top:25px; display:none;">
-            <button id="nextBtn" class="primary-btn" style="width:100%;">Lanjut ke Soal Berikutnya</button>
-          </div>
+        <div id="actionContainer" style="margin-top:25px; display:none;">
+          <button id="nextBtn" class="primary-btn" style="width:100%;">Lanjut ke Soal Berikutnya</button>
         </div>
       </div>
     `;
 
-    // Listener Jawaban
+    // Timer Logic [sampel: 62]
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      timerDisplay.innerText = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        handleSelection(null, true); // Timeout [sampel: 62]
+      }
+    }, 1000);
+
     const inputs = target.querySelectorAll('input[name="answer"]');
     inputs.forEach(input => {
-      input.addEventListener('change', (e) => {
-        const selectedValue = e.target.value;
-        
-        // Simpan jawaban (urusan backend nanti)
-        userAnswers[currentStep] = selectedValue;
+      input.addEventListener('change', (e) => handleSelection(e.target.value, false));
+    });
 
-        // Nonaktifkan semua pilihan agar tidak bisa ganti jawaban saat koreksi muncul
-        inputs.forEach(i => i.disabled = true);
+    const handleSelection = async (selectedValue, isTimeout) => {
+      clearInterval(timerInterval);
+      const duration = Math.floor((Date.now() - startTime) / 1000); // [sampel: 52]
+      
+      inputs.forEach(i => i.disabled = true);
 
-        // Tampilkan Wadah Koreksi & Tombol Next
-        // (Logika isi koreksi dari AI backend bisa dimasukkan di sini nanti)
-        document.getElementById('feedbackContainer').style.display = 'block';
-        document.getElementById('feedbackText').innerText = "Jawaban terpilih: " + selectedValue + ". Menunggu koreksi AI...";
-        document.getElementById('actionContainer').style.display = 'block';
+      // Koreksi Lokal [sampel: 60]
+      const isCorrect = selectedValue === q.correct_answer;
+      if (isCorrect) {
+        correctCount++;
+        document.getElementById('liveScore').innerText = correctCount;
+      }
+
+      // Tampilkan Feedback & Penjelasan
+      const fbBox = document.getElementById('feedbackContainer');
+      const fbText = document.getElementById('feedbackText');
+      fbBox.style.display = 'block';
+      fbBox.className = `quiz-feedback ${isCorrect ? 'correct' : 'wrong'}`;
+      
+      fbText.innerHTML = isTimeout 
+        ? `<b style="color:#ef4444">❌ Waktu Habis!</b><br>Jawaban benar: ${q.correct_answer}`
+        : isCorrect 
+          ? `<b style="color:#10b981">✅ Benar!</b><br>${q.explanation || ''}` // Tampilkan Penjelasan
+          : `<b style="color:#ef4444">❌ Kurang Tepat.</b><br>Jawaban benar: ${q.correct_answer}<br><br>${q.explanation || ''}`;
+
+      document.getElementById('actionContainer').style.display = 'block';
+
+      // Simpan ke study_attempts [sampel: 23, 53]
+      await saveAttempt({
+        session_id: slug,
+        question_id: q.id || currentStep,
+        user_answer: selectedValue,
+        correct_answer: q.correct_answer,
+        is_correct: isCorrect,
+        duration_seconds: duration,
+        category: data.category || "General"
       });
-    });
+    };
 
-    // Listener Tombol Next
-    document.getElementById('nextBtn')?.addEventListener('click', () => {
-      handleNext();
-    });
+    document.getElementById('nextBtn')?.addEventListener('click', handleNext);
   };
+
+  async function saveAttempt(payload) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      await supabase.from("study_attempts").insert([{ // Nama tabel sesuai milikmu
+        user_id: user.id,
+        ...payload,
+        submitted_at: new Date().toISOString()
+      }]);
+    } catch (e) { console.error("Simpan gagal:", e); }
+  }
 
   const handleNext = () => {
     currentStep++;
@@ -146,10 +192,12 @@ function renderStepByStepQuiz(data, container) {
 
   const showFinalResult = () => {
     document.getElementById('quizBar').style.width = "100%";
+    const rate = Math.round((correctCount / total) * 100); // [sampel: 58]
     container.innerHTML = `
       <div class="quiz-container" style="text-align:center; padding:40px;">
-        <h2 style="color:var(--accent); margin-bottom:15px;">Latihan Selesai!</h2>
-        <p>Semua jawaban telah terkumpul untuk dikoreksi oleh AI.</p>
+        <h2 style="color:var(--accent)">Latihan Selesai!</h2>
+        <div style="font-size:48px; margin:20px 0; font-weight:bold;">${rate}%</div>
+        <p>Anda menjawab <b>${correctCount}</b> dari ${total} soal dengan benar.</p>
         <button class="primary-btn" onclick="location.reload()" style="margin-top:25px;">Kembali ke Materi</button>
       </div>
     `;
