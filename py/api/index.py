@@ -21,7 +21,7 @@ app.add_middleware(
 )
 
 # --- CONFIGURATION ---
-BASE_SYSTEM_PROMPT = "Kamu adalah AI pembuat 10 soal tes kritis tingkat tinggi. Kamu HARUS patuh pada struktur JSON."
+BASE_SYSTEM_PROMPT = "Kamu adalah AI pembuat 10 soal tes kritis tingkat tinggi akademik. Kamu HARUS patuh pada struktur JSON."
 
 def call_openrouter_api(messages: list):
     api_key = os.environ.get("OPENROUTER_API_KEY")
@@ -75,7 +75,7 @@ Buatkan 10 soal test IQ pilihan ganda berbasis teks berikut:
 {materi}
 
 ATURAN WAJIB:
-1. Setiap 10 soal fokus pada dimensi: Analisa, Logika, Pemecahan Masalah, Konsentrasi, dan Memori.
+1. Setiap 10 soal fokus pada dimensi: Analisa, Logika, Pemecahan Masalah, Konsentrasi, dan Memori, Analisa, Logika, Pemecahan Masalah, Konsentrasi, dan Memori.
 2. Kembalikan HANYA JSON VALID.
 3. Struktur:
 {{
