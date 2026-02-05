@@ -26,54 +26,65 @@ export function initQuizGenerator() {
     const quizUI = document.getElementById('quiz-ui') || quizSection;
     quizUI.innerHTML = `
       <div class="flex flex-col items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-        <p class="text-gray-500 font-medium">Menyusun soal evaluasi...</p>
-      </div>
-    `;
+import { generateQuiz } from '../services/quizClient.js';
+
+export function initQuizGenerator() {
+  const btnEl = document.getElementById('generateQuizBtn');
+  const quizEl = document.getElementById('quizSection');
+  const materiContainer = document.getElementById('materiContainer');
+  const pageEl = document.querySelector('.konten-page');
+
+  if (!btnEl || !quizEl) return;
+
+  btnEl.onclick = async () => {
+    const contentEl = document.getElementById('learningContent');
+    const contentText = contentEl ? contentEl.textContent.trim() : "";
+
+    if (!contentText) return;
+
+    // --- INTERAKSI: TUTUP MATERI TOTAL ---
+    if (materiContainer) materiContainer.style.display = 'none'; 
+    pageEl.classList.add('show-quiz');
+    quizEl.removeAttribute('hidden');
+    quizEl.scrollIntoView({ behavior: 'smooth' });
+
+    quizEl.innerHTML = `<div class="quiz-placeholder"><p>Sedang menyusun soal...</p></div>`;
 
     try {
       const hash = window.location.hash.replace(/^#\/?/, '');
       const [category, slug] = hash.split('/');
 
-      // Logika data tetap sama
+      // Logic pengiriman tetap sama (tidak mengubah client)
       const result = await generateQuiz({
-        materi: contentText,
+        materi: contentText, 
         category: category || "Umum",
         slug: slug || "default",
         order: 1
       });
 
       if (result && result.quiz) {
-        renderQuizTailwind(result.quiz, quizUI);
+        renderQuizTampilanBaru(result.quiz, quizEl);
       }
     } catch (err) {
-      if (materiContainer) materiContainer.classList.remove('hidden');
-      quizUI.innerHTML = `<p class="text-red-500 p-4 font-bold text-center">Gagal: ${err.message}</p>`;
+      if (materiContainer) materiContainer.style.display = 'block';
+      quizEl.innerHTML = `<p style="color:red; text-align:center;">Gagal: ${err.message}</p>`;
     }
   };
 }
 
-function renderQuizTailwind(data, container) {
-  let html = `
-    <div class="mb-8 border-b pb-6">
-      <h2 class="text-2xl font-bold text-gray-800">Latihan: ${data.category}</h2>
-      <p class="text-gray-500 mt-1">Pilih jawaban yang paling tepat.</p>
-    </div>
-    <div class="space-y-10">
-  `;
-
+function renderQuizTampilanBaru(data, container) {
+  let html = `<h3 style="margin-bottom:20px;">Latihan Soal: ${data.category}</h3>`;
+  
+  // Menggunakan struktur item yang bersih namun tetap dengan CSS asli Anda
   data.questions.forEach((q, i) => {
     html += `
-      <div class="quiz-card">
-        <p class="text-xl font-semibold mb-5 text-gray-800">${i + 1}. ${q.question}</p>
-        <div class="grid grid-cols-1 gap-3">
+      <div class="quiz-item" style="margin-bottom:30px; padding:20px; border:1px solid rgba(255,255,255,0.1); border-radius:12px;">
+        <p style="font-size:18px; margin-bottom:15px;"><strong>${i+1}. ${q.question}</strong></p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
           ${q.options.map(opt => `
-            <label class="flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer hover:bg-blue-50 hover:border-blue-200 transition group relative">
-              <input type="radio" name="q${i}" value="${opt}" class="hidden peer">
-              <div class="w-6 h-6 border-2 border-gray-300 rounded-full mr-4 peer-checked:bg-blue-600 peer-checked:border-blue-600 flex items-center justify-center transition">
-                <div class="w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100 transition"></div>
-              </div>
-              <span class="text-gray-600 group-hover:text-blue-700 peer-checked:text-blue-800 peer-checked:font-medium">${opt}</span>
+            <label style="display:flex; align-items:center; padding:12px; border:1px solid rgba(255,255,255,0.05); border-radius:8px; cursor:pointer;">
+              <input type="radio" name="q${i}" value="${opt}" style="margin-right:12px;"> 
+              <span>${opt}</span>
             </label>
           `).join('')}
         </div>
@@ -81,12 +92,5 @@ function renderQuizTailwind(data, container) {
     `;
   });
 
-  html += `
-    <button id="checkResultBtn" class="mt-12 w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 shadow-lg transition transform active:scale-95">
-      Kirim Jawaban
-    </button>
-  </div>
-  `;
-
-  container.innerHTML = html;
+  container.innerHTML = `<div class="quiz-container">${html}</div>`;
 }
