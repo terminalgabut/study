@@ -1,4 +1,4 @@
-
+import { supabase } from '../services/supabase.js';
 
 /**
  * Menginisialisasi halaman Bookmark
