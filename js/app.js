@@ -3,12 +3,14 @@ import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileDropdown } from './ui/modalprofil.js';
+import { initBookmarkPage } from './ui/bookmark.js';
 
-// ✅ FIX PATH (NAIK 1 LEVEL)
+// view
 import { headerView } from '../components/headerView.js';
 import { sidebarView } from '../components/sidebarView.js';
 import { modalsettingsView } from '../components/modal-settingsView.js';
 import { modalprofilView } from '../components/modalprofilView.js';
+import { bookmarkView } from '../components/bookmarkView.js';
 
 function init() {
   const app = document.getElementById('app');
