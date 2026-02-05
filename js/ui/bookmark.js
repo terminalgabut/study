@@ -1,29 +1,31 @@
 // js/ui/bookmark.js
-// Pastikan path ini benar sesuai struktur folder Anda (naik satu level ke js/ lalu masuk ke services/)
-import { supabase } from '../services/supabase.js'; 
+import { supabase } from '../services/supabase.js';
 
 /**
- * Logika Toggle Bookmark untuk halaman Konten Materi
+ * FUNGSI 1: handleBookmarkToggle
+ * Mengurus tombol simpan (ikon bintang/bendera) di halaman materi.
+ * Fungsi ini mengecek apakah materi sudah disimpan, lalu menambah atau menghapusnya.
  */
 export async function handleBookmarkToggle(slug, category) {
   const btn = document.getElementById('bookmarkBtn');
   if (!btn) return;
 
-  // Cek status bookmark saat halaman dimuat
+  // 1. Cek status awal: apakah slug ini sudah ada di tabel bookmark?
   const { data: existing } = await supabase
     .from('bookmark')
     .select('material_slug')
     .eq('material_slug', slug)
     .maybeSingle();
 
-  // Jika sudah ada, aktifkan indikator visual (misal class active)
+  // Jika sudah ada, tambahkan class 'active' agar ikon berwarna 
   if (existing) btn.classList.add('active');
 
+  // 2. Logika Klik: Jika diklik, jalankan Toggle (Tambah/Hapus)
   btn.onclick = async () => {
     const isActive = btn.classList.contains('active');
 
     if (isActive) {
-      // Hapus jika sudah aktif
+      // Jika sudah active, maka klik berikutnya adalah MENGHAPUS
       const { error } = await supabase
         .from('bookmark')
         .delete()
@@ -31,7 +33,8 @@ export async function handleBookmarkToggle(slug, category) {
       
       if (!error) btn.classList.remove('active');
     } else {
-      // Tambah jika belum aktif
+      // Jika belum active, maka klik berikutnya adalah MENYIMPAN
+      // Category di sini kita gunakan sebagai Judul Materi
       const { error } = await supabase
         .from('bookmark')
         .insert([{ material_slug: slug, category: category }]);
@@ -42,7 +45,9 @@ export async function handleBookmarkToggle(slug, category) {
 }
 
 /**
- * Menampilkan daftar Bookmark di halaman BookmarkView
+ * FUNGSI 2: initBookmarkPage
+ * Mengurus tampilan halaman daftar bookmark (#/bookmark).
+ * Merender grid kartu materi yang sudah disimpan oleh user.
  */
 export async function initBookmarkPage() {
   const container = document.getElementById('bookmarkListContainer');
@@ -61,10 +66,14 @@ export async function initBookmarkPage() {
       container.innerHTML = `
         <div class="home-card">
           <p class="small">Belum ada materi yang disimpan.</p>
+          <button class="primary-btn" onclick="window.location.hash='#/'" style="margin-top:12px;">
+            Jelajahi Materi
+          </button>
         </div>`;
       return;
     }
 
+    // Render kartu dengan gaya homeView agar konsisten [cite: 22, 23]
     container.innerHTML = bookmarks.map(b => `
       <div class="home-card">
         <h3>📌 Tersimpan</h3>
@@ -78,7 +87,7 @@ export async function initBookmarkPage() {
           </button>
           <button class="secondary-btn" 
                   onclick="deleteBookmark('${b.material_slug}')" 
-                  style="flex:1; border:none; cursor:pointer; background:rgba(255,255,255,0.1); color:inherit;">
+                  style="flex:1; background:rgba(255,255,255,0.05); color:var(--text-muted); border:none; cursor:pointer;">
             🗑️
           </button>
         </div>
@@ -87,14 +96,23 @@ export async function initBookmarkPage() {
 
   } catch (err) {
     console.error('Gagal memuat bookmark:', err);
-    container.innerHTML = `<div class="home-card"><p>Error: ${err.message}</p></div>`;
+    container.innerHTML = `<div class="home-card"><p style="color:red;">Error: ${err.message}</p></div>`;
   }
 }
 
-// Global function untuk hapus cepat dari grid
+/**
+ * FUNGSI 3: deleteBookmark (Global)
+ * Memungkinkan penghapusan cepat langsung dari halaman daftar bookmark.
+ */
 window.deleteBookmark = async (slug) => {
-  if (confirm('Hapus materi ini?')) {
-    const { error } = await supabase.from('bookmark').delete().eq('material_slug', slug);
-    if (!error) initBookmarkPage();
+  if (confirm('Hapus dari daftar simpanan?')) {
+    const { error } = await supabase
+      .from('bookmark')
+      .delete()
+      .eq('material_slug', slug);
+    
+    if (!error) {
+      initBookmarkPage(); // Refresh tampilan grid
+    }
   }
 };
