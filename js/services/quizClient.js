@@ -1,7 +1,7 @@
 // services/quizClient.js
 
 export async function generateQuiz({ materi, slug, category }) { // Ubah 'content' jadi 'materi'
-  const QUIZ_API_URL = 'https://pystudy-flame.vercel.app/quiz';
+  const QUIZ_API_URL = 'https://studyai-one-eosin.vercel.app/quiz';
   
   const res = await fetch(QUIZ_API_URL, {
     method: 'POST',
