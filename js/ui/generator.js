@@ -1,3 +1,5 @@
+import { supabase } from '../services/supabase.js';
+
 import { generateQuiz } from '../services/quizClient.js';
 
 export function initQuizGenerator() {
