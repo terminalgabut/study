@@ -18,10 +18,16 @@
 }
 
 /* ketika quiz aktif */
+/* Sembunyikan materi secara total saat kuis aktif */
+.konten-page.show-quiz #materiContainer {
+  display: none;
+}
+
+/* Hilangkan margin atas kuis agar naik ke bawah judul */
 .konten-page.show-quiz .quiz-section {
+  margin-top: 0;
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
 /* judul quiz */
