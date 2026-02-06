@@ -54,13 +54,11 @@ export const homeView = `
 
     <!-- Rekomendasi -->
     <div class="home-card">
-      <h3>📚 Materi Disarankan</h3>
-      <ul class="link-list">
-        <li>HTML Dasar</li>
-        <li>CSS Flexbox</li>
-        <li>JavaScript Pemula</li>
-      </ul>
-    </div>
+  <h3>📚 Materi Disarankan</h3>
+  <ul class="link-list"> 
+    <li>Memuat saran...</li>
+  </ul>
+</div>
 
   </div>
 </section>
