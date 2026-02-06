@@ -22,8 +22,8 @@ import { initQuizGenerator } from '../ui/generator.js';
 import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 import { initHistoryPage } from '../ui/riwayat.js';
 import { initNotesList } from '../ui/notes.js';
-import { initNoteDetail } from '../ui/noteDetail.js';
-  
+import { initNoteDetail } from '../ui/noteDetail.js'; // Logika detail catatan
+
 export function navigate(page) {
   location.hash = page;
 }
@@ -35,86 +35,78 @@ export async function handleRoute() {
   const content = document.getElementById('content');
   if (!content) return;
 
+  // Transisi halus
   content.classList.add('fade-out');
   await new Promise(r => setTimeout(r, 150));
 
   try {
-    // 1. ROUTE: materi/:category/:slug
+    // --- 1. ROUTE DINAMIS (Menggunakan Regex) ---
+
+    // A. Detail Catatan: catatan-detail/:slug
+    const noteDetailMatch = hash.match(/^catatan-detail\/([^\/]+)$/);
+    
+    // B. Konten Materi: materi/:category/:slug
     const kontenMatch = hash.match(/^materi\/([^\/]+)\/([^\/]+)$/);
-    if (kontenMatch) {
+    
+    // C. Daftar Bab: materi/:category
+    const materiMatch = hash.match(/^materi\/([^\/]+)$/);
+
+    if (noteDetailMatch) {
+      const slug = noteDetailMatch[1];
+      content.innerHTML = notesDetailView;
+      initNoteDetail(slug);
+    } 
+    else if (kontenMatch) {
       const [, category, slug] = kontenMatch;
       content.innerHTML = kontenBabView;
+      initKontenBab(category, slug);
+      handleBookmarkToggle(slug, category); 
+      initQuizGenerator();
+    } 
+    else if (materiMatch) {
+      const category = materiMatch[1];
+      content.innerHTML = babView;
+      initBab(category);
+    } 
 
-      try {
-        initKontenBab(category, slug);
-        // ✅ Sekarang fungsi ini sudah bisa dipanggil karena sudah di-import di atas
-        handleBookmarkToggle(slug, category); 
-      } catch (e) {
-        console.error('initKontenBab error:', e);
-      }
-
-      try {
-        initQuizGenerator();
-      } catch (e) {
-        console.error('initQuizGenerator error:', e);
-      }
-    }
-
-    // 2. ROUTE: materi/:category
+    // --- 2. ROUTE STATIS (Menggunakan Switch) ---
     else {
-      const materiMatch = hash.match(/^materi\/([^\/]+)$/);
-      if (materiMatch) {
-        const category = materiMatch[1];
-        content.innerHTML = babView;
-        try {
-          initBab(category);
-        } catch (e) {
-          console.error('initBab error:', e);
-        }
-      }
-
-      // 3. ROUTE STATIS
-      else {
-        switch (hash) {
-          case 'home':
-            content.innerHTML = homeView;
-              initLastRead();
-              initMotivation();
-              initProgress();
-              initDailyTarget();
-              initRekomendasi();
-            break;
-          case 'materi':
-            content.innerHTML = materiView;
-            break;
-          case 'bookmark':
-            content.innerHTML = bookmarkView;
-            try {
-              initBookmarkPage(); 
-            } catch (e) {
-              console.error('initBookmarkPage error:', e);
-            }
-            break;
-          case 'riwayat':
-            content.innerHTML = historyView;
-              initHistoryPage();
-            break;
-            case 'catatan':
-            content.innerHTML = notesView;
-              initNotesList();
-            break;
-          default:
-            content.innerHTML = '<h2>Page not found</h2>';
-        }
+      switch (hash) {
+        case 'home':
+          content.innerHTML = homeView;
+          initLastRead();
+          initMotivation();
+          initProgress();
+          initDailyTarget();
+          initRekomendasi();
+          break;
+        case 'materi':
+          content.innerHTML = materiView;
+          break;
+        case 'bookmark':
+          content.innerHTML = bookmarkView;
+          initBookmarkPage(); 
+          break;
+        case 'riwayat':
+          content.innerHTML = historyView;
+          initHistoryPage();
+          break;
+        case 'catatan':
+          content.innerHTML = notesView;
+          initNotesList();
+          break;
+        default:
+          content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
       }
     }
   } catch (err) {
     console.error('Router error:', err);
-    content.innerHTML = '<h2>Router error</h2>';
+    content.innerHTML = '<div class="home-card"><h2>Terjadi kesalahan sistem</h2></div>';
   }
 
   content.classList.remove('fade-out');
 
+  // Update status tombol navigasi aktif
   const rootPage = hash.split('/')[0];
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === rootPage);
