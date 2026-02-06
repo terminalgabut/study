@@ -45,13 +45,12 @@ export const homeView = `
 </div>
 
     <!-- Target -->
-    <div class="home-card">
-      <h3>🎯 Target Hari Ini</h3>
-      <ul class="task-list">
-        <li>✔ Baca 1 materi</li>
-        <li>⬜ Catat 3 poin penting</li>
-      </ul>
-    </div>
+  <div class="home-card">
+    <h3>🎯 Target Hari Ini</h3>
+    <ul class="task-list" id="dailyTargetList">
+      <li>Memuat target...</li>
+    </ul>
+  </div>
 
     <!-- Rekomendasi -->
     <div class="home-card">
