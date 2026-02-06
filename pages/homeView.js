@@ -39,10 +39,10 @@ export const homeView = `
 
     <!-- Progres -->
     <div class="home-card">
-      <h3>📊 Progres Belajar</h3>
-      <p>Materi selesai: <strong>3 / 10</strong></p>
-      <p>Belajar minggu ini: <strong>45 menit</strong></p>
-    </div>
+  <h3>📊 Progres Belajar</h3>
+  <p>Materi dilihat: <strong id="progressStats">0 / 0</strong></p>
+  <p>Belajar minggu ini: <strong id="studyTime">0 menit</strong></p>
+</div>
 
     <!-- Target -->
     <div class="home-card">
