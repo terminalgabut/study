@@ -25,6 +25,27 @@ const { error: historyError } = await supabase
 
 if (historyError) console.error('Gagal mencatat riwayat:', historyError.message);
   
+ // Di dalam initKontenBab
+let startTime = Date.now();
+
+// Fungsi untuk menyimpan durasi ke Supabase
+async function saveProgress() {
+    const endTime = Date.now();
+    const duration = Math.floor((endTime - startTime) / 1000); // dalam detik
+
+    if (duration < 5) return; // Jangan catat jika kurang dari 5 detik (mencegah spam)
+
+    // Gunakan increment di database agar durasi terus bertambah setiap kali dibaca
+    const { error } = await supabase.rpc('increment_duration', { 
+        slug: slug, 
+        seconds: duration 
+    });
+}
+
+// Pemicu saat pindah page (hash change) atau tutup tab
+window.addEventListener('hashchange', saveProgress, { once: true });
+window.addEventListener('beforeunload', saveProgress);
+  
   // 🔑 judul dari category
   titleEl.textContent = data.category;
 
