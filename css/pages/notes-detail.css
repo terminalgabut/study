@@ -1,0 +1,54 @@
+/* Container Utama */
+.content-card {
+  margin-top: 20px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Gaya Tampilan Baca (Kalem) */
+.note-display {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap; /* Menjaga spasi dan baris baru */
+  padding: 10px;
+}
+
+/* Gaya Area Edit (Study Mode) */
+.note-editor {
+  width: 100%;
+  min-height: 250px;
+  background: rgba(255, 255, 255, 0.03); /* Gelap transparan/terang tipis */
+  color: var(--text);
+  border: 1px dashed var(--accent);
+  border-radius: 12px;
+  padding: 15px;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.8;
+  resize: vertical;
+  outline: none;
+}
+
+/* Tombol Aksi */
+.note-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#actionNoteBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  transition: all 0.2s ease;
+}
+
+/* State Edit: Tombol Simpan bisa diberi warna berbeda jika ingin */
+#actionNoteBtn.saving-mode {
+  background: #2ecc71; /* Warna hijau sukses yang kalem */
+  border-color: #27ae60;
+}
