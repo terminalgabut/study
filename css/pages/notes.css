@@ -1,31 +1,39 @@
-.notes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-  padding-top: 20px;
+/* BAB PAGE */
+
+/* wrapper ikut home-grid → JANGAN redefinisi grid */
+.bab-page .home-grid {
+  gap: 16px;
 }
 
-.note-card {
-  background: #fdfdfb; /* Warna kertas cream sangat muda */
-  border: 1px solid #e0e0d5;
-  padding: 15px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 0.2s;
+/* item bab = card konsisten */
+.bab-item {
+  display: block;
+  background: var(--card);
+  padding: 16px;
+  border-radius: 16px;
+
+  color: var(--text);
+  text-decoration: none;
+
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 
-.note-card:hover {
-  transform: translateY(-3px);
-  border-color: #d0d0c0;
+.bab-item:hover {
+  background: var(--accent-soft);
+  transform: translateY(-2px);
 }
 
-.note-preview {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 10px 0;
+/* judul bab */
+.bab-item h3 {
+  margin-bottom: 6px;
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.note-date {
-  font-size: 0.75rem;
-  color: #999;
+/* deskripsi */
+.bab-item p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
