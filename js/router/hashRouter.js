@@ -2,6 +2,7 @@
 
 // ===== VIEW pages =====
 import { loginView } from '../../pages/loginView.js';
+import { registerView } from '../../pages/registerView.js';
 import { homeView } from '../../pages/homeView.js';
 import { materiView } from '../../pages/materiView.js';
 import { babView } from '../../pages/babView.js';
@@ -12,7 +13,7 @@ import { notesView } from '../../pages/notesView.js';
 import { notesDetailView } from '../../pages/notesDetailView.js';
 
 // ===== LOGIC =====
-import { initLogin } from '../ui/auth/auth.js';
+import { initLogin, initRegister } from '../ui/auth/auth.js';
 import { initLastRead } from '../ui/lastread.js';
 import { initMotivation } from '../ui/motivation.js';
 import { initProgress } from '../ui/progress.js';
@@ -77,6 +78,11 @@ export async function handleRoute() {
         case 'login':
           content.innerHTML = loginView;
           initLogin();
+          break;
+
+        case 'register':
+          content.innerHTML = registerView;
+          initRegister();
           break;
           
         case 'home':
