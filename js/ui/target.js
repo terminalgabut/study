@@ -28,7 +28,7 @@ export async function initDailyTarget() {
     targetListEl.innerHTML = `
       <li>
         ${hasReadToday ? '✅' : '⬜'} 
-        <span class="${hasReadToday ? 'strikethrough' : ''}">Baca 1 materi</span>
+        <span class="${hasReadToday ? 'strikethrough' : ''}">Baca 5 materi</span>
       </li>
       <li>
         ${hasNotedToday ? '✅' : '⬜'} 
