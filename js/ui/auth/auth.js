@@ -1,8 +1,57 @@
 // js/ui/auth/auth.js
 import { supabase } from '../../services/supabase.js';
 
+// Helper untuk mengubah username menjadi format email dummy (di balik layar)
+const formatEmail = (username) => `${username.toLowerCase().trim()}@study.gabut`;
+
 /**
- * Inisialisasi Logika Halaman Login
+ * LOGIKA DAFTAR (REGISTER)
+ */
+export function initRegister() {
+  const regForm = document.getElementById('registerForm');
+  const regBtn = document.getElementById('regBtn');
+  const errorMsg = document.getElementById('regError');
+
+  if (!regForm) return;
+
+  regForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('regUsername').value;
+    const password = document.getElementById('regPassword').value;
+
+    // Reset UI
+    errorMsg.style.display = 'none';
+    regBtn.disabled = true;
+    regBtn.innerText = 'Mendaftarkan...';
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formatEmail(username),
+        password: password,
+        options: {
+          data: { 
+            full_name: username,
+            username: username 
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      // Jika berhasil, Supabase otomatis login (jika confirm email OFF)
+      window.location.hash = '#home';
+      
+    } catch (err) {
+      errorMsg.innerText = "Gagal daftar: " + err.message;
+      errorMsg.style.display = 'block';
+      regBtn.disabled = false;
+      regBtn.innerText = 'Daftar Sekarang';
+    }
+  };
+}
+
+/**
+ * LOGIKA MASUK (LOGIN)
  */
 export function initLogin() {
   const loginForm = document.getElementById('loginForm');
@@ -13,52 +62,37 @@ export function initLogin() {
 
   loginForm.onsubmit = async (e) => {
     e.preventDefault();
-    
-    // Ambil data dari form
-    const email = document.getElementById('loginEmail').value;
+    const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Reset UI State
+    // Reset UI
     errorMsg.style.display = 'none';
     loginBtn.disabled = true;
-    loginBtn.innerHTML = '<span class="btn-text">Memverifikasi...</span>';
+    loginBtn.innerText = 'Memverifikasi...';
 
     try {
-      // PROSES LOGIN KE SUPABASE
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formatEmail(username),
         password: password,
       });
 
       if (error) throw error;
 
-      // Jika berhasil, arahkan ke home
       window.location.hash = '#home';
-      
+
     } catch (err) {
-      console.error('Auth Error:', err.message);
-      errorMsg.innerText = "Email atau password salah!";
+      errorMsg.innerText = "Username atau Password salah!";
       errorMsg.style.display = 'block';
-      
-      // Kembalikan tombol ke semula
       loginBtn.disabled = false;
-      loginBtn.innerHTML = '<span class="btn-text">Masuk Sekarang</span>';
+      loginBtn.innerText = 'Masuk Sekarang';
     }
   };
 }
 
 /**
- * Fungsi Logout Global
+ * LOGIKA KELUAR (LOGOUT)
  */
 export async function handleLogout() {
-  try {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    
-    // Setelah logout, paksa ke halaman login
-    window.location.hash = '#login';
-  } catch (err) {
-    console.error('Logout Error:', err.message);
-    alert('Gagal keluar sistem.');
-  }
+  await supabase.auth.signOut();
+  window.location.hash = '#login';
 }
