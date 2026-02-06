@@ -16,6 +16,15 @@ export async function initKontenBab(category, slug) {
     return;
   }
 
+const { error: historyError } = await supabase
+  .from('riwayat')
+  .upsert(
+    { material_slug: slug, last_accessed: new Date().toISOString() }, 
+    { onConflict: 'material_slug' }
+  );
+
+if (historyError) console.error('Gagal mencatat riwayat:', historyError.message);
+  
   // 🔑 judul dari category
   titleEl.textContent = data.category;
 
