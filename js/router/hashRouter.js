@@ -7,6 +7,7 @@ import { babView } from '../../pages/babView.js';
 import { kontenBabView } from '../../pages/kontenBabView.js';
 import { bookmarkView } from '../../pages/bookmarkView.js';
 import { historyView } from '../../pages/riwayatView.js';
+import { notesView } from '../../pages/notesView.js';
 
 // ===== LOGIC =====
 import { initLastRead } from '../ui/lastread.js';
@@ -19,6 +20,7 @@ import { initKontenBab } from '../ui/kontenBab.js';
 import { initQuizGenerator } from '../ui/generator.js';
 import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 import { initHistoryPage } from '../ui/riwayat.js';
+import { initNotesList } from '../ui/notes.js
   
 export function navigate(page) {
   location.hash = page;
@@ -94,6 +96,10 @@ export async function handleRoute() {
           case 'riwayat':
             content.innerHTML = historyView;
               initHistoryPage();
+            break;
+            case '#catatan':
+            app.innerHTML = notesView;
+              initNotesList();
             break;
           default:
             content.innerHTML = '<h2>Page not found</h2>';
