@@ -20,7 +20,7 @@ import { initKontenBab } from '../ui/kontenBab.js';
 import { initQuizGenerator } from '../ui/generator.js';
 import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 import { initHistoryPage } from '../ui/riwayat.js';
-import { initNotesList } from '../ui/notes.js
+import { initNotesList } from '../ui/notes.js';
   
 export function navigate(page) {
   location.hash = page;
