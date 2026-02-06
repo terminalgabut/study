@@ -22,7 +22,7 @@ import { initQuizGenerator } from '../ui/generator.js';
 import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 import { initHistoryPage } from '../ui/riwayat.js';
 import { initNotesList } from '../ui/notes.js';
-import { initNoteDetail } from '../ui/noteDetail.js'; // Logika detail catatan
+import { initNoteDetail } from '../ui/noteDetails.js'; // Logika detail catatan
 
 export function navigate(page) {
   location.hash = page;
