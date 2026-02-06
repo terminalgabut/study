@@ -72,7 +72,25 @@ Buatkan 10 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks mat
 {materi}
 
 ATURAN WAJIB:
-1. Setiap 10 soal fokus pada dimensi: Analisa, Logika, Pemecahan Masalah, Konsentrasi, dan Memori, Analisa, Logika, Pemecahan Masalah, Konsentrasi, dan Memori
+1. Struktur 10 Soal Berbasis Teks:
+   - Dimensi Pemahaman Bacaan (2 Soal):
+      Fokus: Mencari gagasan utama atau fakta tersurat.
+      Contoh Pertanyaan: "Apa tujuan utama penulis dalam paragraf kedua?" atau "Berdasarkan teks, apa penyebab utama dari fenomena X?"
+   - Dimensi Kosakata & Semantik (2 Soal):
+      Fokus: Menguji pemahaman kata sulit atau istilah teknis dalam materi.
+      Contoh Pertanyaan: "Kata 'signifikan' pada baris ke-5 paling tepat digantikan dengan kata..." atau "Apa makna istilah [Istilah Teknis] menurut konteks bacaan tersebut?"
+   - Dimensi Penalaran Verbal (2 Soal):
+      Fokus: Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui".
+      Contoh Pertanyaan: "Jika pernyataan di paragraf 3 benar, manakah kesimpulan berikut yang paling logis?" atau "Manakah asumsi yang mendasari argumen penulis di bagian akhir?"
+   - Dimensi Hubungan Analogi (2 Soal):
+      Fokus: Menghubungkan konsep dalam teks dengan konsep serupa.
+      Contoh Pertanyaan: "Berdasarkan teks, hubungan antara A dan B serupa dengan hubungan antara..." atau "Jika [Konsep A] digambarkan sebagai [Sifat], maka [Konsep B] dalam teks digambarkan sebagai..."
+   - Dimensi Memori Kerja Verbal (2 Soal):
+      Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
+      Contoh Pertanyaan: "Bagaimana pengaruh temuan di paragraf pertama terhadap teori yang dijelaskan di paragraf terakhir?" atau "Berdasarkan keseluruhan materi, urutan proses yang benar adalah..."
+   Tips Agar Soal Terasa Seperti "Tes IQ":
+    Hindari Jawaban Langsung: Jangan buat jawaban yang bisa di-copy-paste langsung dari teks. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
+    Pengecoh (Distractor): Buat pilihan jawaban yang terlihat benar jika pembaca hanya membaca sekilas, tetapi salah secara logika detail.
 2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat namun padat yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
 3. Kembalikan HANYA JSON VALID.
 4. Struktur:
