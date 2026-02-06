@@ -70,9 +70,6 @@ export async function handleRoute() {
         switch (hash) {
           case 'home':
             content.innerHTML = homeView;
-            break;
-          case 'home':
-            content.innerHTML = homeView;
               initLastRead();
             break;
           case 'materi':
