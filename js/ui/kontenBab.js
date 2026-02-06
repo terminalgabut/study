@@ -45,8 +45,6 @@ export async function initKontenBab(category, slug) {
   
   window.addEventListener('hashchange', saveProgress, { once: true });
   window.addEventListener('beforeunload', saveProgress);
-}
-
 // Ambil catatan lama jika ada
 const { data: existingNote } = await supabase
   .from('catatan')
