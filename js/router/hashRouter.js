@@ -81,7 +81,7 @@ export async function handleRoute() {
               console.error('initBookmarkPage error:', e);
             }
             break;
-          case 'history':
+          case 'riwayat':
             content.innerHTML = historyView;
               initHistoryPage();
             break;
