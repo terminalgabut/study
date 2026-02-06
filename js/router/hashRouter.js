@@ -6,7 +6,7 @@ import { materiView } from '../../pages/materiView.js';
 import { babView } from '../../pages/babView.js';
 import { kontenBabView } from '../../pages/kontenBabView.js';
 import { bookmarkView } from '../../pages/bookmarkView.js';
-import { riwayatView } from '../../pages/riwayatView.js;
+import { historyView } from '../../pages/riwayatView.js;
 
 // ===== LOGIC =====
 import { initBab } from '../ui/bab.js';
