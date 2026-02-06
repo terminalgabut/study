@@ -1,6 +1,7 @@
 // js/router/hashRouter.js
 
 // ===== VIEW pages =====
+import { loginView } from '../../pages/loginView.js';
 import { homeView } from '../../pages/homeView.js';
 import { materiView } from '../../pages/materiView.js';
 import { babView } from '../../pages/babView.js';
@@ -11,6 +12,7 @@ import { notesView } from '../../pages/notesView.js';
 import { notesDetailView } from '../../pages/notesDetailView.js';
 
 // ===== LOGIC =====
+import { initLogin } from '../ui/auth/auth.js';
 import { initLastRead } from '../ui/lastread.js';
 import { initMotivation } from '../ui/motivation.js';
 import { initProgress } from '../ui/progress.js';
@@ -22,7 +24,7 @@ import { initQuizGenerator } from '../ui/generator.js';
 import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 import { initHistoryPage } from '../ui/riwayat.js';
 import { initNotesList } from '../ui/notes.js';
-import { initNoteDetail } from '../ui/noteDetails.js'; // Logika detail catatan
+import { initNoteDetail } from '../ui/noteDetails.js'; 
 
 export function navigate(page) {
   location.hash = page;
@@ -72,6 +74,11 @@ export async function handleRoute() {
     // --- 2. ROUTE STATIS (Menggunakan Switch) ---
     else {
       switch (hash) {
+        case 'login':
+          content.innerHTML = loginView;
+          initLogin();
+          break;
+          
         case 'home':
           content.innerHTML = homeView;
           initLastRead();
@@ -80,21 +87,26 @@ export async function handleRoute() {
           initDailyTarget();
           initRekomendasi();
           break;
+          
         case 'materi':
           content.innerHTML = materiView;
           break;
+          
         case 'bookmark':
           content.innerHTML = bookmarkView;
           initBookmarkPage(); 
           break;
+          
         case 'riwayat':
           content.innerHTML = historyView;
           initHistoryPage();
           break;
+          
         case 'catatan':
           content.innerHTML = notesView;
           initNotesList();
           break;
+          
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
       }
