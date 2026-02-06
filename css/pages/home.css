@@ -66,3 +66,24 @@
   cursor: pointer;
   font-weight: 500;
 }
+
+.link-list {
+  padding: 0;
+  list-style: none;
+}
+
+.link-list li {
+  margin-bottom: 8px;
+}
+
+.recom-link {
+  text-decoration: none;
+  color: #3498db;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.recom-link:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
