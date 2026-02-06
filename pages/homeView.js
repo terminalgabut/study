@@ -20,14 +20,14 @@ export const homeView = `
 
   <!-- GRID DASHBOARD -->
   <div class="home-grid">
-
-    <!-- Lanjutkan Belajar -->
-    <div class="home-card">
-      <h3>📌 Lanjutkan Belajar</h3>
-      <p class="small">Terakhir dibuka</p>
-      <p class="highlight">HTML Dasar</p>
-      <button class="primary-btn">Lanjutkan</button>
-    </div>
+  
+  <!-- Lanjutkan Belajar -->
+  <div class="home-card" id="lastReadCard">
+  <h3>📌 Lanjutkan Belajar</h3>
+   <p class="small" id="lastReadDate">Terakhir dibuka</p>
+   <p class="highlight" id="lastReadTitle">Memuat...</p>
+   <button class="primary-btn" id="lastReadBtn">Lanjutkan</button>
+  </div>
 
     <!-- Motivasi -->
     <div class="home-card">
