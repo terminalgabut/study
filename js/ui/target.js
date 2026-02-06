@@ -21,7 +21,7 @@ export async function initDailyTarget() {
     ) : [];
 
     // Logika penentuan target selesai
-    const hasReadToday = activityToday.length > 0;
+    const hasReadToday = activityToday.length > 5;
     const hasNotedToday = activityToday.some(item => item.notes_completed_today === true);
 
     // Render ke HTML
