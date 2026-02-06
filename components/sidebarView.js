@@ -2,7 +2,6 @@ export const sidebarView = `
 <div class="sidebar-overlay"></div>
 
 <nav class="sidebar">
-  <!-- Home -->
   <button class="nav-btn" data-page="home">
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -11,7 +10,6 @@ export const sidebarView = `
     <span class="label">Home</span>
   </button>
 
-  <!-- Materi -->
   <button class="nav-btn" data-page="materi">
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -20,7 +18,6 @@ export const sidebarView = `
     <span class="label">Materi</span>
   </button>
 
-  <!-- Riwayat -->
   <button class="nav-btn" data-page="riwayat">
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -30,7 +27,6 @@ export const sidebarView = `
     <span class="label">Riwayat</span>
   </button>
 
-  <!-- Bookmark -->
   <button class="nav-btn" data-page="bookmark">
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -39,13 +35,21 @@ export const sidebarView = `
     <span class="label">Bookmark</span>
   </button>
 
-  <!-- About -->
+  <button class="nav-btn" data-page="catatan">
+    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+    </svg>
+    <span class="label">Catatan</span>
+  </button>
+
   <button class="nav-btn" data-page="about">
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10"/>
       <line x1="12" y1="16" x2="12" y2="12"/>
-      <line x1="12" y1="8" x2="12" y2="8"/>
+      <line x1="12" y1="8" x2="12" y2="8.01"/>
     </svg>
     <span class="label">About</span>
   </button>
