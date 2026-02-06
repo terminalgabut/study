@@ -97,8 +97,8 @@ export async function handleRoute() {
             content.innerHTML = historyView;
               initHistoryPage();
             break;
-            case '#catatan':
-            app.innerHTML = notesView;
+            case 'catatan':
+            content.innerHTML = notesView;
               initNotesList();
             break;
           default:
