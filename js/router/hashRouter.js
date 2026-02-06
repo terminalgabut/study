@@ -8,6 +8,7 @@ import { kontenBabView } from '../../pages/kontenBabView.js';
 import { bookmarkView } from '../../pages/bookmarkView.js';
 import { historyView } from '../../pages/riwayatView.js';
 import { notesView } from '../../pages/notesView.js';
+import { notesDetailView } from '../../pages/notesDetailView.js';
 
 // ===== LOGIC =====
 import { initLastRead } from '../ui/lastread.js';
