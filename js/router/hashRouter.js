@@ -12,7 +12,7 @@ import { historyView } from '../../pages/riwayatView.js';
 import { initBab } from '../ui/bab.js';
 import { initKontenBab } from '../ui/kontenBab.js';
 import { initQuizGenerator } from '../ui/generator.js';
-import { initBookmarkPage } from '../ui/bookmark.js'; 
+import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 import { initHistoryPage } from '../ui/riwayat.js';
   
 export function navigate(page) {
