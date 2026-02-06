@@ -82,7 +82,7 @@ export async function handleRoute() {
             }
             break;
           case 'history':
-            content.innerHTML = historyView
+            content.innerHTML = historyView;
               initHistoryPage();
             break;
           default:
