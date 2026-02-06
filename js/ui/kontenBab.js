@@ -47,6 +47,17 @@ export async function initKontenBab(category, slug) {
   window.addEventListener('beforeunload', saveProgress);
 }
 
+// Ambil catatan lama jika ada
+const { data: existingNote } = await supabase
+  .from('catatan')
+  .select('content')
+  .eq('material_slug', slug)
+  .single();
+
+if (existingNote) {
+  document.getElementById('noteArea').value = existingNote.content;
+}
+
 // Fungsi untuk menyimpan durasi ke Supabase menggunakan RPC
 async function saveProgress() {
     if (!startTime || !currentSlug) return;
