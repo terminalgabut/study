@@ -29,13 +29,13 @@ export const homeView = `
    <button class="primary-btn" id="lastReadBtn">Lanjutkan</button>
   </div>
 
-    <!-- Motivasi -->
-    <div class="home-card">
-      <h3>✨ Motivasi Hari Ini</h3>
-      <p class="quote">
-        “Sedikit tapi rutin lebih kuat daripada banyak tapi jarang.”
-      </p>
-    </div>
+  <!-- Motivasi -->
+  <div class="home-card">
+  <h3>✨ Motivasi Hari Ini</h3>
+   <p class="quote" id="motivationQuote">
+    “Sedikit tapi rutin lebih kuat daripada banyak tapi jarang.”
+   </p>
+  </div>
 
     <!-- Progres -->
     <div class="home-card">
