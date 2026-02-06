@@ -1,14 +1,14 @@
-export const babView = `
-<section class="home bab-page">
-  <div class="hero">
-    <h2>📖 Daftar Bab</h2>
+export const notesView = `
+<section class="home notes-page">
+  <div class="home-card hero">
+    <h2>📔 Buku Catatan</h2>
     <p class="desc">
-      Pilih bab untuk mulai mempelajari materi
+      Kumpulan poin penting yang telah kamu simpan.
     </p>
   </div>
 
-  <div id="babList" class="home-grid">
-    <!-- daftar bab diisi dinamis -->
+  <div id="notesList" class="home-grid">
+    <p class="loading">Memuat catatan...</p>
   </div>
 </section>
 `;
