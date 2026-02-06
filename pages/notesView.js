@@ -1,12 +1,11 @@
 export const notesView = `
-  <div class="container">
-    <header class="page-header">
-      <h2>📔 Buku Catatan</h2>
-      <p>Kumpulan poin penting yang telah kamu simpan.</p>
-    </header>
-
-    <div id="notesList" class="notes-grid">
-      <p class="loading">Memuat catatan...</p>
-    </div>
+<section class="notes">
+  <div class="home-card hero"> <h1>📔 Buku Catatan</h1>
+    <p class="desc">Kumpulan poin penting yang telah kamu simpan selama belajar.</p>
   </div>
+
+  <div id="notesList" class="home-grid"> 
+    <p class="loading">Memuat catatan...</p>
+  </div>
+</section>
 `;
