@@ -25,6 +25,13 @@ export const kontenBabView = `
     <div id="materiContainer">
       <article id="learningContent" class="konten-isi"></article>
 
+  <div class="notes-section">
+  <h4>Catatan</h4>
+  <textarea id="noteArea" placeholder="Tulis poin-poin penting di sini..."></textarea>
+  <button id="saveNoteBtn" class="btn-save">Simpan Catatan</button>
+  <span id="saveStatus" class="status-text"></span>
+</div>
+
       <div class="konten-actions">
         <button class="primary-btn" id="generateQuizBtn">
           Latihan Soal
