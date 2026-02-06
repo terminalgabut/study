@@ -6,7 +6,7 @@ import { materiView } from '../../pages/materiView.js';
 import { babView } from '../../pages/babView.js';
 import { kontenBabView } from '../../pages/kontenBabView.js';
 import { bookmarkView } from '../../pages/bookmarkView.js';
-import { .. } from '../../pages/riwayatView.js;
+import { riwayatView } from '../../pages/riwayatView.js;
 
 // ===== LOGIC =====
 import { initBab } from '../ui/bab.js';
@@ -80,6 +80,10 @@ export async function handleRoute() {
             } catch (e) {
               console.error('initBookmarkPage error:', e);
             }
+            break;
+          case 'history':
+            content.innerHTML = historyView
+              initHistoryPage();
             break;
           default:
             content.innerHTML = '<h2>Page not found</h2>';
