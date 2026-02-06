@@ -10,7 +10,7 @@ import { historyView } from '../../pages/riwayatView.js';
 
 // ===== LOGIC =====
 import { initLastRead } from '../ui/lastread.js';
-import { initMotivation } from '../ui/motivation.js;
+import { initMotivation } from '../ui/motivation.js';
 import { initBab } from '../ui/bab.js';
 import { initKontenBab } from '../ui/kontenBab.js';
 import { initQuizGenerator } from '../ui/generator.js';
