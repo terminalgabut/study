@@ -68,3 +68,30 @@ async function saveProgress() {
     startTime = null;
     currentSlug = null;
 }
+
+async function handleSaveNote(slug) {
+  const noteArea = document.getElementById('noteArea');
+  const statusEl = document.getElementById('saveStatus');
+  const noteContent = noteArea.value.trim();
+
+  if (!noteContent) return;
+
+  statusEl.textContent = "Menyimpan...";
+
+  const { error } = await supabase
+    .from('catatan')
+    .upsert({ 
+      material_slug: slug, 
+      content: noteContent,
+      updated_at: new Date().toISOString() 
+    }, { onConflict: 'material_slug' });
+
+  if (error) {
+    statusEl.textContent = "❌ Gagal menyimpan";
+    console.error(error);
+  } else {
+    statusEl.textContent = "✅ Tersimpan!";
+    // Hilangkan pesan sukses setelah 3 detik
+    setTimeout(() => { statusEl.textContent = ""; }, 3000);
+  }
+}
