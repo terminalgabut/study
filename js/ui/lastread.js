@@ -1,15 +1,15 @@
 import { supabase } from '../services/supabase.js';
 
 export async function initLastRead() {
-  // Target elemen di dalam kartu "Lanjutkan Belajar" di Home
-  const highlightEl = document.querySelector('.home-card .highlight');
-  const continueBtn = document.querySelector('.home-card .primary-btn');
-  const lastUpdateEl = document.querySelector('.home-card .small');
+  // Ambil elemen berdasarkan ID spesifik yang baru kita buat
+  const titleEl = document.getElementById('lastReadTitle');
+  const btnEl = document.getElementById('lastReadBtn');
+  const dateEl = document.getElementById('lastReadDate');
 
-  if (!highlightEl || !continueBtn) return;
+  if (!titleEl || !btnEl) return;
 
   try {
-    // 1. Ambil 1 data terakhir dari tabel riwayat
+    // 1. Ambil data riwayat terakhir
     const { data: history, error: e1 } = await supabase
       .from('riwayat')
       .select('material_slug, last_accessed')
@@ -19,15 +19,14 @@ export async function initLastRead() {
 
     if (e1) throw e1;
 
-    // Jika belum ada riwayat, ubah tampilan kartu menjadi default/kosong
+    // Jika belum ada riwayat (user baru)
     if (!history) {
-      highlightEl.textContent = "Belum ada materi";
-      continueBtn.disabled = true;
-      continueBtn.style.opacity = "0.5";
+      titleEl.textContent = "Belum ada riwayat";
+      btnEl.style.display = "none";
       return;
     }
 
-    // 2. Ambil judul lengkap dari tabel materi berdasarkan slug riwayat tersebut
+    // 2. Ambil judul lengkap dari tabel materi [cite: 14]
     const { data: material, error: e2 } = await supabase
       .from('materi')
       .select('category')
@@ -36,20 +35,22 @@ export async function initLastRead() {
 
     if (e2) throw e2;
 
-    // 3. Update UI dengan data asli dari Database
-    highlightEl.textContent = material.category;
+    // 3. Update UI secara otomatis
+    titleEl.textContent = material.category; // Mengisi judul utuh
     
-    if (lastUpdateEl) {
-      lastUpdateEl.textContent = "Terakhir dibaca";
+    // Opsional: Ubah teks "Terakhir dibuka" menjadi tanggal asli
+    if (dateEl) {
+      const date = new Date(history.last_accessed).toLocaleDateString('id-ID');
+      dateEl.textContent = `Terakhir dibuka: ${date}`;
     }
 
-    // Set aksi tombol untuk redirect ke materi tersebut
-    continueBtn.onclick = () => {
+    // Ubah fungsi klik tombol
+    btnEl.onclick = () => {
       window.location.hash = `#/materi/redirect/${history.material_slug}`;
     };
 
   } catch (err) {
-    console.error('Gagal memuat Last Read:', err);
-    highlightEl.textContent = "Gagal memuat data";
+    console.error('Error initLastRead:', err);
+    titleEl.textContent = "Gagal memuat riwayat";
   }
 }
