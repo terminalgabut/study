@@ -11,6 +11,7 @@ import { historyView } from '../../pages/riwayatView.js';
 // ===== LOGIC =====
 import { initLastRead } from '../ui/lastread.js';
 import { initMotivation } from '../ui/motivation.js';
+import { initProgress} from '../ui/progress.js';
 import { initBab } from '../ui/bab.js';
 import { initKontenBab } from '../ui/kontenBab.js';
 import { initQuizGenerator } from '../ui/generator.js';
@@ -73,6 +74,7 @@ export async function handleRoute() {
             content.innerHTML = homeView;
               initLastRead();
               initMotivation();
+              initProgress();
             break;
           case 'materi':
             content.innerHTML = materiView;
