@@ -1,5 +1,4 @@
 import { supabase } from '../services/supabase.js';
-
 import { generateQuiz } from '../services/quizClient.js';
 
 export function initQuizGenerator() {
@@ -28,7 +27,7 @@ export function initQuizGenerator() {
     quizEl.innerHTML = `
       <div class="quiz-container">
         <div class="quiz-placeholder">
-          <p>Bismillahirrahmanirrahim...</p>
+          <p>Memasuki mode latihan, mohon tunggu...</p>
         </div>
       </div>
     `;
@@ -84,14 +83,17 @@ function renderStepByStepQuiz(data, container, slug) {
     const progressBar = document.getElementById('quizBar');
     const timerDisplay = document.getElementById('timerDisplay');
     
-    let timeLeft = 60; // Set 1 Menit [sampel: 61]
-    let startTime = Date.now(); // [sampel: 50]
+    let timeLeft = 60; 
+    let startTime = Date.now(); 
 
     progressBar.style.width = `${(currentStep / total) * 100}%`;
 
     target.innerHTML = `
       <div class="quiz-item active">
-        <span style="color:var(--text-muted); font-size:14px;">Soal ${currentStep + 1} / ${total}</span>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:var(--text-muted); font-size:14px;">Soal ${currentStep + 1} / ${total}</span>
+          <span style="background:rgba(var(--accent-rgb), 0.1); color:var(--accent); font-size:11px; padding:2px 8px; border-radius:4px;">${q.dimension || 'Umum'}</span>
+        </div>
         <p class="quiz-question" style="margin-top:10px; margin-bottom:20px; font-weight:600; font-size:18px;">${q.question}</p>
         
         <div class="quiz-options" style="display:flex; flex-direction:column; gap:12px;">
@@ -113,13 +115,12 @@ function renderStepByStepQuiz(data, container, slug) {
       </div>
     `;
 
-    // Timer Logic [sampel: 62]
     timerInterval = setInterval(() => {
       timeLeft--;
       timerDisplay.innerText = timeLeft;
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
-        handleSelection(null, true); // Timeout [sampel: 62]
+        handleSelection(null, true);
       }
     }, 1000);
 
@@ -130,18 +131,16 @@ function renderStepByStepQuiz(data, container, slug) {
 
     const handleSelection = async (selectedValue, isTimeout) => {
       clearInterval(timerInterval);
-      const duration = Math.floor((Date.now() - startTime) / 1000); // [sampel: 52]
+      const duration = Math.floor((Date.now() - startTime) / 1000);
       
       inputs.forEach(i => i.disabled = true);
 
-      // Koreksi Lokal [sampel: 60]
       const isCorrect = selectedValue === q.correct_answer;
       if (isCorrect) {
         correctCount++;
         document.getElementById('liveScore').innerText = correctCount;
       }
 
-      // Tampilkan Feedback & Penjelasan
       const fbBox = document.getElementById('feedbackContainer');
       const fbText = document.getElementById('feedbackText');
       fbBox.style.display = 'block';
@@ -150,20 +149,22 @@ function renderStepByStepQuiz(data, container, slug) {
       fbText.innerHTML = isTimeout 
         ? `<b style="color:#ef4444">❌ Waktu Habis!</b><br>Jawaban benar: ${q.correct_answer}`
         : isCorrect 
-          ? `<b style="color:#10b981">✅ Benar!</b><br>${q.explanation || ''}` // Tampilkan Penjelasan
+          ? `<b style="color:#10b981">✅ Benar!</b><br>${q.explanation || ''}` 
           : `<b style="color:#ef4444">❌ Kurang Tepat.</b><br>Jawaban benar: ${q.correct_answer}<br><br>${q.explanation || ''}`;
 
       document.getElementById('actionContainer').style.display = 'block';
 
-      // Simpan ke study_attempts [sampel: 23, 53]
+      // REKAM ATTEMPT: Sinkronisasi Dimension & Score
       await saveAttempt({
-        session_id: slug,
-        question_id: q.id || currentStep,
-        user_answer: selectedValue,
+        session_id: slug, // Nama kolom sesuai SQL
+        question_id: String(q.id || currentStep),
+        dimension: q.dimension || "Umum", // Mengambil dimensi dari AI
+        category: q.category || data.category || "General",
+        user_answer: selectedValue || "TIMEOUT",
         correct_answer: q.correct_answer,
         is_correct: isCorrect,
-        duration_seconds: duration,
-        category: data.category || "General"
+        score: isCorrect ? 1 : 0, // Hitung skor otomatis
+        duration_seconds: duration
       });
     };
 
@@ -172,14 +173,13 @@ function renderStepByStepQuiz(data, container, slug) {
 
   async function saveAttempt(payload) {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      await supabase.from("study_attempts").insert([{ // Nama tabel sesuai milikmu
-        user_id: user.id,
-        ...payload,
-        submitted_at: new Date().toISOString()
-      }]);
-    } catch (e) { console.error("Simpan gagal:", e); }
+      // Interceptor di supabase.js akan otomatis menyuntikkan user_id
+      const { error } = await supabase.from("study_attempts").insert([payload]);
+      if (error) throw error;
+      console.log("Statistik latihan berhasil diperbarui.");
+    } catch (e) { 
+      console.error("Gagal merekam statistik:", e.message); 
+    }
   }
 
   const handleNext = () => {
@@ -194,7 +194,7 @@ function renderStepByStepQuiz(data, container, slug) {
 
   const showFinalResult = () => {
     document.getElementById('quizBar').style.width = "100%";
-    const rate = Math.round((correctCount / total) * 100); // [sampel: 58]
+    const rate = Math.round((correctCount / total) * 100);
     container.innerHTML = `
       <div class="quiz-container" style="text-align:center; padding:40px;">
         <h2 style="color:var(--accent)">Latihan Selesai!</h2>
