@@ -3,7 +3,7 @@ import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
-import { initProfileDropdown } from './ui/auth/profilModal.js';
+import { initProfileModal } from './ui/auth/profilModal.js';
 
 
 // views
@@ -39,7 +39,7 @@ function init() {
   initHeader();
   initSidebar();
   initSettingsModal();
-  initProfileDropdown(); // Ini yang akan mengisi data John Doe jadi Nama Asli
+  initProfileModal(); // Ini yang akan mengisi data John Doe jadi Nama Asli
   
   // 4. Jalankan Router terakhir
   initRouter();
