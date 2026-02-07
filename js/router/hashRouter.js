@@ -34,27 +34,33 @@ export function navigate(page) {
 }
 
 export async function handleRoute() {
-  const rawHash = location.hash || '#home';
-  const hash = rawHash.replace(/^#\/?/, '');
+  const content = document.getElementById('content');
+  if (!content) return;
+
+  // 1. Normalisasi Hash (Penting!)
+  // Jika URL hanya https://.../study/ tanpa hash, kita anggap itu #home
+  let rawHash = location.hash || '#home';
+  let hash = rawHash.replace(/^#\/?/, '');
   
-  // --- [1] ROUTE GUARD LOGIC ---
+  // --- [1] ROUTE GUARD LOGIC (Real-time Session Check) ---
+  // getSession() lebih cepat dari getUser() untuk routing
   const { data: { session } } = await supabase.auth.getSession();
   const isAuthPage = hash === 'login' || hash === 'register';
 
-  // Jika belum login & mencoba akses selain login/register, tendang ke login
+  // LOGIKA PENGUNCI (Sangat penting agar tidak bypass)
   if (!session && !isAuthPage) {
-    location.hash = '#login';
-    return;
+    // Jika tidak ada session, PAKSA ke #login
+    if (location.hash !== '#login') {
+      location.hash = '#login';
+      return; // Stop eksekusi router di sini
+    }
   }
 
-  // Jika sudah login & mencoba akses login/register, lempar ke home
   if (session && isAuthPage) {
+    // Jika sudah login tapi iseng buka login/register, PAKSA ke #home
     location.hash = '#home';
     return;
   }
-
-  const content = document.getElementById('content');
-  if (!content) return;
 
   // Transisi halus
   content.classList.add('fade-out');
@@ -126,7 +132,8 @@ export async function handleRoute() {
           break;
 
         case 'profile':
-          content.innerHTML = `<div class="home-card"><h2>Profil Pengguna</h2><p>Fitur edit profil segera hadir!</p></div>`;
+          // Gunakan view yang sudah kita desain agar konsisten
+          content.innerHTML = `<div class="home-card"><h2>Profil Pengguna</h2><p>Selamat datang di halaman profil!</p></div>`;
           break;
        
         default:
@@ -140,15 +147,14 @@ export async function handleRoute() {
 
   content.classList.remove('fade-out');
 
-  // --- [4] UI ADJUSTMENT (Navigasi & Active State) ---
-  
-  // Sembunyikan Navigasi Bawah di halaman Login/Register
-  const navBar = document.querySelector('.mobile-nav'); // Sesuaikan dengan class navbar kamu
+  // --- [4] UI ADJUSTMENT ---
+  // Pastikan header/sidebar juga mengikuti status auth di app.js
+  const navBar = document.querySelector('.mobile-nav'); 
   if (navBar) {
     navBar.style.display = isAuthPage ? 'none' : 'flex';
   }
 
-  // Update status tombol aktif
+  // Update menu aktif
   const rootPage = hash.split('/')[0];
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === rootPage);
