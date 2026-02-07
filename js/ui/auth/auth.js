@@ -25,20 +25,33 @@ export function initRegister() {
     regBtn.innerText = 'Mendaftarkan...';
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      // 1. Buat User di Authentication
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formatEmail(username),
         password: password,
-        options: {
-          data: { 
-            full_name: username,
-            username: username 
-          }
-        }
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
 
-      // Jika berhasil, Supabase otomatis login (jika confirm email OFF)
+      // 2. Jika Auth berhasil, buat record di tabel profiles publik
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            { 
+              id: authData.user.id, 
+              username: username, 
+              full_name: username,
+              xp: 0 // Nilai awal untuk fitur gamifikasi nanti
+            }
+          ]);
+
+        if (profileError) {
+          console.warn("Auth sukses tapi gagal membuat profil:", profileError.message);
+          // Kita tetap lanjut ke home karena akun auth sudah aktif
+        }
+      }
+
       window.location.hash = '#home';
       
     } catch (err) {
@@ -65,7 +78,6 @@ export function initLogin() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Reset UI
     errorMsg.style.display = 'none';
     loginBtn.disabled = true;
     loginBtn.innerText = 'Memverifikasi...';
@@ -93,6 +105,10 @@ export function initLogin() {
  * LOGIKA KELUAR (LOGOUT)
  */
 export async function handleLogout() {
-  await supabase.auth.signOut();
-  window.location.hash = '#login';
+  const { error } = await supabase.auth.signOut();
+  if (!error) {
+    window.location.hash = '#login';
+  } else {
+    console.error("Gagal logout:", error.message);
+  }
 }
