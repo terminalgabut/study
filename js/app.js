@@ -1,10 +1,9 @@
-// js/app.js
+import { supabase } from './services/supabase.js'; // Pastikan diimport paling atas
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileModal } from './ui/auth/profileModal.js';
-
 
 // views
 import { headerView } from '../components/headerView.js';
@@ -16,20 +15,7 @@ function init() {
   const app = document.getElementById('app');
   if (!app) return;
 
-  // js/app.js
-
-supabase.auth.onAuthStateChange((event, session) => {
-  console.log("Auth Event:", event); // Cek di console untuk debug
-  
-  if (event === 'SIGNED_OUT') {
-    window.location.hash = '#login';
-    // Membersihkan sisa UI agar tidak blank atau nyangkut data lama
-    const content = document.getElementById('content');
-    if (content) content.innerHTML = ''; 
-  }
-});
-  // 1. Render struktur dasar Aplikasi
-  // Kita bungkus Header dan Sidebar dalam div agar mudah disembunyikan via CSS/JS
+  // 1. Render struktur dasar Aplikasi terlebih dahulu
   app.innerHTML = `
     <div id="main-layout-wrapper">
       ${headerView}
@@ -40,47 +26,54 @@ supabase.auth.onAuthStateChange((event, session) => {
     <main id="content"></main>
   `;
 
-  // 2. Inject Modals ke dalam Header Right
+  // 2. Inject Modals
   const headerRight = document.querySelector('.header-right');
   if (headerRight) {
     headerRight.insertAdjacentHTML('beforeend', modalsettingsView);
     headerRight.insertAdjacentHTML('beforeend', modalprofilView);
   }
 
-  // 3. Inisialisasi semua komponen UI
+  // 3. Listener Auth Global (Diletakkan setelah render dasar)
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log("Auth Event:", event);
+    
+    if (event === 'SIGNED_OUT') {
+      window.location.hash = '#login';
+      const content = document.getElementById('content');
+      if (content) content.innerHTML = ''; 
+    }
+    
+    // Jika login berhasil, pastikan layout muncul kembali
+    checkLayout();
+  });
+
+  // 4. Inisialisasi Logika UI
   initHeader();
   initSidebar();
   initSettingsModal();
-  initProfileModal(); // Ini yang akan mengisi data John Doe jadi Nama Asli
+  initProfileModal(); 
   
-  // 4. Jalankan Router terakhir
+  // 5. Jalankan Router & Layout Check
   initRouter();
-
-  // 5. Pantau perubahan Hash untuk menyembunyikan/menampilkan layout
   window.addEventListener('hashchange', checkLayout);
   checkLayout();
 }
 
-// Fungsi untuk mengatur tampilan Layout (Hide Header/Sidebar di Login Page)
 function checkLayout() {
   const hash = window.location.hash;
   const layoutWrapper = document.getElementById('main-layout-wrapper');
   const contentArea = document.getElementById('content');
   
-  const isAuthPage = hash === '#login' || hash === '#register' || hash === '';
+  // Login, Register, dan Hash kosong dianggap halaman Auth
+  const isAuthPage = hash === '#login' || hash === '#register' || hash === '' || hash === '#';
 
   if (layoutWrapper && contentArea) {
     if (isAuthPage) {
       layoutWrapper.style.display = 'none';
-      contentArea.style.marginLeft = '0';
-      contentArea.style.marginTop = '0';
-      contentArea.style.padding = '0';
+      contentArea.style.cssText = 'margin: 0; padding: 0;';
     } else {
       layoutWrapper.style.display = 'block';
-      // Kembalikan styling ke asal (sesuaikan dengan CSS layout kamu)
-      contentArea.style.marginLeft = ''; 
-      contentArea.style.marginTop = '';
-      contentArea.style.padding = '';
+      contentArea.style.cssText = ''; // Kembali ke CSS default
     }
   }
 }
