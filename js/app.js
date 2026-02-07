@@ -3,7 +3,7 @@ import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
-import { initProfileModal } from './ui/auth/profilModal.js';
+import { initProfileModal } from './ui/auth/profileModal.js';
 
 
 // views
