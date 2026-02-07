@@ -91,10 +91,12 @@ export async function handleRoute() {
           content.innerHTML = loginView;
           initLogin();
           break;
+          
         case 'register':
           content.innerHTML = registerView;
           initRegister();
           break;
+          
         case 'home':
           content.innerHTML = homeView;
           initLastRead();
@@ -103,21 +105,30 @@ export async function handleRoute() {
           initDailyTarget();
           initRekomendasi();
           break;
+          
         case 'materi':
           content.innerHTML = materiView;
           break;
+          
         case 'bookmark':
           content.innerHTML = bookmarkView;
           initBookmarkPage(); 
           break;
+          
         case 'riwayat':
           content.innerHTML = historyView;
           initHistoryPage();
           break;
+          
         case 'catatan':
           content.innerHTML = notesView;
           initNotesList();
           break;
+
+        case 'profile':
+          content.innerHTML = `<div class="home-card"><h2>Profil Pengguna</h2><p>Fitur edit profil segera hadir!</p></div>`;
+          break;
+       
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
       }
