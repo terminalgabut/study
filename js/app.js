@@ -16,6 +16,18 @@ function init() {
   const app = document.getElementById('app');
   if (!app) return;
 
+  // js/app.js
+
+supabase.auth.onAuthStateChange((event, session) => {
+  console.log("Auth Event:", event); // Cek di console untuk debug
+  
+  if (event === 'SIGNED_OUT') {
+    window.location.hash = '#login';
+    // Membersihkan sisa UI agar tidak blank atau nyangkut data lama
+    const content = document.getElementById('content');
+    if (content) content.innerHTML = ''; 
+  }
+});
   // 1. Render struktur dasar Aplikasi
   // Kita bungkus Header dan Sidebar dalam div agar mudah disembunyikan via CSS/JS
   app.innerHTML = `
