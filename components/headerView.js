@@ -22,6 +22,7 @@ export const headerView = `
 </button>
 
     <button
+      id="profileHeaderBtn" 
       class="icon-btn profile-btn"
       aria-label="Profile"
       title="Profile"
@@ -32,6 +33,7 @@ export const headerView = `
         loading="lazy"
       >
     </button>
+
   </div>
 </header>
 `;
