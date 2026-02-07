@@ -1,7 +1,7 @@
 // js/ui/auth/auth.js
 import { supabase } from '../../services/supabase.js';
 
-// Helper untuk mengubah username menjadi format email dummy (di balik layar)
+// Helper tetap sama, memastikan username jadi format email di database
 const formatEmail = (username) => `${username.toLowerCase().trim()}@study.gabut`;
 
 /**
@@ -16,10 +16,16 @@ export function initRegister() {
 
   regForm.onsubmit = async (e) => {
     e.preventDefault();
-    const username = document.getElementById('regUsername').value;
+    const username = document.getElementById('regUsername').value.trim();
     const password = document.getElementById('regPassword').value;
 
-    // Reset UI
+    // Validasi sederhana: Username tidak boleh pakai spasi
+    if (username.includes(' ')) {
+        errorMsg.innerText = "Username tidak boleh mengandung spasi!";
+        errorMsg.style.display = 'block';
+        return;
+    }
+
     errorMsg.style.display = 'none';
     regBtn.disabled = true;
     regBtn.innerText = 'Mendaftarkan...';
@@ -33,8 +39,9 @@ export function initRegister() {
 
       if (authError) throw authError;
 
-      // 2. Jika Auth berhasil, buat record di tabel profiles publik
+      // 2. Jika Auth berhasil
       if (authData.user) {
+        // Simpan username asli ke tabel profiles
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
@@ -42,14 +49,20 @@ export function initRegister() {
               id: authData.user.id, 
               username: username, 
               full_name: username,
-              xp: 0 // Nilai awal untuk fitur gamifikasi nanti
+              xp: 0 
             }
           ]);
 
-        if (profileError) {
-          console.warn("Auth sukses tapi gagal membuat profil:", profileError.message);
-          // Kita tetap lanjut ke home karena akun auth sudah aktif
-        }
+        if (profileError) console.warn("Profil gagal dibuat:", profileError.message);
+        
+        // PENTING: Jika di Supabase "Confirm Email" NYALA, 
+        // user tidak akan otomatis login. Kita paksa login manual:
+        const { error: loginError } = await supabase.auth.signInWithPassword({
+            email: formatEmail(username),
+            password: password,
+        });
+
+        if (loginError) throw new Error("Akun dibuat, tapi gagal login otomatis. Silakan login manual.");
       }
 
       window.location.hash = '#home';
@@ -75,7 +88,7 @@ export function initLogin() {
 
   loginForm.onsubmit = async (e) => {
     e.preventDefault();
-    const username = document.getElementById('loginUsername').value;
+    const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
 
     errorMsg.style.display = 'none';
@@ -84,6 +97,7 @@ export function initLogin() {
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
+        // User ketik username, kita kirim email virtualnya
         email: formatEmail(username),
         password: password,
       });
@@ -93,6 +107,7 @@ export function initLogin() {
       window.location.hash = '#home';
 
     } catch (err) {
+      // Pesan error lebih ramah
       errorMsg.innerText = "Username atau Password salah!";
       errorMsg.style.display = 'block';
       loginBtn.disabled = false;
@@ -105,10 +120,6 @@ export function initLogin() {
  * LOGIKA KELUAR (LOGOUT)
  */
 export async function handleLogout() {
-  const { error } = await supabase.auth.signOut();
-  if (!error) {
-    window.location.hash = '#login';
-  } else {
-    console.error("Gagal logout:", error.message);
-  }
+  await supabase.auth.signOut();
+  window.location.hash = '#login';
 }
