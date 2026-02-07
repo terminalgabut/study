@@ -12,8 +12,8 @@ export const loginView = `
 
     <form id="loginForm" style="text-align: left;">
       <div class="form-group" style="margin-bottom: 20px;">
-        <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Email</label>
-        <input type="email" id="loginEmail" placeholder="nama@email.com" required 
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Username</label>
+        <input type="text" id="loginUsername" placeholder="Masukkan Username" required>
           style="width: 100%; padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; background: rgba(255,255,255,0.05); color: inherit; outline: none;">
       </div>
 
