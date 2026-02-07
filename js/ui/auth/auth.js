@@ -120,6 +120,17 @@ export function initLogin() {
  * LOGIKA KELUAR (LOGOUT)
  */
 export async function handleLogout() {
-  await supabase.auth.signOut();
-  window.location.hash = '#login';
+  try {
+    await supabase.auth.signOut();
+    
+    // Gunakan replace agar user tidak bisa klik "back" kembali ke halaman profil
+    window.location.replace('#login'); 
+    
+    // Opsional: Jika masih membandel di browser tertentu, 
+    // force reload akan membersihkan semua sisa variabel di app.js
+    // window.location.reload(); 
+  } catch (err) {
+    console.error("Gagal logout:", err.message);
+    window.location.hash = '#login';
+  }
 }
