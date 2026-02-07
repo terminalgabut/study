@@ -1,5 +1,7 @@
 // js/router/hashRouter.js
 
+import { supabase } from '../services/supabase.js'; // PASTIKAN PATH INI BENAR
+
 // ===== VIEW pages =====
 import { loginView } from '../../pages/loginView.js';
 import { registerView } from '../../pages/registerView.js';
@@ -35,6 +37,22 @@ export async function handleRoute() {
   const rawHash = location.hash || '#home';
   const hash = rawHash.replace(/^#\/?/, '');
   
+  // --- [1] ROUTE GUARD LOGIC ---
+  const { data: { session } } = await supabase.auth.getSession();
+  const isAuthPage = hash === 'login' || hash === 'register';
+
+  // Jika belum login & mencoba akses selain login/register, tendang ke login
+  if (!session && !isAuthPage) {
+    location.hash = '#login';
+    return;
+  }
+
+  // Jika sudah login & mencoba akses login/register, lempar ke home
+  if (session && isAuthPage) {
+    location.hash = '#home';
+    return;
+  }
+
   const content = document.getElementById('content');
   if (!content) return;
 
@@ -43,15 +61,9 @@ export async function handleRoute() {
   await new Promise(r => setTimeout(r, 150));
 
   try {
-    // --- 1. ROUTE DINAMIS (Menggunakan Regex) ---
-
-    // A. Detail Catatan: catatan-detail/:slug
+    // --- [2] ROUTE DINAMIS ---
     const noteDetailMatch = hash.match(/^catatan-detail\/([^\/]+)$/);
-    
-    // B. Konten Materi: materi/:category/:slug
     const kontenMatch = hash.match(/^materi\/([^\/]+)\/([^\/]+)$/);
-    
-    // C. Daftar Bab: materi/:category
     const materiMatch = hash.match(/^materi\/([^\/]+)$/);
 
     if (noteDetailMatch) {
@@ -72,19 +84,17 @@ export async function handleRoute() {
       initBab(category);
     } 
 
-    // --- 2. ROUTE STATIS (Menggunakan Switch) ---
+    // --- [3] ROUTE STATIS ---
     else {
       switch (hash) {
         case 'login':
           content.innerHTML = loginView;
           initLogin();
           break;
-
         case 'register':
           content.innerHTML = registerView;
           initRegister();
           break;
-          
         case 'home':
           content.innerHTML = homeView;
           initLastRead();
@@ -93,26 +103,21 @@ export async function handleRoute() {
           initDailyTarget();
           initRekomendasi();
           break;
-          
         case 'materi':
           content.innerHTML = materiView;
           break;
-          
         case 'bookmark':
           content.innerHTML = bookmarkView;
           initBookmarkPage(); 
           break;
-          
         case 'riwayat':
           content.innerHTML = historyView;
           initHistoryPage();
           break;
-          
         case 'catatan':
           content.innerHTML = notesView;
           initNotesList();
           break;
-          
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
       }
@@ -124,7 +129,15 @@ export async function handleRoute() {
 
   content.classList.remove('fade-out');
 
-  // Update status tombol navigasi aktif
+  // --- [4] UI ADJUSTMENT (Navigasi & Active State) ---
+  
+  // Sembunyikan Navigasi Bawah di halaman Login/Register
+  const navBar = document.querySelector('.mobile-nav'); // Sesuaikan dengan class navbar kamu
+  if (navBar) {
+    navBar.style.display = isAuthPage ? 'none' : 'flex';
+  }
+
+  // Update status tombol aktif
   const rootPage = hash.split('/')[0];
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === rootPage);
