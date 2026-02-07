@@ -4,7 +4,7 @@ import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileDropdown } from './ui/auth/modalprofil.js';
-import { initProfileDropdown } from './ui/modalprofil.js';
+
 
 // views
 import { headerView } from '../components/headerView.js';
