@@ -159,7 +159,7 @@ function renderStepByStepQuiz(data, container, slug) {
         session_id: slug, // Nama kolom sesuai SQL
         question_id: String(q.id || currentStep),
         dimension: q.dimension,
-        category: materiRes.data.category,
+        category: data.category,
         // q.category || data.category || "General",
         user_answer: selectedValue || "TIMEOUT",
         correct_answer: q.correct_answer,
