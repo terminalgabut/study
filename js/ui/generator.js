@@ -11,41 +11,44 @@ export function initQuizGenerator(dataMateri) {
   const quizEl = document.getElementById('quizSection');
   const materiContainer = document.getElementById('materiContainer');
 
-  if (!btnEl || !quizEl || !dataMateri) return;
+  if (!btnEl || !quizEl) return;
 
   btnEl.onclick = async () => {
-    // AMBIL DATA DARI OBJEK (Bukan dari DOM)
-    const judulKategori = dataMateri.category; 
-    const isiMateri = dataMateri.content;
-    const slug = dataMateri.slug;
+    // 1. Ambil teks materi dari layar
+    const contentText = document.getElementById('learningContent')?.textContent.trim();
 
-    if (!isiMateri || isiMateri.length < 10) {
-      alert("Konten materi tidak valid.");
+    if (!contentText || contentText.length < 10) {
+      alert("Materi belum dimuat sempurna.");
       return;
     }
 
-    // Persiapan UI
+    // 2. Transisi UI
     if (materiContainer) materiContainer.style.display = 'none';
     quizEl.removeAttribute('hidden');
-    quizEl.innerHTML = `<div style="text-align:center; padding:40px;"><div class="spinner"></div><p>AI sedang menyusun kuis <b>${judulKategori}</b>...</p></div>`;
     
+    // 3. PASANG TEMPLATE UTAMA (Ganti kode HTML lama kamu dengan ini)
+    quizEl.innerHTML = quizTemplates.mainFrame(); 
+    
+    // Ambil container soal yang baru saja dibuat oleh mainFrame()
+    const container = document.getElementById('activeQuestionContainer');
+    container.innerHTML = '<div class="quiz-placeholder"><p>Sedang meracik soal untukmu...</p></div>';
+
     try {
+      // 4. Panggil API dengan data dari DB (dataMateri)
       const result = await generateQuiz({
-        materi: isiMateri,
-        category: judulKategori,
-        slug: slug,
-        order: dataMateri.order || 1
+        materi: contentText,
+        category: dataMateri?.category || "Materi",
+        slug: dataMateri?.slug || "default",
+        order: 1
       });
 
       if (result && result.quiz) {
-        renderStepByStepQuiz(result.quiz, quizEl, slug, judulKategori);
-      } else {
-        throw new Error("Format kuis tidak valid");
+        // Lanjut ke fungsi render (Langkah berikutnya)
+        renderStepByStepQuiz(result.quiz, container, dataMateri);
       }
     } catch (err) {
-      console.error("Quiz Error:", err);
-      quizEl.innerHTML = `<p style="color:red; text-align:center;">Gagal memuat kuis. Silakan coba lagi.</p>`;
-      if (materiContainer) materiContainer.style.display = 'block';
+      console.error(err);
+      container.innerHTML = `<p style="color:red">Gagal: ${err.message}</p>`;
     }
   };
 }
