@@ -158,7 +158,7 @@ function renderStepByStepQuiz(data, container, slug) {
       await saveAttempt({
         session_id: slug, // Nama kolom sesuai SQL
         question_id: String(q.id || currentStep),
-        dimension: q.dimension || "Umum", // Mengambil dimensi dari AI
+        dimension: q.dimension,
         category: q.category || data.category || "General",
         user_answer: selectedValue || "TIMEOUT",
         correct_answer: q.correct_answer,
