@@ -58,7 +58,7 @@ async def quiz_generate(request: Request):
     try:
         body = await request.json()
         materi = body.get("materi", "").strip()
-        category = body.get("category", "Umum")
+        # category = body.get("category", "Umum")
         slug = body.get("slug", "default")
         order = body.get("order", 1)
 
@@ -98,7 +98,7 @@ ATURAN WAJIB:
   "questions": [
     {{
       "id": "q1",
-      "category": "{category}",
+      "category": "judul materi",
       "dimension": "Memori Kerja Verbal",
       "question": "teks soal",
       "options": ["opsi1", "opsi2", "opsi3", "opsi4"],
@@ -136,7 +136,7 @@ ATURAN WAJIB:
 
             return {
                 "quiz": {
-                    "category": category,
+                    #"category": category,
                     "slug": slug,
                     "order": order,
                     "questions": questions
