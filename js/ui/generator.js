@@ -39,18 +39,15 @@ function renderStepByStepQuiz(data, container, slug) {
       const isCorrect = selectedValue === q.correct_answer;
       const duration = Math.floor((Date.now() - startTime) / 1000);
 
-      // UI Feedback logic ... [cite: 118-121]
-
-      // Eksekusi Simpan dengan data lengkap [cite: 122]
       await saveStudyAttempt({
         session_id: slug,
-        question_id: q.id || currentStep,
-        category: data.category || "Materi",
-        dimension: q.dimension || "Umum", // Mencegah null pada dimension
+        question_id: q.id
+        category: materi.category
+        dimension: q.dimension
         user_answer: selectedValue || "TIMEOUT",
         correct_answer: q.correct_answer,
         is_correct: isCorrect,
-        score: isCorrect ? 1 : 0, // Mencegah null pada score
+        score: isCorrect ? 1 : 0,
         duration_seconds: duration
       });
     };
