@@ -21,7 +21,7 @@ app.add_middleware(
 )
 
 # --- CONFIGURATION ---
-BASE_SYSTEM_PROMPT = "Kamu adalah AI Mentalist profesional yang ahli dalam menyusun soal test iQ kritis. Kamu HARUS mematuhi struktur JSON yang diminta."
+BASE_SYSTEM_PROMPT = "Kamu adalah AI Mentalist profesional yang ahli dalam menyusun soal test iQ kritis gunakan 5 dimension di aturan wajib. Kamu HARUS mematuhi struktur JSON yang diminta."
 
 def call_openrouter_api(messages: list):
     api_key = os.environ.get("OPENROUTER_API_KEY")
