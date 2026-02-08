@@ -38,7 +38,7 @@ export function initQuizGenerator() {
 
       const result = await generateQuiz({
         materi: contentText,
-        category: category,
+        category: "Materi",
         slug: slug,
         order: 1
       });
