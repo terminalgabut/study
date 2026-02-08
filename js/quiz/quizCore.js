@@ -10,22 +10,28 @@ export const quizCore = {
 
   /**
    * Inisialisasi Kuis
-   * @param {Array} questions - Daftar soal dari AI
-   * @param {HTMLElement} container - Element quizSection
-   * @param {String} category - Judul Bab dari learningTitle
    */
   init(questions, container, category) {
+    if (!questions || (Array.isArray(questions) && questions.length === 0)) {
+      console.error("QuizCore: Tidak ada soal untuk dimuat.");
+      return;
+    }
+    
     this.container = container;
     this.category = category || "Umum";
+    
+    // Pastikan data di-reset di state
     quizState.reset(questions);
     this.start();
   },
 
   start() {
-    // 1. Tampilkan Frame Utama (Timer & Score bar)
+    if (!this.container) return;
+
+    // 1. Tampilkan Frame Utama
     this.container.innerHTML = quizView.mainFrame();
     
-    // 2. Jalankan Timer (60 detik)
+    // 2. Jalankan Timer
     quizTimer.start(60, 
       (time) => { 
         const timerEl = document.getElementById('timerDisplay');
@@ -38,9 +44,16 @@ export const quizCore = {
   },
 
   renderQuestion() {
-    const q = quizState.questions[quizState.currentStep];
-    const activeArea = document.getElementById('activeQuestionContainer');
+    // Gunakan fungsi getter dari state yang sudah diperbaiki
+    const q = quizState.getCurrentQuestion ? quizState.getCurrentQuestion() : quizState.questions[quizState.currentStep];
     
+    // VALIDASI KRUSIAL: Cegah error "reading property question of undefined"
+    if (!q) {
+      console.error("QuizCore: Soal tidak ditemukan pada index", quizState.currentStep);
+      return;
+    }
+
+    const activeArea = document.getElementById('activeQuestionContainer');
     if (!activeArea) return;
 
     // Tampilkan Kartu Soal
@@ -50,10 +63,7 @@ export const quizCore = {
       quizState.totalQuestions
     );
 
-    // Update Progress UI
     this.updateProgressUI();
-
-    // Pasang Event Listener ke pilihan jawaban
     this.setupOptions(q);
   },
 
@@ -73,18 +83,22 @@ export const quizCore = {
 
     options.forEach(opt => {
       opt.onchange = () => {
-        // Kunci pilihan lain setelah memilih
+        // Kunci semua pilihan
         options.forEach(o => o.disabled = true);
         
-        const isCorrect = opt.value === q.answer;
+        // Cek jawaban (AI biasanya mengirim 'answer' atau 'correct_answer')
+        const correctAnswer = q.answer || q.correct_answer;
+        const isCorrect = opt.value === correctAnswer;
+        
         if (isCorrect) quizState.addScore();
 
-        // Tampilkan Feedback visual
-        feedbackEl.innerHTML = isCorrect ? 
-          '<p style="color:#2ecc71; font-weight:bold; margin-top:10px;">✅ Benar!</p>' : 
-          `<p style="color:#e74c3c; font-weight:bold; margin-top:10px;">❌ Salah. Jawaban: ${q.answer}</p>`;
+        // Tampilkan Feedback
+        if (feedbackEl) {
+          feedbackEl.innerHTML = isCorrect ? 
+            '<p style="color:#2ecc71; font-weight:bold; margin-top:10px;">✅ Benar!</p>' : 
+            `<p style="color:#e74c3c; font-weight:bold; margin-top:10px;">❌ Salah. Jawaban: ${correctAnswer}</p>`;
+        }
 
-        // Aktifkan tombol lanjut
         if (nextBtn) nextBtn.disabled = false;
 
         // Simpan ke database
@@ -107,18 +121,18 @@ export const quizCore = {
 
   async saveStepToDb(q, userAns, isCorrect) {
     try {
-      const duration = Math.floor((Date.now() - quizState.startTime) / 1000);
+      const duration = quizState.startTime ? Math.floor((Date.now() - quizState.startTime) / 1000) : 0;
       
       const payload = {
-        question_id: q.question, // Menggunakan teks soal sebagai ID
+        question_id: q.question || "Unknown Question",
         is_correct: isCorrect,
         score: isCorrect ? 1 : 0,
         session_id: quizState.sessionId,
         user_answer: userAns,
-        correct_answer: q.answer,
+        correct_answer: q.answer || q.correct_answer,
         duration_seconds: duration,
-        category: this.category, // Judul Bab
-        dimension: q.dimension,
+        category: this.category,
+        dimension: q.dimension || "General",
         submitted_at: new Date().toISOString()
       };
 
@@ -127,10 +141,8 @@ export const quizCore = {
         .insert([payload]);
 
       if (error) throw error;
-      console.log("Data berhasil masuk ke study_attempts");
-      
     } catch (e) {
-      console.error("Database Error:", e.message);
+      console.error("QuizCore DB Error:", e.message);
     }
   },
 
@@ -138,11 +150,12 @@ export const quizCore = {
     quizTimer.stop();
     const rate = quizState.getScoreRate();
     
-    // Tampilkan layar hasil akhir
-    this.container.innerHTML = quizView.finalResult(
-      rate, 
-      quizState.correctCount, 
-      quizState.totalQuestions
-    );
+    if (this.container) {
+      this.container.innerHTML = quizView.finalResult(
+        rate, 
+        quizState.correctCount, 
+        quizState.totalQuestions
+      );
+    }
   }
 };
