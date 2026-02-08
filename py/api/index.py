@@ -39,7 +39,8 @@ def call_openrouter_api(messages: list):
         json={
             "model": "openai/gpt-oss-120b:nitro", 
             "messages": messages,
-            "temperature": 0.7
+            "temperature": 0.35
+            "top_p": 0.9,
         },
         timeout=25 # Disesuaikan sedikit lebih lama karena teks penjelasan menambah beban kerja
     )
@@ -107,6 +108,11 @@ ATURAN WAJIB:
     }}
   ]
 }}
+VALIDATION STEP (Internal, jangan ditampilkan):
+- Periksa jumlah soal = 10
+- Periksa distribusi dimensi = 2 per dimension
+- Periksa semua correct_answer identik dengan salah satu options
+- Periksa JSON valid sebelum final output
 """
 
         messages = [
