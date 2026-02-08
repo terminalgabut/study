@@ -1,52 +1,65 @@
 import { generateQuiz } from '../services/quizClient.js';
 import { saveStudyAttempt } from '../services/quizService.js';
-import { quizTemplates } from '../../compenents/quizUi.js';
+import { quizTemplates } from '../../compenents/quizUi.js'; // Pastikan folder 'components' tidak typo
 
-export function initQuizGenerator() {
+/**
+ * Inisialisasi Generator Kuis
+ * @param {Object} materiData - Objek utuh dari database (tabel materials)
+ */
+export function initQuizGenerator(materiData) {
   const btnEl = document.getElementById('generateQuizBtn');
   const quizEl = document.getElementById('quizSection');
   const materiContainer = document.getElementById('materiContainer');
 
-  if (!btnEl || !quizEl) return;
+  if (!btnEl || !quizEl || !materiData) return;
 
   btnEl.onclick = async () => {
-    // FOKUS: Ambil judul asli dari halaman
-    const titleEl = document.getElementById('learningTitle');
-    const judulMateri = titleEl ? titleEl.textContent.trim() : "Umum";
-    
-    const contentEl = document.getElementById('learningContent');
-    const contentText = contentEl ? contentEl.textContent.trim() : "";
+    // KONSEP KRITIKA: Ambil data dari objek database, bukan dari teks HTML
+    const judulMateri = materiData.category || "Umum";
+    const slug = materiData.slug;
+    const contentText = materiData.content;
 
-    if (!contentText || contentText.length < 10) return;
+    if (!contentText || contentText.length < 10) {
+      alert("Konten materi tidak ditemukan atau terlalu pendek.");
+      return;
+    }
 
+    // Persiapan UI
     if (materiContainer) materiContainer.style.display = 'none';
     quizEl.removeAttribute('hidden');
+    quizEl.innerHTML = `
+      <div style="text-align:center; padding:40px;">
+        <div class="spinner"></div>
+        <p>AI sedang menyusun soal berdasarkan materi <b>${judulMateri}</b>...</p>
+      </div>
+    `;
     
     try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const slug = urlParams.get('slug') || "default";
-
       const result = await generateQuiz({
         materi: contentText,
-        category: judulMateri, // Kirim judul asli ke AI
+        category: judulMateri,
         slug: slug,
-        order: 1
+        order: materiData.order || 1
       });
 
       if (result && result.quiz) {
         renderStepByStepQuiz(result.quiz, quizEl, slug, judulMateri);
+      } else {
+        throw new Error("Format kuis tidak valid");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Quiz Error:", err);
+      quizEl.innerHTML = `<p style="color:red; text-align:center;">Gagal memuat kuis. Silakan coba lagi.</p>`;
+      if (materiContainer) materiContainer.style.display = 'block';
     }
   };
 }
 
-function renderStepByStepQuiz(data, container, slug, judulMateri) {
+function renderStepByStepQuiz(quizData, container, slug, judulMateri) {
   let currentStep = 0;
-  let correctCount = 0; // Ini adalah counter skor kita
+  let correctCount = 0;
   let timerInterval;
-  const questions = data.questions;
+  const questions = quizData.questions;
   const total = questions.length;
 
   const initFrame = () => {
@@ -59,42 +72,42 @@ function renderStepByStepQuiz(data, container, slug, judulMateri) {
     const target = document.getElementById('activeQuestionContainer');
     const progressBar = document.getElementById('quizBar');
     const timerDisplay = document.getElementById('timerDisplay');
-    const liveScoreEl = document.getElementById('liveScore'); // Ambil elemen skor dari mainFrame
+    const liveScoreEl = document.getElementById('liveScore');
     
     let timeLeft = 60;
     let startTime = Date.now();
     
+    // Update Progress Bar & UI
     if (progressBar) progressBar.style.width = `${(currentStep / total) * 100}%`;
     target.innerHTML = quizTemplates.questionCard(q, currentStep, total);
 
+    // Timer Logic
     timerInterval = setInterval(() => {
       timeLeft--;
       if (timerDisplay) timerDisplay.innerText = timeLeft;
       if (timeLeft <= 0) handleSelection(null, true);
     }, 1000);
 
-    const handleSelection = async (selectedValue, isTimeout) => {
+    const handleSelection = async (selectedValue, isTimeout = false) => {
       clearInterval(timerInterval);
+      
       const isCorrect = selectedValue === q.correct_answer;
-
-      // --- LOGIKA LIVE SKOR ---
-      if (isCorrect) {
-        correctCount++; // Tambah poin
-        if (liveScoreEl) {
-          liveScoreEl.textContent = correctCount; // Update angka di layar secara real-time
-          liveScoreEl.style.color = "var(--accent)"; // Beri efek warna saat bertambah
-          liveScoreEl.style.fontWeight = "bold";
-        }
-      }
-      // -------------------------
-
       const duration = Math.floor((Date.now() - startTime) / 1000);
 
-      // Simpan ke database
+      // 1. Logika Live Skor
+      if (isCorrect) {
+        correctCount++;
+        if (liveScoreEl) {
+          liveScoreEl.textContent = correctCount;
+          liveScoreEl.style.color = "var(--accent)";
+        }
+      }
+
+      // 2. Simpan ke Database (Konsep simpel & bersih)
       await saveStudyAttempt({
         session_id: slug,
         question_id: String(q.id || currentStep),
-        category: judulMateri,
+        category: judulMateri, // Pastikan tersimpan sesuai judul materi asli
         dimension: q.dimension || "Umum",
         user_answer: selectedValue || "TIMEOUT",
         correct_answer: q.correct_answer,
@@ -103,21 +116,23 @@ function renderStepByStepQuiz(data, container, slug, judulMateri) {
         duration_seconds: duration
       });
 
-      // Tampilkan Feedback & Tombol Next
-      const feedbackContainer = document.getElementById('feedbackContainer');
-      const feedbackText = document.getElementById('feedbackText');
+      // 3. Tampilkan Feedback & Navigasi
+      const fbContainer = document.getElementById('feedbackContainer');
+      const fbText = document.getElementById('feedbackText');
       const actionContainer = document.getElementById('actionContainer');
+      const nextBtn = document.getElementById('nextBtn');
 
-      if (feedbackContainer && feedbackText) {
-        feedbackContainer.style.display = 'block';
-        feedbackText.innerHTML = isCorrect 
-          ? `<span style="color:#4ade80">✔ Benar!</span>` 
-          : `<span style="color:#f87171">✘ Salah.</span> Jawaban: ${q.correct_answer}`;
+      if (fbContainer && fbText) {
+        fbContainer.style.display = 'block';
+        fbContainer.style.borderColor = isCorrect ? '#4ade80' : '#f87171';
+        fbText.innerHTML = isCorrect 
+          ? `<b style="color:#4ade80">✓ Benar!</b>` 
+          : `<b style="color:#f87171">✘ Kurang Tepat.</b><br>Jawaban benar: <i>${q.correct_answer}</i>`;
       }
 
       if (actionContainer) {
         actionContainer.style.display = 'block';
-        document.getElementById('nextBtn').onclick = () => {
+        nextBtn.onclick = () => {
           currentStep++;
           if (currentStep < total) {
             displayQuestion();
@@ -126,8 +141,12 @@ function renderStepByStepQuiz(data, container, slug, judulMateri) {
           }
         };
       }
+      
+      // Disable pilihan setelah menjawab
+      target.querySelectorAll('input').forEach(input => input.disabled = true);
     };
 
+    // Listener Jawaban
     target.querySelectorAll('input[name="answer"]').forEach(input => {
       input.onclick = (e) => handleSelection(e.target.value, false);
     });
