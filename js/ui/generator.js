@@ -44,7 +44,7 @@ export function initQuizGenerator() {
 
 function renderStepByStepQuiz(data, container, slug, judulMateri) {
   let currentStep = 0;
-  let correctCount = 0;
+  let correctCount = 0; // Ini adalah counter skor kita
   let timerInterval;
   const questions = data.questions;
   const total = questions.length;
@@ -59,30 +59,42 @@ function renderStepByStepQuiz(data, container, slug, judulMateri) {
     const target = document.getElementById('activeQuestionContainer');
     const progressBar = document.getElementById('quizBar');
     const timerDisplay = document.getElementById('timerDisplay');
+    const liveScoreEl = document.getElementById('liveScore'); // Ambil elemen skor dari mainFrame
     
     let timeLeft = 60;
     let startTime = Date.now();
     
-    if(progressBar) progressBar.style.width = `${(currentStep / total) * 100}%`;
+    if (progressBar) progressBar.style.width = `${(currentStep / total) * 100}%`;
     target.innerHTML = quizTemplates.questionCard(q, currentStep, total);
 
-    // Timer Logic
     timerInterval = setInterval(() => {
       timeLeft--;
-      if(timerDisplay) timerDisplay.innerText = timeLeft;
+      if (timerDisplay) timerDisplay.innerText = timeLeft;
       if (timeLeft <= 0) handleSelection(null, true);
     }, 1000);
 
     const handleSelection = async (selectedValue, isTimeout) => {
       clearInterval(timerInterval);
       const isCorrect = selectedValue === q.correct_answer;
+
+      // --- LOGIKA LIVE SKOR ---
+      if (isCorrect) {
+        correctCount++; // Tambah poin
+        if (liveScoreEl) {
+          liveScoreEl.textContent = correctCount; // Update angka di layar secara real-time
+          liveScoreEl.style.color = "var(--accent)"; // Beri efek warna saat bertambah
+          liveScoreEl.style.fontWeight = "bold";
+        }
+      }
+      // -------------------------
+
       const duration = Math.floor((Date.now() - startTime) / 1000);
 
-      // FOKUS: Simpan tanpa duplikasi logika pengecekan di Service
+      // Simpan ke database
       await saveStudyAttempt({
         session_id: slug,
         question_id: String(q.id || currentStep),
-        category: judulMateri,         // Judul asli dari DOM
+        category: judulMateri,
         dimension: q.dimension || "Umum",
         user_answer: selectedValue || "TIMEOUT",
         correct_answer: q.correct_answer,
@@ -91,14 +103,39 @@ function renderStepByStepQuiz(data, container, slug, judulMateri) {
         duration_seconds: duration
       });
 
-      // Feedback & Next Button Logic (panggil dari template/UI)
-      // ...
+      // Tampilkan Feedback & Tombol Next
+      const feedbackContainer = document.getElementById('feedbackContainer');
+      const feedbackText = document.getElementById('feedbackText');
+      const actionContainer = document.getElementById('actionContainer');
+
+      if (feedbackContainer && feedbackText) {
+        feedbackContainer.style.display = 'block';
+        feedbackText.innerHTML = isCorrect 
+          ? `<span style="color:#4ade80">✔ Benar!</span>` 
+          : `<span style="color:#f87171">✘ Salah.</span> Jawaban: ${q.correct_answer}`;
+      }
+
+      if (actionContainer) {
+        actionContainer.style.display = 'block';
+        document.getElementById('nextBtn').onclick = () => {
+          currentStep++;
+          if (currentStep < total) {
+            displayQuestion();
+          } else {
+            showFinalResult();
+          }
+        };
+      }
     };
 
-    // Event listener untuk pilihan jawaban
     target.querySelectorAll('input[name="answer"]').forEach(input => {
       input.onclick = (e) => handleSelection(e.target.value, false);
     });
+  };
+
+  const showFinalResult = () => {
+    const rate = Math.round((correctCount / total) * 100);
+    container.innerHTML = quizTemplates.finalResult(rate, correctCount, total);
   };
   
   initFrame();
