@@ -33,7 +33,7 @@ export async function initRekomendasi() {
 
     rekomendasiListEl.innerHTML = tigaSaran.map(m => `
       <li>
-        <a href="#materi/${m.slug}" class="recom-link">
+        <a href="#materi/${m.categoryPath/${m.slug}" class="recom-link">
           ${m.category}
         </a>
       </li>
