@@ -1,18 +1,13 @@
 export const performaView = `
 <section class="home">
   <div class="home-card hero">
-    <div class="profile-header-flex">
-      <div class="avatar-circle">👤</div>
-      <div>
-        <h1 id="user-fullname">Jurnal Belajar</h1>
-        <p class="subtitle" id="user-rank">Level: Memuat...</p>
-      </div>
-    </div>
+    <h1 id="user-fullname">Jurnal Belajar</h1>
+    <p class="subtitle" id="user-rank">Memuat Level...</p>
     
     <div class="xp-container">
       <div class="xp-info">
         <span class="small">Progress XP</span>
-        <span class="small" id="xp-text">0 / 0</span>
+        <span class="small" id="xp-text">0 / 100</span>
       </div>
       <div class="xp-bar-bg">
         <div id="xp-fill" class="xp-bar-fill" style="width: 0%"></div>
@@ -40,9 +35,10 @@ export const performaView = `
   </div>
 
   <div class="home-grid">
+    
     <div class="home-card wide-card">
-      <h3>📈 Tren Belajar</h3>
-      <p class="small">Perbandingan Skor vs Durasi Baca</p>
+      <h3>📈 Tren & Konsistensi</h3>
+      <p class="small gray">Perbandingan kualitas skor dan durasi membaca</p>
       <div class="chart-wrapper">
         <canvas id="trendChart"></canvas>
       </div>
@@ -50,25 +46,26 @@ export const performaView = `
 
     <div class="home-card">
       <h3>📊 Peta Kekuatan</h3>
-      <p class="small">Performa per Kategori</p>
+      <p class="small gray">Analisis kemampuan per kategori</p>
       <div class="chart-wrapper">
-        <canvas id="radarChart"></canvas>
+        <canvas id="categoryChart"></canvas>
       </div>
     </div>
 
     <div class="home-card">
-      <h3>🏆 Lencana Diraih</h3>
+      <h3>🏆 Lencana Milestone</h3>
       <div id="badge-container" class="badge-list">
         <p class="small gray">Belum ada lencana diraih</p>
       </div>
     </div>
 
     <div class="home-card wide-card">
-      <h3>📜 Jurnal Aktivitas</h3>
+      <h3>📜 Jurnal Aktivitas Terakhir</h3>
       <ul class="task-list" id="activity-list">
-        <li class="small">Belum ada catatan aktivitas.</li>
+        <li class="small gray">Memuat riwayat belajar...</li>
       </ul>
     </div>
+
   </div>
 </section>
 `;
