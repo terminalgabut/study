@@ -151,41 +151,37 @@ export const quizCore = {
 
   
   async finish() {
-    quizTimer.stop();
-    const rate = quizState.getScoreRate();
-    let nextChapter = null;
+  quizTimer.stop();
+  const rate = quizState.getScoreRate();
+  let nextChapter = null;
 
-    try {
-      // 2. Ambil slug dan kolom 'category' (yang berisi judul materi)
-      const { data: materialsAll, error } = await supabase
-        .from('materi')
-        .select('slug, category') // 'category' di sini adalah judul (misal: 'Bahasa Indonesia 1')
-        .order('order', { ascending: true });
+  try {
+    // 1. Ambil prefix dari slug saat ini (misal: "bhsindo1" -> "bhsindo")
+    // Kita ambil hurufnya saja sebelum angka, atau 3-4 huruf pertama
+    const slugPrefix = this.slug.replace(/[0-9]/g, ''); 
 
-      if (error) throw error;
+    // 2. Query materi yang slug-nya mirip dan urut berdasarkan 'order'
+    const { data: materialsAll, error } = await supabase
+      .from('materi')
+      .select('slug, category')
+      .ilike('slug', `${slugPrefix}%`) // Filter slug yang berawalan sama
+      .order('order', { ascending: true });
 
-      const currentIndex = materialsAll.findIndex(m => m.slug === this.slug);
+    if (error) throw error;
 
-      // 3. Jika ada materi selanjutnya
-      if (currentIndex !== -1 && currentIndex + 1 < materialsAll.length) {
-        const nextData = materialsAll[currentIndex + 1];
-        
-        nextChapter = {
-          // Tetap gunakan categoryPath dari URL agar navigasi SPA tidak pecah
-          url: `#materi/${this.categoryPath}/${nextData.slug}`,
-          // Gunakan isi kolom 'category' sebagai label tombol karena itu adalah judulnya
-          title: nextData.category 
-        };
-      }
-    } catch (err) {
-      console.error("Gagal memuat materi selanjutnya:", err);
+    const currentIndex = materialsAll.findIndex(m => m.slug === this.slug);
+
+    if (currentIndex !== -1 && currentIndex + 1 < materialsAll.length) {
+      const nextData = materialsAll[currentIndex + 1];
+      nextChapter = {
+        url: `#materi/${this.categoryPath}/${nextData.slug}`,
+        title: nextData.category 
+      };
     }
-
-    this.container.innerHTML = quizView.finalResult(
-      rate, 
-      quizState.correctCount, 
-      quizState.totalQuestions,
-      nextChapter
-    );
+  } catch (err) {
+    console.error("Gagal memuat bab berikutnya:", err);
   }
+
+  this.container.innerHTML = quizView.finalResult(rate, quizState.correctCount, quizState.totalQuestions, nextChapter);
+}
 };
