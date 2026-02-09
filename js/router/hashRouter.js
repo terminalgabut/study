@@ -136,6 +136,11 @@ export async function handleRoute() {
           // Gunakan view yang sudah kita desain agar konsisten
           content.innerHTML = `<div class="home-card"><h2>Profil Pengguna</h2><p>Selamat datang di halaman profil!</p></div>`;
           break;
+
+        case 'performa':
+          content.innerHTML = performaView;
+          
+          break;
        
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
