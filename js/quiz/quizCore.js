@@ -141,13 +141,30 @@ export const quizCore = {
     if (scoreEl) scoreEl.textContent = quizState.correctCount;
   },
 
-  finish() {
-    quizTimer.stop();
-    const rate = quizState.getScoreRate();
-    this.container.innerHTML = quizView.finalResult(
-      rate, 
-      quizState.correctCount, 
-      quizState.totalQuestions
-    );
+  // root/js/quiz/quizCore.js (Bagian finish)
+
+finish() {
+  quizTimer.stop();
+  const rate = quizState.getScoreRate();
+  
+  // Cari link bab berikutnya di sidebar/navigasi
+  // Menyesuaikan dengan kebiasaan struktur sidebar link
+  const allLinks = Array.from(document.querySelectorAll('.sidebar-link, .nav-link'));
+  const currentIndex = allLinks.findIndex(link => link.href.includes(this.slug));
+  
+  let nextChapter = null;
+  if (currentIndex !== -1 && allLinks[currentIndex + 1]) {
+    const nextEl = allLinks[currentIndex + 1];
+    nextChapter = {
+      url: nextEl.href,
+      title: nextEl.textContent.trim()
+    };
   }
+
+  this.container.innerHTML = quizView.finalResult(
+    rate, 
+    quizState.correctCount, 
+    quizState.totalQuestions,
+    nextChapter
+  );
 };
