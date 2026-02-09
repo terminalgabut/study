@@ -174,7 +174,7 @@ export const quizCore = {
     if (currentIndex !== -1 && currentIndex + 1 < materialsAll.length) {
       const nextData = materialsAll[currentIndex + 1];
       nextChapter = {
-        url: `#materi/${this.categoryPath}/${nextData.slug}`,
+        url: `https://terminalgabut.github.io/study/#materi/${this.categoryPath}/${nextData.slug}`,
         title: nextData.category 
       };
     }
