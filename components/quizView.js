@@ -88,11 +88,12 @@ finalResult(rate, correctCount, total, nextChapter) {
       
       <div class="result-actions" style="display:flex; flex-direction:column; gap:12px; max-width:300px; margin: 0 auto;">
         
-        ${nextChapter ? `
-          <a href="${nextChapter.url}" class="primary-btn" style="text-decoration:none; padding:15px; background:var(--accent); color:#000; border-radius:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:8px;">
-            Lanjut: ${nextChapter.title} <i class="fas fa-chevron-right"></i>
-          </a>
-        ` : ''}
+        
+${nextChapter ? `
+  <a href="${nextChapter.url}" class="primary-btn">
+    Lanjut: ${nextChapter.title}
+  </a>
+` : ''}
 
         <button onclick="location.reload()" class="secondary-btn" style="padding:15px; background:transparent; border:1px solid var(--border); color:var(--text-primary); border-radius:10px; cursor:pointer; font-weight:500;">
           Kembali ke Materi
