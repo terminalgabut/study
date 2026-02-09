@@ -77,16 +77,28 @@ export const quizView = {
   },
 
   // Hasil Akhir: Mengadopsi tampilan persentase besar dan tombol "Kembali ke Materi" [cite: 37, 38]
-  finalResult(rate, correctCount, total) {
-    return `
-      <div class="quiz-container" style="text-align:center; padding:40px;">
-        <h2 style="color:var(--accent)">Latihan Selesai!</h2>
-        <div style="font-size:48px; margin:20px 0; font-weight:bold;">${rate}%</div>
-        <p>Anda menjawab <b>${correctCount}</b> dari ${total} soal dengan benar.</p>
-        <button class="primary-btn" onclick="location.reload()" style="margin-top:25px;">
+  // root/components/quizView.js (Bagian finalResult)
+
+finalResult(rate, correctCount, total, nextChapter) {
+  return `
+    <div class="quiz-container" style="text-align:center; padding:40px;">
+      <h2 style="color:var(--accent)">Latihan Selesai!</h2>
+      <div style="font-size:48px; margin:20px 0; font-weight:bold;">${rate}%</div>
+      <p style="margin-bottom: 30px;">Anda menjawab <b>${correctCount}</b> dari ${total} soal dengan benar.</p>
+      
+      <div class="result-actions" style="display:flex; flex-direction:column; gap:12px; max-width:300px; margin: 0 auto;">
+        
+        ${nextChapter ? `
+          <a href="${nextChapter.url}" class="primary-btn" style="text-decoration:none; padding:15px; background:var(--accent); color:#000; border-radius:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:8px;">
+            Lanjut: ${nextChapter.title} <i class="fas fa-chevron-right"></i>
+          </a>
+        ` : ''}
+
+        <button onclick="location.reload()" class="secondary-btn" style="padding:15px; background:transparent; border:1px solid var(--border); color:var(--text-primary); border-radius:10px; cursor:pointer; font-weight:500;">
           Kembali ke Materi
         </button>
+
       </div>
-    `;
-  }
-};
+    </div>
+  `;
+}
