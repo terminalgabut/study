@@ -90,14 +90,14 @@ finalResult(rate, correctCount, total, nextChapter) {
         
         
 ${nextChapter ? `
-  <a href="${nextChapter.url}" class="primary-btn">
-    Lanjut: ${nextChapter.title}
+  <a href="${nextChapter.url}" class="primary-btn" style="text-decoration:none; padding:15px; background:var(--accent); color:#000; border-radius:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:8px;">
+    Lanjut: ${nextChapter.title} <i class="fas fa-chevron-right"></i>
   </a>
 ` : ''}
 
-        <button onclick="location.reload()" class="secondary-btn" style="padding:15px; background:transparent; border:1px solid var(--border); color:var(--text-primary); border-radius:10px; cursor:pointer; font-weight:500;">
-          Kembali ke Materi
-        </button>
+<button onclick="location.reload()" class="secondary-btn" style="width:100%; padding:15px; background:transparent; border:1px solid var(--border); color:var(--text-primary); border-radius:10px; cursor:pointer; font-weight:500; margin-top:8px;">
+  Kembali ke Materi
+</button>
 
       </div>
     </div>
