@@ -6,19 +6,18 @@ import { supabase } from '../services/supabase.js';
 
 export const quizCore = {
   container: null,
-  category: null,
   slug: null,
+  categoryPath: null, // Bagian URL (misal: 'bahasa')
 
-  init(questions, container, category) {
-    const urlParams = new URLSearchParams(window.location.search);
-    this.slug = urlParams.get('slug') || "default";
-    this.container = container;
-    this.category = category || "Umum";
-
-    // Proteksi data soal
-    const data = questions?.questions || questions;
-    quizState.reset(Array.isArray(data) ? data : []);
+  async init(questions, container) {
+    // 1. Ambil info dari URL aktif
+    const hash = window.location.hash; 
+    const parts = hash.split('/'); 
     
+    this.categoryPath = parts[1]; // 'bahasa' atau 'sains' dari URL
+    this.slug = parts[2];         // 'bhsindo1' dari URL
+    
+    this.container = container;
     this.start();
   },
 
