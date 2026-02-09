@@ -166,5 +166,5 @@ finish() {
     quizState.correctCount, 
     quizState.totalQuestions,
     nextChapter
-  );
+  )
 };
