@@ -29,6 +29,7 @@ import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js';
 import { initHistoryPage } from '../ui/riwayat.js';
 import { initNotesList } from '../ui/notes.js';
 import { initNoteDetail } from '../ui/noteDetails.js'; 
+import { performaController } from '../controllers/performaController.js';
 
 export function navigate(page) {
   location.hash = page;
@@ -133,13 +134,12 @@ export async function handleRoute() {
           break;
 
         case 'profile':
-          // Gunakan view yang sudah kita desain agar konsisten
           content.innerHTML = `<div class="home-card"><h2>Profil Pengguna</h2><p>Selamat datang di halaman profil!</p></div>`;
           break;
 
         case 'performa':
           content.innerHTML = performaView;
-          
+          performaController.init(); 
           break;
        
         default:
