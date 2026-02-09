@@ -1,7 +1,7 @@
 // root/components/quizView.js
 
 export const quizView = {
-  // Placeholder saat memuat kuis (sesuai rujukan)
+  // Placeholder saat memuat kuis [cite: 6]
   loading() {
     return `
       <div class="quiz-container">
@@ -12,72 +12,68 @@ export const quizView = {
     `;
   },
 
-  // Bingkai utama kuis (Progress bar & Timer)
+  // Bingkai utama kuis: Header (Timer & Skor) serta Progress Bar [cite: 13, 14]
   mainFrame() {
     return `
-      <div class="quiz-container">
-        <div class="quiz-header">
-          <div class="quiz-progress-wrapper">
-            <div id="quizBar" class="quiz-progress-bar" style="width: 0%"></div>
-          </div>
-          <div class="quiz-meta">
-            <span class="quiz-timer">⏱️ <span id="timerDisplay">60</span>s</span>
-            <span class="quiz-score-live">Skor: <b id="liveScore">0</b></span>
-          </div>
-        </div>
-        <div id="activeQuestionContainer"></div>
+      <div class="quiz-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+         <div class="timer-box" style="color:var(--accent); font-weight:bold; font-family:monospace; font-size:1.2rem;">
+            ⏱ <span id="timerDisplay">60</span>s
+         </div>
+         <div style="color:var(--text-muted)">Skor: <span id="liveScore">0</span></div>
       </div>
+      <div class="quiz-progress-container" style="height:6px; background:rgba(255,255,255,0.1); border-radius:10px; margin-bottom:25px; overflow:hidden;">
+        <div id="quizBar" style="height:100%; background:var(--accent); width:0%; transition: width 0.3s ease;"></div>
+      </div>
+      <div id="activeQuestionContainer"></div>
     `;
   },
 
-  // Kartu Soal (Sesuai gaya rujukan)
+  // Kartu Soal: Mengikuti struktur detail Soal, Badge Dimension, dan Radio Buttons [cite: 17, 18, 19]
   questionCard(q, currentStep, total) {
-    const options = q.options || [];
     return `
-      <div class="quiz-card animate-fade-in">
-        <div class="quiz-question-header">
-          <span class="quiz-badge">Pertanyaan ${currentStep + 1} / ${total}</span>
+      <div class="quiz-item active">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:var(--text-muted); font-size:14px;">Soal ${currentStep + 1} / ${total}</span>
+          <span style="background:rgba(var(--accent-rgb), 0.1); color:var(--accent); font-size:11px; padding:2px 8px; border-radius:4px;">
+            ${q.dimension || 'Umum'}
+          </span>
         </div>
+        <p class="quiz-question" style="margin-top:10px; margin-bottom:20px; font-weight:600; font-size:18px;">
+          ${q.question}
+        </p>
         
-        <h3 class="quiz-question-text">${q.question}</h3>
-        
-        <div class="quiz-options-grid">
-          ${options.map((opt, index) => `
-            <label class="quiz-opt-label">
-              <input type="radio" name="quiz-opt" value="${opt}" class="quiz-opt-input">
-              <span class="quiz-opt-custom">
-                <span class="opt-letter">${String.fromCharCode(65 + index)}</span>
-                <span class="opt-text">${opt}</span>
-              </span>
+        <div class="quiz-options" style="display:flex; flex-direction:column; gap:12px;">
+          ${q.options.map(opt => `
+            <label class="option-label">
+              <input type="radio" name="quiz-opt" value="${opt}">
+              <span>${opt}</span>
             </label>
           `).join('')}
         </div>
 
-        <div id="feedbackArea" class="quiz-feedback" style="display: none;"></div>
-        
-        <div class="quiz-actions">
-          <button id="nextBtn" class="btn-next" disabled>
-            ${currentStep + 1 === total ? 'Lihat Hasil' : 'Lanjut'} 
-            <i class="fas fa-arrow-right"></i>
+        <div id="feedbackArea" class="quiz-feedback" style="display:none; margin-top:20px; padding:15px; border-radius:10px; border:1px solid var(--border);">
+          <p id="feedbackText" style="margin:0;"></p>
+        </div>
+
+        <div id="actionContainer" style="margin-top:25px; display:none;">
+          <button id="nextBtn" class="primary-btn" style="width:100%;">
+            ${currentStep + 1 === total ? 'Lihat Hasil Akhir' : 'Lanjut ke Soal Berikutnya'}
           </button>
         </div>
       </div>
     `;
   },
 
-  // Hasil Akhir (Sesuai rujukan: warna accent, rate, dan tombol reset)
+  // Hasil Akhir: Mengadopsi tampilan persentase besar dan tombol "Kembali ke Materi" [cite: 37, 38]
   finalResult(rate, correctCount, total) {
     return `
       <div class="quiz-container" style="text-align:center; padding:40px;">
         <h2 style="color:var(--accent)">Latihan Selesai!</h2>
-        <div style="font-size:48px; margin:20px 0; font-weight:bold; color:var(--text-primary)">${rate}%</div>
-        <p style="margin-bottom: 25px;">Anda menjawab <b>${correctCount}</b> benar dari <b>${total}</b> soal.</p>
-        
-        <div class="result-actions">
-          <button onclick="location.reload()" class="btn-primary">
-            <i class="fas fa-redo"></i> Ulangi Latihan
-          </button>
-        </div>
+        <div style="font-size:48px; margin:20px 0; font-weight:bold;">${rate}%</div>
+        <p>Anda menjawab <b>${correctCount}</b> dari ${total} soal dengan benar.</p>
+        <button class="primary-btn" onclick="location.reload()" style="margin-top:25px;">
+          Kembali ke Materi
+        </button>
       </div>
     `;
   }
