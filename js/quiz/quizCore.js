@@ -140,31 +140,43 @@ export const quizCore = {
     if (scoreEl) scoreEl.textContent = quizState.correctCount;
   },
 
-  // root/js/quiz/quizCore.js (Bagian finish)
+  
+  async finish() {
+    quizTimer.stop();
+    const rate = quizState.getScoreRate();
+    let nextChapter = null;
 
-finish() {
-  quizTimer.stop();
-  const rate = quizState.getScoreRate();
-  
-  // Cari link bab berikutnya di sidebar/navigasi
-  // Menyesuaikan dengan kebiasaan struktur sidebar link
-  const allLinks = Array.from(document.querySelectorAll('.sidebar-link, .nav-link'));
-  const currentIndex = allLinks.findIndex(link => link.href.includes(this.slug));
-  
-  let nextChapter = null;
-  if (currentIndex !== -1 && allLinks[currentIndex + 1]) {
-    const nextEl = allLinks[currentIndex + 1];
-    nextChapter = {
-      url: nextEl.href,
-      title: nextEl.textContent.trim()
-    };
+    try {
+      // 2. Ambil slug dan kolom 'category' (yang berisi judul materi)
+      const { data: materialsAll, error } = await supabase
+        .from('materi')
+        .select('slug, category') // 'category' di sini adalah judul (misal: 'Bahasa Indonesia 1')
+        .order('order', { ascending: true });
+
+      if (error) throw error;
+
+      const currentIndex = materialsAll.findIndex(m => m.slug === this.slug);
+
+      // 3. Jika ada materi selanjutnya
+      if (currentIndex !== -1 && currentIndex + 1 < materialsAll.length) {
+        const nextData = materialsAll[currentIndex + 1];
+        
+        nextChapter = {
+          // Tetap gunakan categoryPath dari URL agar navigasi SPA tidak pecah
+          url: `#materi/${this.categoryPath}/${nextData.slug}`,
+          // Gunakan isi kolom 'category' sebagai label tombol karena itu adalah judulnya
+          title: nextData.category 
+        };
+      }
+    } catch (err) {
+      console.error("Gagal memuat materi selanjutnya:", err);
+    }
+
+    this.container.innerHTML = quizView.finalResult(
+      rate, 
+      quizState.correctCount, 
+      quizState.totalQuestions,
+      nextChapter
+    );
   }
-
-  this.container.innerHTML = quizView.finalResult(
-    rate, 
-    quizState.correctCount, 
-    quizState.totalQuestions,
-    nextChapter
-  );
-}
 };
