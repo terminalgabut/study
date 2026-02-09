@@ -91,7 +91,7 @@ finalResult(rate, correctCount, total, nextChapter) {
         
 ${nextChapter ? `
   <a href="${nextChapter.url}" class="primary-btn" style="text-decoration:none; padding:15px; background:var(--accent); color:#000; border-radius:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:8px;">
-    Lanjut: ${nextChapter.title} <i class="fas fa-chevron-right"></i>
+    Lanjut Baca: ${nextChapter.title} <i class="fas fa-chevron-right"></i>
   </a>
 ` : ''}
 
