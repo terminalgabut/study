@@ -13,6 +13,7 @@ import { bookmarkView } from '../../pages/bookmarkView.js';
 import { historyView } from '../../pages/riwayatView.js';
 import { notesView } from '../../pages/notesView.js';
 import { notesDetailView } from '../../pages/notesDetailView.js';
+import { performaView } from '../../pages/performaView.js';
 
 // ===== LOGIC =====
 import { initLogin, initRegister } from '../ui/auth/auth.js';
