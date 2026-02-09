@@ -1,64 +1,54 @@
-export const homeView = `
+export const performaView = `
 <section class="home">
-  <!-- HERO -->
   <div class="home-card hero">
-    <h1>Halo 👋</h1>
-
-    <p class="subtitle">
-      Selamat datang di <strong>Study App</strong>
-    </p>
-
-    <p class="desc">
-      Tempat belajar yang simpel, fokus, dan bebas distraksi.
-      Bangun kebiasaan belajar sedikit demi sedikit, tapi konsisten.
-    </p>
-
-    <p class="desc">
-      Tidak perlu terburu-buru — yang penting terus berjalan 🚀
-    </p>
+    <div class="profile-header-flex">
+      <div class="avatar-circle" id="user-avatar-placeholder">👤</div>
+      <div>
+        <h1 id="display-name">Jurnal Belajar</h1>
+        <p class="subtitle" id="user-level">Level: Pemula</p>
+      </div>
+    </div>
+    
+    <div class="xp-container">
+      <div class="xp-info">
+        <span class="small">Progress XP</span>
+        <span class="small" id="xp-text">0 / 100</span>
+      </div>
+      <div class="xp-bar-bg">
+        <div id="xp-fill" class="xp-bar-fill" style="width: 0%"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- GRID DASHBOARD -->
   <div class="home-grid">
-  
-  <!-- Lanjutkan Belajar -->
-  <div class="home-card" id="lastReadCard">
-  <h3>📌 Lanjutkan Belajar</h3>
-   <p class="small" id="lastReadDate">Terakhir dibuka</p>
-   <p class="highlight" id="lastReadTitle">Memuat...</p>
-   <button class="primary-btn" id="lastReadBtn">Lanjutkan</button>
-  </div>
 
-  <!-- Motivasi -->
-  <div class="home-card">
-  <h3>✨ Motivasi Hari Ini</h3>
-   <p class="quote" id="motivationQuote">
-    “Sedikit tapi rutin lebih kuat daripada banyak tapi jarang.”
-   </p>
-  </div>
-
-    <!-- Progres -->
     <div class="home-card">
-  <h3>📊 Progres Belajar</h3>
-  <p>Materi dilihat: <strong id="progressStats">0 / 0</strong></p>
-  <p>Belajar minggu ini: <strong id="studyTime">0 menit</strong></p>
-</div>
+      <h3>📊 Statistik Global</h3>
+      <p class="desc">Materi Selesai: <strong id="total-materi">0</strong></p>
+      <p class="desc">Total Waktu Baca: <strong id="total-durasi">0m</strong></p>
+      <p class="desc">Rata-rata Skor: <strong id="avg-score">0%</strong></p>
+    </div>
 
-    <!-- Target -->
-  <div class="home-card">
-    <h3>🎯 Target Hari Ini</h3>
-    <ul class="task-list" id="dailyTargetList">
-      <li>Memuat target...</li>
-    </ul>
-  </div>
+    <div class="home-card wide-card">
+      <h3>📈 Tren Belajar</h3>
+      <div class="chart-wrapper">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
 
-    <!-- Rekomendasi -->
     <div class="home-card">
-  <h3>📚 Materi Disarankan</h3>
-  <ul class="link-list"> 
-    <li>Memuat saran...</li>
-  </ul>
-</div>
+      <h3>🏆 Lencana Diraih</h3>
+      <div id="badge-container" class="badge-list">
+        <p class="small">Belum ada lencana</p>
+      </div>
+    </div>
+
+    <div class="home-card">
+      <h3>📜 Jurnal Aktivitas</h3>
+      <ul class="task-list" id="activity-list">
+        <li class="small">Belum ada aktivitas</li>
+      </ul>
+    </div>
 
   </div>
 </section>
