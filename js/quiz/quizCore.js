@@ -9,7 +9,7 @@ export const quizCore = {
   slug: null,
   categoryPath: null, // Bagian URL (misal: 'bahasa')
 
-  async init(questions, container) {
+  init(questions, container) {
     // 1. Ambil info dari URL aktif
     const hash = window.location.hash; 
     const parts = hash.split('/'); 
