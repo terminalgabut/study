@@ -1,59 +1,84 @@
 // root/components/quizView.js
 
 export const quizView = {
-  // Container utama kuis
-  mainFrame: () => `
-    <div class="quiz-container">
-      <div class="quiz-header">
-        <div class="timer">⏱️ <span id="timerDisplay">60</span>s</div>
-        <div id="liveScore">Skor: 0</div>
-      </div>
-      <div class="progress-container">
-        <div class="progress-bar" id="quizBar" style="width: 0%"></div>
-      </div>
-      <div id="activeQuestionContainer">
+  // Placeholder saat memuat kuis (sesuai rujukan)
+  loading() {
+    return `
+      <div class="quiz-container">
+        <div class="quiz-placeholder">
+          <p>Memasuki mode latihan, mohon tunggu...</p>
         </div>
-    </div>
-  `,
-
-  // Template kartu soal per langkah (step-by-step)
-  questionCard: (q, index, total) => `
-    <div class="question-card fade-in">
-      <div class="question-meta">Pertanyaan ${index + 1} dari ${total}</div>
-      <h3 class="question-text">${q.question}</h3>
-      <div class="options-grid">
-        ${Object.entries(q.options).map(([key, val]) => `
-          <label class="option-item">
-            <input type="radio" name="quiz-opt" value="${key}">
-            <span class="option-label">${key}. ${val}</span>
-          </label>
-        `).join('')}
       </div>
-      <div id="feedbackArea" class="feedback-area"></div>
-      <button id="nextBtn" class="primary-btn" style="margin-top:20px; width:100%" disabled>
-        Lanjut
-      </button>
-    </div>
-  `,
+    `;
+  },
 
-  // Template layar hasil akhir
-  finalResult: (rate, correct, total) => `
-    <div class="quiz-container" style="text-align:center; padding:40px;">
-      <h2 style="color:var(--accent)">Latihan Selesai!</h2>
-      <div style="font-size:48px; margin:20px 0; font-weight:bold;">${rate}%</div>
-      <p>Anda menjawab <b>${correct}</b> benar dari <b>${total}</b> soal.</p>
-      <button onclick="location.reload()" class="primary-btn" style="margin-top:20px">
-        Kembali ke Materi
-      </button>
-    </div>
-  `,
-
-  // Loading state
-  loading: () => `
-    <div class="quiz-container">
-      <div class="quiz-placeholder">
-        <p>Memasuki mode latihan, mohon tunggu...</p>
+  // Bingkai utama kuis (Progress bar & Timer)
+  mainFrame() {
+    return `
+      <div class="quiz-container">
+        <div class="quiz-header">
+          <div class="quiz-progress-wrapper">
+            <div id="quizBar" class="quiz-progress-bar" style="width: 0%"></div>
+          </div>
+          <div class="quiz-meta">
+            <span class="quiz-timer">⏱️ <span id="timerDisplay">60</span>s</span>
+            <span class="quiz-score-live">Skor: <b id="liveScore">0</b></span>
+          </div>
+        </div>
+        <div id="activeQuestionContainer"></div>
       </div>
-    </div>
-  `
+    `;
+  },
+
+  // Kartu Soal (Sesuai gaya rujukan)
+  questionCard(q, currentStep, total) {
+    const options = q.options || [];
+    return `
+      <div class="quiz-card animate-fade-in">
+        <div class="quiz-question-header">
+          <span class="quiz-badge">Pertanyaan ${currentStep + 1} / ${total}</span>
+        </div>
+        
+        <h3 class="quiz-question-text">${q.question}</h3>
+        
+        <div class="quiz-options-grid">
+          ${options.map((opt, index) => `
+            <label class="quiz-opt-label">
+              <input type="radio" name="quiz-opt" value="${opt}" class="quiz-opt-input">
+              <span class="quiz-opt-custom">
+                <span class="opt-letter">${String.fromCharCode(65 + index)}</span>
+                <span class="opt-text">${opt}</span>
+              </span>
+            </label>
+          `).join('')}
+        </div>
+
+        <div id="feedbackArea" class="quiz-feedback" style="display: none;"></div>
+        
+        <div class="quiz-actions">
+          <button id="nextBtn" class="btn-next" disabled>
+            ${currentStep + 1 === total ? 'Lihat Hasil' : 'Lanjut'} 
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  // Hasil Akhir (Sesuai rujukan: warna accent, rate, dan tombol reset)
+  finalResult(rate, correctCount, total) {
+    return `
+      <div class="quiz-container" style="text-align:center; padding:40px;">
+        <h2 style="color:var(--accent)">Latihan Selesai!</h2>
+        <div style="font-size:48px; margin:20px 0; font-weight:bold; color:var(--text-primary)">${rate}%</div>
+        <p style="margin-bottom: 25px;">Anda menjawab <b>${correctCount}</b> benar dari <b>${total}</b> soal.</p>
+        
+        <div class="result-actions">
+          <button onclick="location.reload()" class="btn-primary">
+            <i class="fas fa-redo"></i> Ulangi Latihan
+          </button>
+        </div>
+      </div>
+    `;
+  }
 };
