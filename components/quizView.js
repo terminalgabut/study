@@ -100,5 +100,5 @@ finalResult(rate, correctCount, total, nextChapter) {
 
       </div>
     </div>
-  `;
+  `
 };
