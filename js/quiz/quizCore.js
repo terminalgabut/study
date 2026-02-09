@@ -7,17 +7,26 @@ import { supabase } from '../services/supabase.js';
 export const quizCore = {
   container: null,
   slug: null,
-  categoryPath: null, // Bagian URL (misal: 'bahasa')
+  categoryPath: null,
 
   init(questions, container) {
-    // 1. Ambil info dari URL aktif
+    // 1. Ambil info dari URL Hash (Pola: #materi/kategori/slug)
     const hash = window.location.hash; 
     const parts = hash.split('/'); 
     
-    this.categoryPath = parts[1]; // 'bahasa' atau 'sains' dari URL
-    this.slug = parts[2];         // 'bhsindo1' dari URL
-    
+    // Simpan untuk kebutuhan navigasi tombol "Lanjut" nanti
+    this.categoryPath = parts[1] || "umum"; 
+    this.slug = parts[2] || "default";
     this.container = container;
+
+    // 2. PROTEKSI & RESET DATA (Ini yang bikin soal muncul)
+    // Mengambil data soal dari parameter 'questions'
+    const data = questions?.questions || questions;
+    
+    // Masukkan data ke dalam state kuis agar generator bisa bekerja
+    quizState.reset(Array.isArray(data) ? data : []);
+
+    // 3. Jalankan Kuis
     this.start();
   },
 
