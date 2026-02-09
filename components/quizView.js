@@ -4,10 +4,22 @@ export const quizView = {
   // Placeholder saat memuat kuis [cite: 6]
   loading() {
     return `
-      <div class="quiz-container">
-        <div class="quiz-placeholder">
-          <p>Memasuki mode latihan, mohon tunggu...</p>
+      <div class="quiz-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px;">
+        <div class="quiz-loader" style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+        <div class="quiz-placeholder" style="text-align:center;">
+          <p style="color:var(--text-primary); font-weight:500; margin-bottom:10px;">Memasuki mode latihan...</p>
+          <p style="color:var(--text-muted); font-size:14px;">AI sedang menyusun pertanyaan berdasarkan materi.</p>
         </div>
+        
+        <style>
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          .quiz-loader {
+            box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.3);
+          }
+        </style>
       </div>
     `;
   },
