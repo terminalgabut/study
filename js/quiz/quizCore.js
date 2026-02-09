@@ -15,15 +15,10 @@ export const quizCore = {
     this.container = container;
     this.category = category || "Umum";
 
-    // Mengikuti rujukan: pastikan data soal ada
-    if (questions && questions.questions) {
-      quizState.reset(questions.questions);
-      // Simpan kategori dari data utama jika ada
-      this.category = questions.category || this.category;
-    } else {
-      quizState.reset(questions);
-    }
-
+    // Proteksi data soal
+    const data = questions?.questions || questions;
+    quizState.reset(Array.isArray(data) ? data : []);
+    
     this.start();
   },
 
@@ -39,21 +34,22 @@ export const quizCore = {
     const activeArea = document.getElementById('activeQuestionContainer');
     const timerDisplay = document.getElementById('timerDisplay');
     
-    // Reset dan Jalankan Timer per Soal (Konsep Rujukan)
-    quizTimer.start(60, 
-      (time) => { if (timerDisplay) timerDisplay.textContent = time; },
-      () => { this.handleSelection(q, null, true); } // Timeout
-    );
-
+    // 1. Tampilkan Kartu Soal
     activeArea.innerHTML = quizView.questionCard(
       q, 
       quizState.currentStep, 
       quizState.totalQuestions
     );
 
+    // 2. Jalankan Timer per Soal
+    quizTimer.start(60, 
+      (time) => { if (timerDisplay) timerDisplay.textContent = time; },
+      () => { this.handleSelection(q, null, true); } // Timeout
+    );
+
     this.updateProgressUI();
     
-    // Setup listener untuk pilihan (Konsep Rujukan)
+    // 3. Listener Radio Buttons
     const inputs = activeArea.querySelectorAll('input[name="quiz-opt"]');
     inputs.forEach(input => {
       input.addEventListener('change', (e) => this.handleSelection(q, e.target.value, false));
@@ -62,8 +58,9 @@ export const quizCore = {
 
   async handleSelection(q, selectedValue, isTimeout) {
     quizTimer.stop();
-    const startTime = quizState.startTime; // Waktu mulai kuis/soal
-    const duration = Math.floor((Date.now() - startTime) / 1000);
+    
+    // Hitung durasi sejak soal ditampilkan
+    const duration = Math.floor((Date.now() - quizState.startTime) / 1000);
     
     const inputs = document.querySelectorAll('input[name="quiz-opt"]');
     inputs.forEach(i => i.disabled = true);
@@ -71,30 +68,37 @@ export const quizCore = {
     const isCorrect = selectedValue === q.correct_answer;
     if (isCorrect) quizState.addScore();
 
-    // Tampilkan Feedback (Konsep Rujukan: explanation)
+    // Sesuai rujukan: Tampilkan feedbackArea dan actionContainer
     const feedbackArea = document.getElementById('feedbackArea');
+    const feedbackText = document.getElementById('feedbackText');
+    const actionContainer = document.getElementById('actionContainer');
     const nextBtn = document.getElementById('nextBtn');
 
-    if (feedbackArea) {
+    if (feedbackArea && feedbackText) {
       feedbackArea.style.display = 'block';
+      
+      // Styling feedback sesuai kondisi
       if (isTimeout) {
-        feedbackArea.innerHTML = `<b style="color:#ef4444">❌ Waktu Habis!</b><br>Jawaban benar: ${q.correct_answer}`;
+        feedbackText.innerHTML = `<b style="color:#ef4444">❌ Waktu Habis!</b><br>Jawaban benar: ${q.correct_answer}`;
       } else {
-        feedbackArea.innerHTML = isCorrect 
+        feedbackText.innerHTML = isCorrect 
           ? `<b style="color:#10b981">✅ Benar!</b><br>${q.explanation || ''}` 
           : `<b style="color:#ef4444">❌ Kurang Tepat.</b><br>Jawaban benar: ${q.correct_answer}<br><br>${q.explanation || ''}`;
       }
     }
 
+    if (actionContainer) {
+      actionContainer.style.display = 'block';
+    }
+
     if (nextBtn) {
-      nextBtn.disabled = false;
       nextBtn.onclick = () => this.handleNext();
     }
 
-    // Rekam Attempt sesuai rujukan SQL
+    // Simpan ke Supabase
     await this.saveAttempt({
       session_id: this.slug,
-      question_id: String(q.id || quizState.currentStep),
+      question_id: String(q.question || quizState.currentStep),
       dimension: q.dimension || "Umum",
       category: this.category,
       user_answer: selectedValue || "TIMEOUT",
@@ -109,7 +113,7 @@ export const quizCore = {
     try {
       const { error } = await supabase.from("study_attempts").insert([payload]);
       if (error) throw error;
-      console.log("Statistik latihan berhasil diperbarui.");
+      console.log("Statistik berhasil direkam.");
     } catch (e) {
       console.error("Gagal merekam statistik:", e.message);
     }
@@ -118,6 +122,8 @@ export const quizCore = {
   handleNext() {
     if (quizState.hasNext()) {
       quizState.currentStep++;
+      // Penting: Reset startTime state agar durasi per soal akurat
+      quizState.startTime = Date.now(); 
       this.renderQuestion();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -126,9 +132,11 @@ export const quizCore = {
   },
 
   updateProgressUI() {
-    const progress = (quizState.currentStep / quizState.totalQuestions) * 100;
+    // Sesuai rujukan: progres dihitung dari index soal saat ini
+    const progress = ((quizState.currentStep + 1) / quizState.totalQuestions) * 100;
     const bar = document.getElementById('quizBar');
     const scoreEl = document.getElementById('liveScore');
+    
     if (bar) bar.style.width = `${progress}%`;
     if (scoreEl) scoreEl.textContent = quizState.correctCount;
   },
