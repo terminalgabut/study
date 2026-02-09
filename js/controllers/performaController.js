@@ -3,11 +3,19 @@ import { performaService } from '../services/performaService.js';
 export const performaController = {
   async init() {
     try {
+      // 1. Ambil data dari Service
       const data = await performaService.getDashboardData();
       
+      // 2. Isi UI Panel Ringkasan (Hero Card)
       this.renderSummary(data.profile, data.stats);
+      
+      // 3. Isi Jurnal Aktivitas
       this.renderActivityJournal(data.attempts, data.history);
+      
+      // 4. Isi Lencana (Achievements)
       this.renderAchievements(data.achievements);
+      
+      // 5. Gambar Grafik (Trend & Category)
       this.renderCharts(data.attempts, data.history);
       
     } catch (error) {
@@ -23,9 +31,13 @@ export const performaController = {
     const level = Math.floor(xp / 100) + 1;
     const currentXP = xp % 100;
     
-    document.getElementById('user-rank').textContent = `Level ${level} Scholar`;
-    document.getElementById('xp-text').textContent = `${currentXP} / 100 XP`;
-    document.getElementById('xp-fill').style.width = `${currentXP}%`;
+    const rankEl = document.getElementById('user-rank');
+    const xpTextEl = document.getElementById('xp-text');
+    const xpFillEl = document.getElementById('xp-fill');
+
+    if (rankEl) rankEl.textContent = `Level ${level} Scholar`;
+    if (xpTextEl) xpTextEl.textContent = `${currentXP} / 100 XP`;
+    if (xpFillEl) xpFillEl.style.width = `${currentXP}%`;
 
     document.getElementById('stat-materi').textContent = stats.totalMateri;
     document.getElementById('stat-waktu').textContent = stats.timeString;
@@ -40,7 +52,7 @@ export const performaController = {
     const recentActivity = [...attempts].reverse().slice(0, 5);
     
     if (recentActivity.length === 0) {
-      listContainer.innerHTML = '<li class="small gray">Belum ada aktivitas.</li>';
+      listContainer.innerHTML = '<li class="small gray">Belum ada aktivitas kuis.</li>';
       return;
     }
 
@@ -79,11 +91,11 @@ export const performaController = {
   },
 
   renderCharts(attempts, history) {
-    const ctxTrend = document.getElementById('trendChart')?.getContext('2d');
-    const ctxCat = document.getElementById('categoryChart')?.getContext('2d');
+    const trendEl = document.getElementById('trendChart');
+    const catEl = document.getElementById('categoryChart');
 
-    if (ctxTrend) {
-      new Chart(ctxTrend, {
+    if (trendEl) {
+      new Chart(trendEl.getContext('2d'), {
         type: 'line',
         data: {
           labels: attempts.map(a => new Date(a.submitted_at).toLocaleDateString()),
@@ -105,8 +117,8 @@ export const performaController = {
       });
     }
 
-    if (ctxCat) {
-      new Chart(ctxCat, {
+    if (catEl) {
+      new Chart(catEl.getContext('2d'), {
         type: 'bar',
         data: {
           labels: ['Sains', 'Bahasa', 'Umum'],
