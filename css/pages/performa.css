@@ -1,60 +1,56 @@
-/* Styling Tambahan agar Konsisten dengan homeView */
-.profile-header-flex {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 15px;
-}
-
-.avatar-circle {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-}
-
+/* Layout Khusus Performa */
 .xp-container {
-  margin-top: 15px;
+  margin: 15px 0;
   background: rgba(255, 255, 255, 0.1);
-  padding: 10px;
-  border-radius: 10px;
+  padding: 12px;
+  border-radius: 12px;
 }
 
 .xp-bar-bg {
-  background: rgba(0, 0, 0, 0.1);
-  height: 8px;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  height: 10px;
+  border-radius: 5px;
+  margin-top: 8px;
   overflow: hidden;
 }
 
 .xp-bar-fill {
-  background: #fff; /* Atau warna aksen */
+  background: #ffffff;
   height: 100%;
-  transition: width 0.4s ease;
+  width: 0%;
+  transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.stats-header-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .chart-wrapper {
-  margin-top: 10px;
-  height: 200px;
+  position: relative;
+  height: 220px;
   width: 100%;
+  margin-top: 15px;
 }
 
 .badge-list {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
   margin-top: 10px;
 }
 
-/* Membuat Chart Card lebih lebar jika diperlukan */
 .wide-card {
-  grid-column: span 1;
+  grid-column: 1 / -1; /* Mengambil seluruh lebar grid pada mobile/desktop */
 }
 
+/* Responsivitas Grid */
 @media (min-width: 768px) {
-  .wide-card { grid-column: span 2; }
+  .stats-header-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
