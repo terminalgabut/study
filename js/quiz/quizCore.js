@@ -181,4 +181,5 @@ export const quizCore = {
   }
 
   this.container.innerHTML = quizView.finalResult(rate, quizState.correctCount, quizState.totalQuestions, nextChapter);
+  }
             };
