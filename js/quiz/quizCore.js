@@ -8,25 +8,19 @@ export const quizCore = {
   container: null,
   slug: null,
   categoryPath: null,
+  babTitle: null, // Tambahkan untuk menyimpan judul bab
 
-  init(questions, container) {
-    // 1. Ambil info dari URL Hash (Pola: #materi/kategori/slug)
+  init(questions, container, babTitle) { // Terima babTitle dari generator
     const hash = window.location.hash; 
     const parts = hash.split('/'); 
     
-    // Simpan untuk kebutuhan navigasi tombol "Lanjut" nanti
     this.categoryPath = parts[1] || "umum"; 
     this.slug = parts[2] || "default";
     this.container = container;
+    this.babTitle = babTitle; // Simpan ke state kuis
 
-    // 2. PROTEKSI & RESET DATA (Ini yang bikin soal muncul)
-    // Mengambil data soal dari parameter 'questions'
     const data = questions?.questions || questions;
-    
-    // Masukkan data ke dalam state kuis agar generator bisa bekerja
     quizState.reset(Array.isArray(data) ? data : []);
-
-    // 3. Jalankan Kuis
     this.start();
   },
 
@@ -106,14 +100,15 @@ export const quizCore = {
     // Simpan ke Supabase
     await this.saveAttempt({
       session_id: this.slug,
-      question_id: String(q.question || quizState.currentStep),
+      question_id: String(q.id || quizState.currentStep), // Gunakan ID asli jika ada
       dimension: q.dimension || "Umum",
-      category: this.category,
+      category: this.categoryPath,
+      title: this.babTitle, // MEMASUKKAN JUDUL BAB KE TABEL study_attempts
       user_answer: selectedValue || "TIMEOUT",
       correct_answer: q.correct_answer,
       is_correct: isCorrect,
       score: isCorrect ? 1 : 0,
-      duration_seconds: duration
+      duration_seconds: Math.floor((Date.now() - quizState.startTime) / 1000)
     });
   },
 
