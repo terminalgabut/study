@@ -5,54 +5,68 @@ const SUPABASE_KEY = 'sb_publishable_r0gMojctdN1aftj_PVuhAQ_R0s__keH';
 
 const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Sesuaikan daftar tabel (Gunakan 'profile' tanpa S jika itu nama tabelmu)
+// Konsisten: Gunakan 'profile' (tanpa s) sesuai nama tabelmu
 const privateTables = ['bookmark', 'catatan', 'riwayat', 'study_attempts', 'profile'];
 
 export const supabase = {
-  ...client, // Tetap mengekspor rpc, auth, dll
+  // 1. Ambil fungsi RPC dan lainnya dengan BIND agar konteks 'this' tidak hilang
+  rpc: client.rpc.bind(client),
+  auth: client.auth,
+  storage: client.storage,
+  
+  // 2. Bungkus fungsi FROM
   from: (tableName) => {
     const originalFrom = client.from(tableName);
+    
+    // Jika tabel publik, langsung kembalikan fungsi asli
     if (!privateTables.includes(tableName)) return originalFrom;
 
-    // Ambil fungsi asli
-    const originalSelect = originalFrom.select.bind(originalFrom);
-    const originalInsert = originalFrom.insert.bind(originalFrom);
-    const originalUpsert = originalFrom.upsert.bind(originalFrom);
-
+    // Jika tabel privat, bungkus fungsinya
     return {
       ...originalFrom,
-      // Wrapper SELECT untuk filter user_id otomatis
+      
+      // Wrapper SELECT: Otomatis tambah filter user_id/id
       select: function(columns) {
-        const query = originalSelect(columns);
+        const query = originalFrom.select(columns);
         const originalThen = query.then.bind(query);
 
         query.then = async (onfulfilled, onrejected) => {
-          const { data: { user } } = await client.auth.getUser();
-          if (user) {
-            const filterCol = tableName === 'profile' ? 'id' : 'user_id';
-            query.eq(filterCol, user.id);
+          try {
+            const { data: { user } } = await client.auth.getUser();
+            if (user) {
+              const filterCol = tableName === 'profile' ? 'id' : 'user_id';
+              query.eq(filterCol, user.id);
+            }
+          } catch (e) {
+            console.error("Filter Error:", e);
           }
           return originalThen(onfulfilled, onrejected);
         };
         return query;
       },
-      // Wrapper INSERT untuk tambah user_id otomatis
+
+      // Wrapper INSERT: Otomatis tempel user_id
       insert: async function(values, options) {
         const { data: { user } } = await client.auth.getUser();
-        if (!user) return { error: { message: 'Auth required' } };
-        const data = Array.isArray(values) 
+        if (!user) return { error: { message: 'Login diperlukan' } };
+        
+        const dataWithUser = Array.isArray(values) 
           ? values.map(v => ({ ...v, user_id: user.id }))
           : { ...values, user_id: user.id };
-        return originalInsert(data, options);
+          
+        return originalFrom.insert(dataWithUser, options);
       },
-      // Wrapper UPSERT untuk tambah user_id otomatis
+
+      // Wrapper UPSERT: Otomatis tempel user_id
       upsert: async function(values, options) {
         const { data: { user } } = await client.auth.getUser();
-        if (!user) return { error: { message: 'Auth required' } };
-        const data = Array.isArray(values) 
+        if (!user) return { error: { message: 'Login diperlukan' } };
+        
+        const dataWithUser = Array.isArray(values) 
           ? values.map(v => ({ ...v, user_id: user.id }))
           : { ...values, user_id: user.id };
-        return originalUpsert(data, options);
+          
+        return originalFrom.upsert(dataWithUser, options);
       }
     };
   }
