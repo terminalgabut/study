@@ -8,7 +8,7 @@ const SUPABASE_KEY = 'sb_publishable_r0gMojctdN1aftj_PVuhAQ_R0s__keH';
 const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // 2. Daftar tabel yang butuh filter user_id otomatis
-const privateTables = ['bookmark', 'catatan', 'riwayat', 'study_attempts', 'profiles'];
+const privateTables = ['bookmark', 'catatan', 'riwayat', 'study_attempts', 'profile'];
 
 // 3. Modifikasi objek supabase sebelum di-export
 export const supabase = {
@@ -27,7 +27,7 @@ export const supabase = {
         query.then = async (onfulfilled, onrejected) => {
           const { data: { user } } = await client.auth.getUser();
           // Khusus tabel 'profiles', filter menggunakan 'id' bukan 'user_id'
-          const filterColumn = tableName === 'profiles' ? 'id' : 'user_id';
+          const filterColumn = tableName === 'profile' ? 'id' : 'user_id';
           if (user) query.eq(filterColumn, user.id); 
           return originalThen(onfulfilled, onrejected);
         };
