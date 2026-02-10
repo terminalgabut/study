@@ -86,14 +86,17 @@ async function handleSaveNote() {
   }
 
   // Simpan ke tabel catatan dengan menyertakan judul bab
-  const { error } = await supabase
-    .from('catatan')
-    .upsert({ 
-      material_slug: currentSlug, 
-      bab_title: currentTitle, // Agar nanti di page Catatan tidak perlu join
-      content: noteContent,
-      updated_at: new Date().toISOString() 
-    }, { onConflict: 'material_slug' });
+  // Di dalam handleSaveNote atau initKontenBab
+const { error } = await supabase
+  .from('catatan')
+  .upsert({ 
+    material_slug: currentSlug, 
+    bab_title: currentTitle,
+    content: noteContent,
+    updated_at: new Date().toISOString() 
+  }, { 
+    onConflict: 'user_id, material_slug' // Sesuaikan dengan constraint SQL tadi
+  });
 
   if (statusEl) {
     if (error) {
