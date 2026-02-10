@@ -145,46 +145,55 @@ export const quizCore = {
   },
 
   async finish() {
-    quizTimer.stop();
-    const rate = quizState.getScoreRate();
-    let nextChapter = null;
+  quizTimer.stop();
+  const rate = quizState.getScoreRate();
+  let nextChapter = null;
 
-    try {
-      // 1. Ambil data materi saat ini
-      const { data: currentData } = await supabase
+  try {
+    // Gunakan slug dan categoryPath yang sudah disimpan saat init
+    const currentSlug = this.slug;
+    const currentPath = this.categoryPath;
+
+    // 1. Cari data materi saat ini untuk mendapatkan 'order' dan 'category'
+    const { data: currentData, error: err1 } = await supabase
+      .from('materials')
+      .select('order, category')
+      .eq('slug', currentSlug)
+      .single();
+
+    if (err1) throw err1;
+
+    if (currentData) {
+      // 2. Cari materi dengan order lebih tinggi dalam kategori yang sama
+      const { data: nextData, error: err2 } = await supabase
         .from('materials')
-        .select('order, category')
-        .eq('slug', this.slug)
-        .single();
+        .select('slug, title')
+        .eq('category', currentData.category) // Mencocokkan kategori database
+        .gt('order', currentData.order)      // Order lebih besar
+        .order('order', { ascending: true }) // Ambil yang paling dekat berikutnya
+        .limit(1)
+        .maybeSingle();
 
-      if (currentData) {
-        // 2. Cari materi berikutnya berdasarkan urutan (order)
-        const { data: nextData } = await supabase
-          .from('materials')
-          .select('slug, title')
-          .eq('category', currentData.category)
-          .gt('order', currentData.order)
-          .order('order', { ascending: true })
-          .limit(1)
-          .maybeSingle();
+      if (err2) throw err2;
 
-        if (nextData) {
-          nextChapter = {
-            url: `https://terminalgabut.github.io/study/#materi/${this.categoryPath}/${nextData.slug}`,
-            title: nextData.title 
-          };
-        }
+      if (nextData) {
+        nextChapter = {
+          // Gunakan currentPath dari URL agar navigasi konsisten
+          url: `#materi/${currentPath}/${nextData.slug}`,
+          title: nextData.title 
+        };
       }
-    } catch (err) {
-      console.error("Gagal memuat bab berikutnya:", err);
     }
-
-    // Render hasil akhir
-    this.container.innerHTML = quizView.finalResult(
-      rate, 
-      quizState.correctCount, 
-      quizState.totalQuestions, 
-      nextChapter
-    );
+  } catch (err) {
+    console.error("DEBUG - Finish Error:", err.message);
   }
+
+  // Tampilkan hasil akhir
+  this.container.innerHTML = quizView.finalResult(
+    rate, 
+    quizState.correctCount, 
+    quizState.totalQuestions, 
+    nextChapter
+  );
+ }
 };
