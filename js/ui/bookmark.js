@@ -111,15 +111,29 @@ export async function initBookmarkPage() {
 }
 
 // Global function untuk delete (biar bisa dipanggil dari HTML string)
+// Gunakan async agar await bisa bekerja
 window.deleteBookmark = async (slug) => {
   if (confirm('Hapus dari bookmark?')) {
-    const { error } = await supabase
-      .from('bookmark')
-      .delete()
-      .eq('material_slug', slug);
-      
-    if (!error) {
-      initBookmarkPage(); // Refresh halaman
+    try {
+      // 1. Pastikan urutan: from -> delete -> eq
+      const { error } = await supabase
+        .from('bookmark')
+        .delete()
+        .eq('material_slug', slug);
+
+      if (error) {
+        console.error("Gagal menghapus:", error.message);
+        alert("Gagal menghapus bookmark");
+        return;
+      }
+
+      // 2. Jika sukses, panggil ulang initBookmarkPage untuk refresh UI
+      // Karena initBookmarkPage adalah export function di file ini, 
+      // pastikan fungsi ini bisa diakses atau panggil secara lokal.
+      initBookmarkPage(); 
+
+    } catch (err) {
+      console.error("Fatal Error:", err);
     }
   }
 };
