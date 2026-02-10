@@ -1,9 +1,5 @@
 import { supabase } from '../services/supabase.js';
 
-/**
- * LOGIKA DETAIL CATATAN
- * Fokus: Toggle Baca/Edit & Upsert ke Supabase
- */
 export async function initNoteDetail(slug) {
   const displayArea = document.getElementById('noteDisplay');
   const editorArea = document.getElementById('noteEditor');
@@ -13,26 +9,24 @@ export async function initNoteDetail(slug) {
   if (!displayArea || !actionBtn) return;
 
   try {
-    // 1. Ambil data secara paralel (lebih cepat)
+    // 1. Ambil data secara paralel dari tabel 'materials' (versi terbaru)
     const [materiRes, catatanRes] = await Promise.all([
-      supabase.from('materi').select('category').eq('slug', slug).single(),
-      supabase.from('catatan').select('content').eq('material_slug', slug).maybeSingle()
+      supabase.from('materials').select('title').eq('slug', slug).single(),
+      supabase.from('catatan').select('content, bab_title').eq('material_slug', slug).maybeSingle()
     ]);
 
-    // 2. Tampilkan Judul dan Konten
-    const title = materiRes.data?.category || 'Detail Catatan';
+    // 2. Gunakan 'title' dari materials jika catatan belum ada
+    const title = materiRes.data?.title || catatanRes.data?.bab_title || 'Detail Catatan';
     const content = catatanRes.data?.content || '';
 
     titleEl.innerText = title;
     displayArea.innerText = content || 'Belum ada catatan untuk materi ini.';
     editorArea.value = content;
 
-    // 3. Logika Satu Tombol (Toggle)
     actionBtn.onclick = async () => {
       const isReading = editorArea.style.display === 'none';
 
       if (isReading) {
-        // PINDAH KE MODE EDIT
         displayArea.style.display = 'none';
         editorArea.style.display = 'block';
         editorArea.focus();
@@ -40,21 +34,21 @@ export async function initNoteDetail(slug) {
         actionBtn.classList.add('saving-mode');
         actionBtn.innerHTML = `<span>💾</span> <span>Simpan Catatan</span>`;
       } else {
-        // PROSES SIMPAN KE DATABASE
         const newContent = editorArea.value.trim();
         actionBtn.disabled = true;
         actionBtn.innerText = 'Menyimpan...';
 
+        // 3. Proses UPSERT (Simpan atau Update)
         const { error } = await supabase
           .from('catatan')
           .upsert({ 
             material_slug: slug, 
+            bab_title: title, // Simpan judul bab agar daftar catatan lebih ringan dimuat
             content: newContent,
             updated_at: new Date().toISOString()
           }, { onConflict: 'material_slug' });
 
         if (!error) {
-          // KEMBALI KE MODE BACA
           displayArea.innerText = newContent || 'Belum ada catatan.';
           displayArea.style.display = 'block';
           editorArea.style.display = 'none';
