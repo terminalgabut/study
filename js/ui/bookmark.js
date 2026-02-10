@@ -1,48 +1,56 @@
 // js/ui/bookmark.js
 import { supabase } from '../services/supabase.js';
 
+/**
+ * LOGIKA 1: Tombol Bookmark di Halaman Materi
+ */
 export async function handleBookmarkToggle(slug) {
   const btn = document.getElementById('bookmarkBtn');
   if (!btn) return;
 
-  // Cek status bookmark saat pertama kali dimuat
-  const { data: existing } = await supabase
-    .from('bookmark')
-    .select('material_slug')
-    .eq('material_slug', slug)
-    .maybeSingle();
+  // 1. Cek status awal: Apakah materi ini sudah di-bookmark?
+  try {
+    const { data: existing } = await supabase
+      .from('bookmark')
+      .select('material_slug')
+      .eq('material_slug', slug)
+      .maybeSingle();
 
-  if (existing) btn.classList.add('active');
+    if (existing) btn.classList.add('active');
+  } catch (err) {
+    console.error("Gagal cek status bookmark:", err);
+  }
 
   btn.onclick = async () => {
-    // Hindari klik berulang saat proses asinkron berjalan
-    if (btn.disabled) return;
+    if (btn.disabled) return; // Cegah spam klik
     btn.disabled = true;
 
     const isActive = btn.classList.contains('active');
 
     try {
       if (isActive) {
-        // URUTAN BENAR: from -> delete -> filter
+        // JIKA AKTIF -> HAPUS
         const { error } = await supabase
           .from('bookmark')
-          .delete() 
-          .eq('material_slug', slug);
+          .delete() // Method delete
+          .eq('material_slug', slug); // Diikuti filter
 
-        if (!error) btn.classList.remove('active');
-        else throw error;
+        if (error) throw error;
+        btn.classList.remove('active');
+        console.log("Bookmark dihapus");
       } else {
+        // JIKA TIDAK AKTIF -> TAMBAH (Gunakan insert, bukan delete!)
         const { error } = await supabase
-  .from('bookmark')
-  ['delete']()
-  .eq('material_slug', slug);
-        
-        if (!error) btn.classList.add('active');
-        else throw error;
+          .from('bookmark')
+          .insert([{ material_slug: slug }]);
+
+        if (error) throw error;
+        btn.classList.add('active');
+        console.log("Bookmark ditambahkan");
       }
     } catch (err) {
-      // Pastikan error tertangkap di sini agar tidak memicu unhandled rejection
-      window.__DEBUG__.error('Bookmark Toggle Error:', err.message);
+      console.error("Kesalahan Bookmark:", err.message);
+      alert("Gagal memperbarui bookmark: " + err.message);
     } finally {
       btn.disabled = false;
     }
@@ -50,8 +58,7 @@ export async function handleBookmarkToggle(slug) {
 }
 
 /**
- * LOGIKA 2: Halaman Daftar Bookmark
- * Pakai JOIN agar sekali panggil langsung dapat Judul dan Kategori
+ * LOGIKA 2: Render Halaman Daftar Bookmark
  */
 export async function initBookmarkPage() {
   const container = document.getElementById('bookmarkListContainer');
@@ -60,7 +67,7 @@ export async function initBookmarkPage() {
   container.innerHTML = '<div class="home-card"><p>Memuat bookmark...</p></div>';
 
   try {
-    // 1 & 2 GABUNG: Ambil slug dan data materials sekaligus
+    // Ambil data bookmark sekaligus info materinya (JOIN)
     const { data: bookmarks, error } = await supabase
       .from('bookmark')
       .select(`
@@ -75,23 +82,21 @@ export async function initBookmarkPage() {
       return;
     }
 
-    // 3. Render daftar
     container.innerHTML = bookmarks.map(b => {
       const m = b.materials;
-      // Gunakan title untuk tampilan utama, category untuk sub-info
-      const displayTitle = m?.title || 'Materi Tanpa Judul';
-      const displayCat = m?.category || 'Umum';
+      const title = m?.title || 'Materi Tanpa Judul';
+      const cat = m?.category || 'Umum';
 
       return `
       <div class="home-card bookmark-card" style="margin-bottom: 15px;">
-        <small style="color: var(--accent); font-weight: bold; text-transform: uppercase;">📌 ${displayCat}</small>
-        <h3 style="margin: 5px 0 15px 0;">${displayTitle}</h3>
+        <small style="color: var(--accent); font-weight: bold;">📌 ${cat.toUpperCase()}</small>
+        <h3 style="margin: 5px 0 15px 0;">${title}</h3>
         
         <div style="display:flex; gap:10px;">
           <button class="primary-btn" 
-                  onclick="location.hash='#materi/${displayCat}/${m?.slug}'" 
-                  style="flex:3; padding: 10px;">
-            Lanjutkan Baca
+                  onclick="location.hash='#materi/${cat}/${m?.slug}'" 
+                  style="flex:3;">
+            Buka Materi
           </button>
           
           <button class="delete-btn" 
@@ -102,39 +107,34 @@ export async function initBookmarkPage() {
                   </svg>
           </button>
         </div>
-      </div>
-    `}).join('');
+      </div>`;
+    }).join('');
 
   } catch (err) {
     console.error('Error load bookmark:', err);
-    container.innerHTML = '<div class="home-card"><p>Gagal memuat bookmark.</p></div>';
+    container.innerHTML = '<div class="home-card"><p>Gagal memuat data.</p></div>';
   }
 }
 
-// Global function untuk delete (biar bisa dipanggil dari HTML string)
-// Gunakan async agar await bisa bekerja
+/**
+ * LOGIKA 3: Fungsi Global Hapus (untuk tombol sampah)
+ */
 window.deleteBookmark = async (slug) => {
-  if (confirm('Hapus dari bookmark?')) {
-    try {
-      // 1. Pastikan urutan: from -> delete -> eq
-      const { error } = await supabase
-  .from('bookmark')
-  ['delete']()
-  .eq('material_slug', slug);
+  if (!confirm('Hapus dari daftar bookmark?')) return;
 
-      if (error) {
-        console.error("Gagal menghapus:", error.message);
-        alert("Gagal menghapus bookmark");
-        return;
-      }
+  try {
+    const { error } = await supabase
+      .from('bookmark')
+      .delete()
+      .eq('material_slug', slug);
 
-      // 2. Jika sukses, panggil ulang initBookmarkPage untuk refresh UI
-      // Karena initBookmarkPage adalah export function di file ini, 
-      // pastikan fungsi ini bisa diakses atau panggil secara lokal.
-      initBookmarkPage(); 
+    if (error) throw error;
+    
+    // Refresh tampilan daftar bookmark secara otomatis
+    initBookmarkPage(); 
 
-    } catch (err) {
-      console.error("Fatal Error:", err);
-    }
+  } catch (err) {
+    console.error("Fatal Error Delete:", err);
+    alert("Gagal menghapus bookmark");
   }
 };
