@@ -33,8 +33,9 @@ export async function handleBookmarkToggle(slug) {
         else throw error;
       } else {
         const { error } = await supabase
-          .from('bookmark')
-          .insert([{ material_slug: slug }]);
+  .from('bookmark')
+  ['delete']()
+  .eq('material_slug', slug);
         
         if (!error) btn.classList.add('active');
         else throw error;
@@ -117,9 +118,9 @@ window.deleteBookmark = async (slug) => {
     try {
       // 1. Pastikan urutan: from -> delete -> eq
       const { error } = await supabase
-        .from('bookmark')
-        .delete()
-        .eq('material_slug', slug);
+  .from('bookmark')
+  ['delete']()
+  .eq('material_slug', slug);
 
       if (error) {
         console.error("Gagal menghapus:", error.message);
