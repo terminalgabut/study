@@ -58,17 +58,25 @@ export const supabase = {
       },
 
       // Wrapper UPSERT (Perbaikan Error Kamu)
-      upsert: async function(values, options) {
-        window.__DEBUG__.log(`[DB] UPSERT: ${tableName}`);
-        const { data: { user } } = await client.auth.getUser();
-        if (!user) return { error: { message: 'Login diperlukan' } };
-        
-        const dataWithUser = Array.isArray(values) 
-          ? values.map(v => ({ ...v, user_id: user.id }))
-          : { ...values, user_id: user.id };
-          
-        return originalFrom.upsert(dataWithUser, options);
-      },
+      // Di dalam wrapper from: (tableName) => { ... } di supabase.js
+upsert: async function(values, options) {
+  window.__DEBUG__.log(`[DB] UPSERT: ${tableName}`);
+  const { data: { user } } = await client.auth.getUser();
+  
+  if (!user) {
+    window.__DEBUG__.error("Upsert Gagal: User tidak ditemukan dalam sesi.");
+    return { error: { message: 'Login diperlukan' } };
+  }
+
+  // Pastikan user_id disuntikkan ke dalam data
+  const dataToSave = Array.isArray(values) 
+    ? values.map(v => ({ ...v, user_id: user.id }))
+    : { ...values, user_id: user.id };
+
+  window.__DEBUG__.log("Data yang akan disimpan:", dataToSave);
+  
+  return originalFrom.upsert(dataToSave, options);
+},
 
       // Wrapper DELETE
       delete: function(options) {
