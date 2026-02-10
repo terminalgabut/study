@@ -56,7 +56,7 @@ export async function initKontenBab(category, slug) {
     material_slug: slug, 
     bab_title: currentTitle,
     last_accessed: new Date().toISOString() 
-  }, { onConflict: 'material_slug' });
+  }, { onConflict: 'user_id, material_slug' });
 
   // 6. Setup Tombol Simpan Catatan
   if (saveBtn) {
