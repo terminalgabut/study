@@ -165,14 +165,15 @@ export const quizCore = {
 
     if (currentData) {
       // 2. Cari materi dengan order lebih tinggi dalam kategori yang sama
-      const { data: nextData, error: err2 } = await supabase
-        .from('materials')
-        .select('slug, title')
-        .eq('category', currentData.category) // Mencocokkan kategori database
-        .gt('order', currentData.order)      // Order lebih besar
-        .order('order', { ascending: true }) // Ambil yang paling dekat berikutnya
-        .limit(1)
-        .maybeSingle();
+      // 2. Cari materi berikutnya dengan kolom "order" yang dibungkus kutip
+const { data: nextData, error: err2 } = await supabase
+  .from('materials')
+  .select('slug, title')
+  .eq('category', currentData.category)
+  .gt('"order"', currentData.order) // TAMBAHKAN KUTIP DUA DI DALAM KUTIP SATU
+  .order('order', { ascending: true }) 
+  .limit(1)
+  .maybeSingle();
 
       if (err2) throw err2;
 
