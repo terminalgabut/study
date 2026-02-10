@@ -1,11 +1,6 @@
 // js/ui/bookmark.js
 import { supabase } from '../services/supabase.js';
 
-/**
- * LOGIKA 1: Tombol Bookmark (Materi Page)
- */
-// js/ui/bookmark.js
-
 export async function handleBookmarkToggle(slug) {
   const btn = document.getElementById('bookmarkBtn');
   if (!btn) return;
