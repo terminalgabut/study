@@ -87,3 +87,4 @@ export const performaService = {
       categoryData // Data baru untuk grafik bar
     };
   }
+};
