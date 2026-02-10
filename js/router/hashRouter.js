@@ -31,11 +31,16 @@ import { initNotesList } from '../ui/notes.js';
 import { initNoteDetail } from '../ui/noteDetails.js'; 
 import { performaController } from '../controllers/performaController.js';
 
+// js/router/hashRouter.js
+__DEBUG__?.log('hashRouter loaded');
+
 export function navigate(page) {
   location.hash = page;
 }
 
 export async function handleRoute() {
+  __DEBUG__?.log('handleRoute()', location.hash); // ← TAMBAHAN
+
   const content = document.getElementById('content');
   if (!content) return;
 
@@ -43,11 +48,18 @@ export async function handleRoute() {
   // Jika URL hanya https://.../study/ tanpa hash, kita anggap itu #home
   let rawHash = location.hash || '#home';
   let hash = rawHash.replace(/^#\/?/, '');
+  __DEBUG__?.log('Normalized hash:', hash); // ← TAMBAHAN
   
   // --- [1] ROUTE GUARD LOGIC (Real-time Session Check) ---
   // getSession() lebih cepat dari getUser() untuk routing
   const { data: { session } } = await supabase.auth.getSession();
-  const isAuthPage = hash === 'login' || hash === 'register';
+const isAuthPage = hash === 'login' || hash === 'register';
+
+__DEBUG__?.log('Route Guard', {
+  hash,
+  isAuthPage,
+  hasSession: !!session
+}); // ← TAMBAHAN
 
   // LOGIKA PENGUNCI (Sangat penting agar tidak bypass)
   if (!session && !isAuthPage) {
@@ -138,18 +150,20 @@ export async function handleRoute() {
           break;
 
         case 'performa':
-          content.innerHTML = performaView;
-          performaController.init(); 
-          break;
+  __DEBUG__?.log('Route → performa'); // ← TAMBAHAN
+  content.innerHTML = performaView;
+  performaController.init();
+  break;
        
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
       }
     }
   } catch (err) {
-    console.error('Router error:', err);
-    content.innerHTML = '<div class="home-card"><h2>Terjadi kesalahan sistem</h2></div>';
-  }
+  __DEBUG__?.error('Router error:', err); // ← TAMBAHAN
+  console.error('Router error:', err);
+  content.innerHTML = '<div class="home-card"><h2>Terjadi kesalahan sistem</h2></div>';
+}
 
   content.classList.remove('fade-out');
 
@@ -168,6 +182,7 @@ export async function handleRoute() {
 }
 
 export function initRouter() {
+  __DEBUG__?.log('Router initialized'); // ← TAMBAHAN
   window.addEventListener('hashchange', handleRoute);
   handleRoute();
 }
