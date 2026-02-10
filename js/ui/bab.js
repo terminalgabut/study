@@ -12,7 +12,7 @@ export async function initBab(categoryFromUrl) {
     .from('materials')
     .select('title, subtitle, slug, category') // ambil subtitle juga untuk UI
     .ilike('category', categoryFromUrl) 
-    .order('order', { ascending: true });
+    .order('m_order', { ascending: true });
 
   if (error) {
     console.error(error);
