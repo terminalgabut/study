@@ -3,6 +3,7 @@ import { supabase } from '../services/supabase.js';
 // Variabel Global untuk melacak sesi belajar
 let startTime = null;
 let currentSlug = null;
+let currentTitle = null; // Menyimpan judul untuk keperluan riwayat/catatan
 
 /**
  * Inisialisasi halaman materi, timer, dan fitur catatan
@@ -19,10 +20,17 @@ export async function initKontenBab(category, slug) {
   currentSlug = slug;
   startTime = Date.now();
 
-  // 2. Ambil data materi dan catatan secara bersamaan (Parallel Request)
+  // 2. Ambil data materi dan catatan secara bersamaan
+  // Mengambil dari tabel baru 'materials'
   const [materiRes, catatanRes] = await Promise.all([
-    supabase.from('materi').select('content, category').eq('slug', slug).single(),
-    supabase.from('catatan').select('content').eq('material_slug', slug).maybeSingle()
+    supabase.from('materials')
+      .select('title, content')
+      .eq('slug', slug)
+      .single(),
+    supabase.from('catatan')
+      .select('content')
+      .eq('material_slug', slug)
+      .maybeSingle()
   ]);
 
   // Handle jika materi tidak ditemukan
@@ -31,32 +39,32 @@ export async function initKontenBab(category, slug) {
     return;
   }
 
+  // Simpan judul ke variabel global agar bisa dipakai fungsi save
+  currentTitle = materiRes.data.title;
+
   // 3. Render Konten ke UI
-  titleEl.textContent = materiRes.data.category;
+  titleEl.textContent = currentTitle;
   contentEl.innerHTML = materiRes.data.content;
   
-  // 4. Isi area catatan jika sebelumnya sudah pernah ada catatan
+  // 4. Isi area catatan jika ada
   if (noteArea) {
     noteArea.value = catatanRes.data ? catatanRes.data.content : "";
   }
 
-  // 5. Catat waktu akses terakhir di tabel riwayat (Tanpa durasi)
-  await supabase.from('riwayat').upsert(
-    { material_slug: slug, last_accessed: new Date().toISOString() }, 
-    { onConflict: 'material_slug' }
-  );
+  // 5. Catat riwayat akses (Otomatis menyertakan bab_title)
+  await supabase.from('riwayat').upsert({ 
+    material_slug: slug, 
+    bab_title: currentTitle,
+    last_accessed: new Date().toISOString() 
+  }, { onConflict: 'material_slug' });
 
-  // 6. Setup Tombol Simpan Catatan (Manual)
+  // 6. Setup Tombol Simpan Catatan
   if (saveBtn) {
-    // Menggunakan .onclick untuk memastikan listener lama tertimpa (mencegah double save)
     saveBtn.onclick = () => handleSaveNote();
   }
 
-  // 7. Setup Event Listener untuk mencatat durasi saat user keluar
-  // Menghapus listener lama agar tidak terjadi penumpukan memori
+  // 7. Setup Durasi Belajar
   window.removeEventListener('beforeunload', saveProgress);
-  
-  // Memicu simpan durasi saat pindah halaman (hash change) atau tutup tab
   window.addEventListener('hashchange', saveProgress, { once: true });
   window.addEventListener('beforeunload', saveProgress);
 }
@@ -68,43 +76,40 @@ async function handleSaveNote() {
   const noteArea = document.getElementById('noteArea');
   const statusEl = document.getElementById('saveStatus');
   
-  if (!noteArea || !currentSlug) return;
+  if (!noteArea || !currentSlug || !currentTitle) return;
 
   const noteContent = noteArea.value.trim();
   
-  // Beri feedback visual ke user
   if (statusEl) {
     statusEl.textContent = "⏳ Menyimpan...";
     statusEl.style.color = "#3498db";
   }
 
+  // Simpan ke tabel catatan dengan menyertakan judul bab
   const { error } = await supabase
     .from('catatan')
     .upsert({ 
       material_slug: currentSlug, 
+      bab_title: currentTitle, // Agar nanti di page Catatan tidak perlu join
       content: noteContent,
       updated_at: new Date().toISOString() 
     }, { onConflict: 'material_slug' });
 
-  // Update status feedback
   if (statusEl) {
     if (error) {
+      console.error(error);
       statusEl.textContent = "❌ Gagal menyimpan";
       statusEl.style.color = "#e74c3c";
     } else {
       statusEl.textContent = "✅ Tersimpan!";
       statusEl.style.color = "#27ae60";
-      
-      // Hilangkan pesan sukses setelah 3 detik
-      setTimeout(() => {
-        statusEl.textContent = "";
-      }, 3000);
+      setTimeout(() => { statusEl.textContent = ""; }, 3000);
     }
   }
 }
 
 /**
- * Fungsi untuk mengirim total durasi belajar ke database via RPC
+ * Fungsi durasi belajar via RPC
  */
 async function saveProgress() {
   if (!startTime || !currentSlug) return;
@@ -112,17 +117,15 @@ async function saveProgress() {
   const endTime = Date.now();
   const durationInSeconds = Math.floor((endTime - startTime) / 1000);
 
-  // Kirim hanya jika user belajar minimal 5 detik
   if (durationInSeconds >= 5) {
     const { error } = await supabase.rpc('increment_duration', { 
       slug: currentSlug, 
       seconds: durationInSeconds 
     });
-    
     if (error) console.error('Error updating duration:', error.message);
   }
 
-  // Bersihkan variabel agar sesi berikutnya bersih
   startTime = null;
   currentSlug = null;
+  currentTitle = null;
 }
