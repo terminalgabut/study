@@ -145,33 +145,36 @@ export const quizCore = {
   },
 
   
-  async finish() {
+  async function finish() {
   quizTimer.stop();
   const rate = quizState.getScoreRate();
   let nextChapter = null;
 
   try {
-    // 1. Ambil prefix dari slug saat ini (misal: "bhsindo1" -> "bhsindo")
-    // Kita ambil hurufnya saja sebelum angka, atau 3-4 huruf pertama
-    const slugPrefix = this.slug.replace(/[0-9]/g, ''); 
+    // 1. Ambil data materi saat ini dari tabel 'materials' (BUKAN 'materi')
+    const { data: currentData } = await supabase
+      .from('materials') // PERBAIKAN DI SINI
+      .select('order, category')
+      .eq('slug', this.slug)
+      .single();
 
-    // 2. Query materi yang slug-nya mirip dan urut berdasarkan 'order'
-    const { data: materialsAll, error } = await supabase
-      .from('materi')
-      .select('slug, category')
-      .ilike('slug', `${slugPrefix}%`) // Filter slug yang berawalan sama
-      .order('order', { ascending: true });
+    if (currentData) {
+      // 2. Cari materi berikutnya dengan kategori yang sama
+      const { data: nextData } = await supabase
+        .from('materials') // PERBAIKAN DI SINI JUGA
+        .select('slug, title')
+        .eq('category', currentData.category)
+        .gt('order', currentData.order)
+        .order('order', { ascending: true })
+        .limit(1)
+        .maybeSingle();
 
-    if (error) throw error;
-
-    const currentIndex = materialsAll.findIndex(m => m.slug === this.slug);
-
-    if (currentIndex !== -1 && currentIndex + 1 < materialsAll.length) {
-      const nextData = materialsAll[currentIndex + 1];
-      nextChapter = {
-        url: `https://terminalgabut.github.io/study/#materi/${this.categoryPath}/${nextData.slug}`,
-        title: nextData.category 
-      };
+      if (nextData) {
+        nextChapter = {
+          url: `#materi/${this.categoryPath}/${nextData.slug}`,
+          title: nextData.title 
+        };
+      }
     }
   } catch (err) {
     console.error("Gagal memuat bab berikutnya:", err);
@@ -179,4 +182,3 @@ export const quizCore = {
 
   this.container.innerHTML = quizView.finalResult(rate, quizState.correctCount, quizState.totalQuestions, nextChapter);
 }
-};
