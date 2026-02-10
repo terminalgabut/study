@@ -72,65 +72,49 @@ export const performaController = {
     return map[title] || '🏆';
   },
 
-  renderCharts(attempts, history) {
-    const trendEl = document.getElementById('trendChart');
-    const catEl = document.getElementById('categoryChart');
-    
-    // Ambil data olahan dari stats (kita kirim lewat init)
-    // Note: Pastikan di fungsi init() data.stats dikirim ke sini jika perlu
-    // Tapi di sini kita bisa olah ulang dari attempts agar lebih simpel
-    
-    if (trendEl && attempts.length > 0) {
-      new Chart(trendEl.getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: attempts.slice(-7).map(a => new Date(a.submitted_at).toLocaleDateString('id-ID', {day:'numeric', month:'short'})),
-          datasets: [{
-            label: 'Skor',
-            data: attempts.slice(-7).map(a => a.score),
-            borderColor: '#ffffff',
-            tension: 0.4,
-            fill: false
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { y: { display: false }, x: { ticks: { color: '#fff' } } },
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
+  renderCharts(attempts = [], history = []) {
+  const trendEl = document.getElementById('trendChart');
+  const catEl = document.getElementById('categoryChart');
 
-    if (catEl) {
-      // Menghitung kategori secara dinamis untuk grafik bar
-      const categoryMap = {};
-      attempts.forEach(att => {
-        const cat = att.materi?.category || 'Umum';
-        if (!categoryMap[cat]) categoryMap[cat] = { total: 0, count: 0 };
-        categoryMap[cat].total += att.score;
-        categoryMap[cat].count += 1;
-      });
+  if (trendEl && Array.isArray(attempts) && attempts.length > 0) {
+    new Chart(trendEl.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: attempts.slice(-7).map(a =>
+          new Date(a.submitted_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+        ),
+        datasets: [{
+          data: attempts.slice(-7).map(a => a.score),
+          tension: 0.4
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  }
 
-      new Chart(catEl.getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: Object.keys(categoryMap).length > 0 ? Object.keys(categoryMap) : ['Belum Ada Data'],
-          datasets: [{
-            data: Object.values(categoryMap).map(c => c.total / c.count),
-            backgroundColor: '#ffffff'
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: { 
-            x: { min: 0, max: 100, display: false }, 
-            y: { ticks: { color: '#fff' } } 
-          }
-        }
-      });
+  if (catEl && Array.isArray(attempts) && attempts.length > 0) {
+    const categoryMap = {};
+
+    attempts.forEach(att => {
+      const title = att.materi?.title || '';
+      const cat = title.split(' ')[0] || 'Umum';
+
+      if (!categoryMap[cat]) categoryMap[cat] = { total: 0, count: 0 };
+      categoryMap[cat].total += att.score || 0;
+      categoryMap[cat].count += 1;
+    });
+
+    new Chart(catEl.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: Object.keys(categoryMap),
+        datasets: [{
+          data: Object.values(categoryMap).map(v => Math.round(v.total / v.count))
+        }]
+      },
+      options: { indexAxis: 'y', responsive: true }
+    });
+  }
+}
     }
   };
