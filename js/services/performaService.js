@@ -10,12 +10,18 @@ export const performaService = {
     ] = await Promise.all([
       supabase.from('profile').select('*').single(),
 
-      // ✅ JOIN KE MATERI
+      
       supabase
-        .from('study_attempts')
-        .select('*, materi(title)')
-        .order('submitted_at', { ascending: true }),
-
+     .from('study_attempts')
+     .select(`
+      score,
+      category,
+      is_correct,
+      submitted_at,
+      duration_seconds
+      `)
+     .order('submitted_at', { ascending: true })
+  
       supabase.from('riwayat').select('*, materi(title)'),
 
       supabase.from('user_achievements').select('*, achievements(*)')
@@ -73,8 +79,7 @@ export const performaService = {
     const categoryMap = {};
 
     attempts.forEach(att => {
-      const title = att.materi?.title || 'Umum';
-      const category = title.split(' ')[0]; // 🔥 INTI PERBAIKAN
+      const category = att.category || 'Umum';
 
       if (!categoryMap[category]) {
         categoryMap[category] = { total: 0, count: 0 };
