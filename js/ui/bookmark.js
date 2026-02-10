@@ -124,38 +124,31 @@ export async function initBookmarkPage() {
 // Pastikan ini di luar agar bisa diakses oleh fungsi window
 
 window.deleteBookmark = async (slug) => {
-  // Validasi objek supabase sebelum eksekusi
-  if (!supabase || !supabase.from) {
-    console.error("Supabase client is not initialized properly");
-    return;
-  }
-
+  if (!slug) return;
   if (!confirm('Hapus dari bookmark?')) return;
 
   try {
-    // Gunakan sintaksis yang lebih eksplisit untuk menghindari TypeError pada chaining
-    const table = supabase.from('bookmark');
-    
-    // Pastikan table.delete ada sebelum dipanggil
-    if (typeof table.delete !== 'function') {
-      throw new Error("Method .delete() tidak ditemukan pada provider Supabase");
-    }
-
-    const { error } = await table
-      .delete()
+    // GUNAKAN SINTAKSIS STRING ['delete']
+    // Ini memastikan kita memanggil method dari Supabase, bukan operator JS 'delete'
+    const { error } = await supabase
+      .from('bookmark')
+      [ 'delete' ]() 
       .eq('material_slug', slug);
 
     if (error) throw error;
-    
-    // Refresh UI
+
+    // Refresh UI secara aman
     const container = document.getElementById('bookmarkListContainer');
     if (container) {
-       // Panggil init secara asinkron
-       import('./bookmark.js').then(m => m.initBookmarkPage());
+      // Kita panggil ulang fungsi render dari file ini
+      initBookmarkPage();
     }
 
   } catch (err) {
-    window.__DEBUG__.error('Fatal Delete Error:', err);
-    alert("Gagal menghapus: " + err.message);
+    // Log detail ke debug global agar kita bisa lihat error aslinya
+    if (window.__DEBUG__) {
+      window.__DEBUG__.error('Detailed Delete Error:', err);
+    }
+    alert("Gagal menghapus bookmark.");
   }
 };
