@@ -8,7 +8,7 @@ export const performaService = {
       historyRes,
       achievementRes
     ] = await Promise.all([
-      supabase.from('profiles').select('*').single(),
+      supabase.from('profile').select('*').single(),
 
       // ✅ JOIN KE MATERI
       supabase
