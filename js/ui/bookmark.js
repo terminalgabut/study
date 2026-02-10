@@ -4,11 +4,13 @@ import { supabase } from '../services/supabase.js';
 /**
  * LOGIKA 1: Tombol Bookmark (Materi Page)
  */
+// js/ui/bookmark.js
+
 export async function handleBookmarkToggle(slug) {
   const btn = document.getElementById('bookmarkBtn');
   if (!btn) return;
 
-  // Cek status awal - Pakai maybeSingle agar tidak error jika kosong
+  // 1. Cek status awal (Apakah sudah di-bookmark?)
   const { data: existing } = await supabase
     .from('bookmark')
     .select('material_slug')
@@ -17,29 +19,46 @@ export async function handleBookmarkToggle(slug) {
 
   if (existing) btn.classList.add('active');
 
+  // 2. Event Click
   btn.onclick = async () => {
-  const isActive = btn.classList.contains('active');
+    // Cegah klik ganda saat proses berlangsung
+    btn.disabled = true; 
+    const isActive = btn.classList.contains('active');
 
-  if (isActive) {
-    // PERBAIKAN: Gunakan urutan .from().delete().eq()
-    const { error } = await supabase
-      .from('bookmark')
-      .delete() // Panggil delete dulu
-      .eq('material_slug', slug); // Baru filter mana yang mau dihapus
+    try {
+      if (isActive) {
+        // PROSES HAPUS
+        const { error } = await supabase
+          .from('bookmark')
+          .delete() // Panggil method delete
+          .eq('material_slug', slug); // Filter barisnya
 
-    if (!error) btn.classList.remove('active');
-    else console.error("Gagal hapus:", error.message);
-    
-  } else {
-    // Proses simpan tetap sama
-    const { error } = await supabase
-      .from('bookmark')
-      .insert([{ material_slug: slug }]);
-    
-    if (!error) btn.classList.add('active');
-    else console.error("Gagal simpan:", error.message);
-  }
-};
+        if (!error) {
+          btn.classList.remove('active');
+          console.log("Bookmark dihapus");
+        } else {
+          throw error;
+        }
+      } else {
+        // PROSES SIMPAN
+        const { error } = await supabase
+          .from('bookmark')
+          .insert([{ material_slug: slug }]);
+
+        if (!error) {
+          btn.classList.add('active');
+          console.log("Bookmark ditambahkan");
+        } else {
+          throw error;
+        }
+      }
+    } catch (err) {
+      console.error("Operasi bookmark gagal:", err.message);
+      alert("Gagal memperbarui bookmark: " + err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  };
 }
 
 /**
