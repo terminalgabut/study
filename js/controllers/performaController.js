@@ -75,33 +75,62 @@ export const performaController = {
   renderCharts(attempts, history) {
     const trendEl = document.getElementById('trendChart');
     const catEl = document.getElementById('categoryChart');
-
-    if (trendEl) {
+    
+    // Ambil data olahan dari stats (kita kirim lewat init)
+    // Note: Pastikan di fungsi init() data.stats dikirim ke sini jika perlu
+    // Tapi di sini kita bisa olah ulang dari attempts agar lebih simpel
+    
+    if (trendEl && attempts.length > 0) {
       new Chart(trendEl.getContext('2d'), {
         type: 'line',
         data: {
-          labels: attempts.map(a => new Date(a.submitted_at).toLocaleDateString()),
+          labels: attempts.slice(-7).map(a => new Date(a.submitted_at).toLocaleDateString('id-ID', {day:'numeric', month:'short'})),
           datasets: [{
             label: 'Skor',
-            data: attempts.map(a => a.score),
+            data: attempts.slice(-7).map(a => a.score),
             borderColor: '#ffffff',
             tension: 0.4,
             fill: false
           }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { display: false }, x: { ticks: { color: '#fff' } } },
+          plugins: { legend: { display: false } }
+        }
       });
     }
 
     if (catEl) {
+      // Menghitung kategori secara dinamis untuk grafik bar
+      const categoryMap = {};
+      attempts.forEach(att => {
+        const cat = att.materi?.category || 'Umum';
+        if (!categoryMap[cat]) categoryMap[cat] = { total: 0, count: 0 };
+        categoryMap[cat].total += att.score;
+        categoryMap[cat].count += 1;
+      });
+
       new Chart(catEl.getContext('2d'), {
         type: 'bar',
         data: {
-          labels: ['Sains', 'Bahasa', 'Umum'],
-          datasets: [{ data: [80, 65, 90], backgroundColor: '#ffffff' }]
+          labels: Object.keys(categoryMap).length > 0 ? Object.keys(categoryMap) : ['Belum Ada Data'],
+          datasets: [{
+            data: Object.values(categoryMap).map(c => c.total / c.count),
+            backgroundColor: '#ffffff'
+          }]
         },
-        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { 
+            x: { min: 0, max: 100, display: false }, 
+            y: { ticks: { color: '#fff' } } 
+          }
+        }
       });
     }
   }
-};
