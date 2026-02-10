@@ -113,8 +113,7 @@ export const performaController = {
         }]
       },
       options: { indexAxis: 'y', responsive: true }
-    });
-  }
-}
+      });
     }
-  };
+  }
+};
