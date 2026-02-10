@@ -23,7 +23,7 @@ import { initProgress } from '../ui/progress.js';
 import { initDailyTarget } from '../ui/target.js';
 import { initRekomendasi } from '../ui/rekomendasi.js';
 import { initBab } from '../ui/bab.js';
-import { initKontenBab } from '../ui/kontenBab.js';
+import { initKontenBab } from '../controllers/kontenBab.js';
 import { initQuizGenerator } from '../ui/generator.js';
 import { handleBookmarkToggle, initBookmarkPage } from '../ui/bookmark.js'; 
 import { initHistoryPage } from '../ui/riwayat.js';
