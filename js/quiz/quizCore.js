@@ -145,7 +145,7 @@ export const quizCore = {
   },
 
   
-  async function finish() {
+  async finish() {
   quizTimer.stop();
   const rate = quizState.getScoreRate();
   let nextChapter = null;
