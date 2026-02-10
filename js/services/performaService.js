@@ -1,14 +1,11 @@
 import { supabase } from './supabase.js';
 
 export const performaService = {
-  async getDashboardData() {
-    const [
-  profileRes,
-  attemptsRes,
-  historyRes,
-  achievementRes
-] = await Promise.all([
-  supabase.from('profile').select('*').single(),
+  // Di dalam performaService.js
+async getDashboardData() {
+  const [profileRes, attemptsRes, historyRes, achievementRes] = await Promise.all([
+    supabase.from('profile').select('*').single(), // Pastikan nama tabel sinkron
+    // ... sisa kode lainnya
 
   supabase
     .from('study_attempts')
