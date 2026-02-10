@@ -119,22 +119,43 @@ export async function initBookmarkPage() {
 /**
  * LOGIKA 3: Fungsi Global Hapus (untuk tombol sampah)
  */
+// js/ui/bookmark.js
+
+// Pastikan ini di luar agar bisa diakses oleh fungsi window
+
 window.deleteBookmark = async (slug) => {
-  if (!confirm('Hapus dari daftar bookmark?')) return;
+  // Validasi objek supabase sebelum eksekusi
+  if (!supabase || !supabase.from) {
+    console.error("Supabase client is not initialized properly");
+    return;
+  }
+
+  if (!confirm('Hapus dari bookmark?')) return;
 
   try {
-    const { error } = await supabase
-      .from('bookmark')
+    // Gunakan sintaksis yang lebih eksplisit untuk menghindari TypeError pada chaining
+    const table = supabase.from('bookmark');
+    
+    // Pastikan table.delete ada sebelum dipanggil
+    if (typeof table.delete !== 'function') {
+      throw new Error("Method .delete() tidak ditemukan pada provider Supabase");
+    }
+
+    const { error } = await table
       .delete()
       .eq('material_slug', slug);
 
     if (error) throw error;
     
-    // Refresh tampilan daftar bookmark secara otomatis
-    initBookmarkPage(); 
+    // Refresh UI
+    const container = document.getElementById('bookmarkListContainer');
+    if (container) {
+       // Panggil init secara asinkron
+       import('./bookmark.js').then(m => m.initBookmarkPage());
+    }
 
   } catch (err) {
-    console.error("Fatal Error Delete:", err);
-    alert("Gagal menghapus bookmark");
+    window.__DEBUG__.error('Fatal Delete Error:', err);
+    alert("Gagal menghapus: " + err.message);
   }
 };
