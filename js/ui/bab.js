@@ -11,9 +11,11 @@ export async function initBab(categoryFromUrl) {
   }
 
   const { data, error } = await supabase
-    .from('materi')
-    .select('*')
-    .order('order', { ascending: true });
+    // Contoh Logika Query Baru
+.from('materials')
+.select('title, subtitle, slug, order')
+.eq('category', categoryFromUrl) // Langsung filter di database
+.order('order', { ascending: true });
 
   if (error) {
     console.error(error);
