@@ -1,3 +1,25 @@
+// ===== GLOBAL DEBUG =====
+const DEV =
+  location.hostname === 'localhost' ||
+  location.hostname === '127.0.0.1';
+
+window.__DEBUG__ = {
+  log: (...args) => DEV && console.log('[DEBUG]', ...args),
+  warn: (...args) => DEV && console.warn('[WARN]', ...args),
+  error: (...args) => console.error('[ERROR]', ...args),
+};
+
+// Tangkap error JS biasa
+window.addEventListener('error', e => {
+  __DEBUG__.error('Global Error:', e.message, e.error);
+});
+
+// Tangkap error async / Promise
+window.addEventListener('unhandledrejection', e => {
+  __DEBUG__.error('Unhandled Promise:', e.reason);
+});
+// ========================
+
 import { supabase } from './services/supabase.js'; // Pastikan diimport paling atas
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
@@ -12,6 +34,8 @@ import { modalsettingsView } from '../components/modal-settingsView.js';
 import { modalprofilView } from '../components/modalprofilView.js';
 
 function init() {
+  __DEBUG__.log('App init() dipanggil');
+
   const app = document.getElementById('app');
   if (!app) return;
 
@@ -35,7 +59,8 @@ function init() {
 
   // 3. Listener Auth Global (Diletakkan setelah render dasar)
   supabase.auth.onAuthStateChange((event, session) => {
-    console.log("Auth Event:", event);
+  __DEBUG__.log('Auth Event:', event); // ← TAMBAHAN
+  console.log("Auth Event:", event);
     
     if (event === 'SIGNED_OUT') {
       window.location.hash = '#login';
