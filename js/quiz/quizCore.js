@@ -170,7 +170,7 @@ export const quizCore = {
 
         if (nextData) {
           nextChapter = {
-            url: `#materi/${this.categoryPath}/${nextData.slug}`,
+            url: `https://terminalgabut.github.io/study/#materi/${this.categoryPath}/${nextData.slug}`,
             title: nextData.title 
           };
         }
