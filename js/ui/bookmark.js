@@ -5,7 +5,7 @@ export async function handleBookmarkToggle(slug) {
   const btn = document.getElementById('bookmarkBtn');
   if (!btn) return;
 
-  // 1. Cek status awal (Apakah sudah di-bookmark?)
+  // Cek status bookmark saat pertama kali dimuat
   const { data: existing } = await supabase
     .from('bookmark')
     .select('material_slug')
@@ -14,42 +14,34 @@ export async function handleBookmarkToggle(slug) {
 
   if (existing) btn.classList.add('active');
 
-  // 2. Event Click
   btn.onclick = async () => {
-    // Cegah klik ganda saat proses berlangsung
-    btn.disabled = true; 
+    // Hindari klik berulang saat proses asinkron berjalan
+    if (btn.disabled) return;
+    btn.disabled = true;
+
     const isActive = btn.classList.contains('active');
 
     try {
       if (isActive) {
-        // PROSES HAPUS
+        // URUTAN BENAR: from -> delete -> filter
         const { error } = await supabase
           .from('bookmark')
-          .delete() // Panggil method delete
-          .eq('material_slug', slug); // Filter barisnya
+          .delete() 
+          .eq('material_slug', slug);
 
-        if (!error) {
-          btn.classList.remove('active');
-          console.log("Bookmark dihapus");
-        } else {
-          throw error;
-        }
+        if (!error) btn.classList.remove('active');
+        else throw error;
       } else {
-        // PROSES SIMPAN
         const { error } = await supabase
           .from('bookmark')
           .insert([{ material_slug: slug }]);
-
-        if (!error) {
-          btn.classList.add('active');
-          console.log("Bookmark ditambahkan");
-        } else {
-          throw error;
-        }
+        
+        if (!error) btn.classList.add('active');
+        else throw error;
       }
     } catch (err) {
-      console.error("Operasi bookmark gagal:", err.message);
-      alert("Gagal memperbarui bookmark: " + err.message);
+      // Pastikan error tertangkap di sini agar tidak memicu unhandled rejection
+      window.__DEBUG__.error('Bookmark Toggle Error:', err.message);
     } finally {
       btn.disabled = false;
     }
