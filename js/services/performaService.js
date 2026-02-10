@@ -3,29 +3,32 @@ import { supabase } from './supabase.js';
 export const performaService = {
   async getDashboardData() {
     const [
-      profileRes,
-      attemptsRes,
-      historyRes,
-      achievementRes
-    ] = await Promise.all([
-      supabase.from('profile').select('*').single(),
+  profileRes,
+  attemptsRes,
+  historyRes,
+  achievementRes
+] = await Promise.all([
+  supabase.from('profile').select('*').single(),
 
-      
-      supabase
-     .from('study_attempts')
-     .select(`
+  supabase
+    .from('study_attempts')
+    .select(`
       score,
       category,
       is_correct,
       submitted_at,
       duration_seconds
-      `)
-     .order('submitted_at', { ascending: true })
-  
-      supabase.from('riwayat').select('*, materi(title)'),
+    `)
+    .order('submitted_at', { ascending: true }),
 
-      supabase.from('user_achievements').select('*, achievements(*)')
-    ]);
+  supabase
+    .from('riwayat')
+    .select('*, materi(title, category)'),
+
+  supabase
+    .from('user_achievements')
+    .select('*, achievements(*)')
+]);
 
     if (profileRes.error) console.warn('Profile belum ada');
     if (attemptsRes.error) throw attemptsRes.error;
