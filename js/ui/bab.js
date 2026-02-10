@@ -5,17 +5,14 @@ export async function initBab(categoryFromUrl) {
   const title = document.querySelector('.bab-title');
   if (!list) return;
 
-  // judul halaman
-  if (title) {
-    title.textContent = `Materi ${categoryFromUrl}`;
-  }
+  if (title) title.textContent = `Materi ${categoryFromUrl}`;
 
+  // JALUR CERDAS: Filter langsung di server, abaikan besar/kecil huruf
   const { data, error } = await supabase
-    // Contoh Logika Query Baru
-.from('materials')
-.select('title, subtitle, slug, order')
-.eq('category', categoryFromUrl) // Langsung filter di database
-.order('order', { ascending: true });
+    .from('materials')
+    .select('title, subtitle, slug, category') // ambil subtitle juga untuk UI
+    .ilike('category', categoryFromUrl) 
+    .order('order', { ascending: true });
 
   if (error) {
     console.error(error);
@@ -23,23 +20,17 @@ export async function initBab(categoryFromUrl) {
     return;
   }
 
-  const normalizedCategory = categoryFromUrl.toLowerCase();
-
-  const filtered = data.filter(row =>
-    row.category
-      ?.toLowerCase()
-      .startsWith(normalizedCategory)
-  );
-
-  if (!filtered.length) {
+  // Jika data kosong, langsung tampilkan pesan
+  if (!data || data.length === 0) {
     list.innerHTML = '<p>Bab belum tersedia</p>';
     return;
   }
 
-  list.innerHTML = filtered.map(bab => `
-  <a href="#materi/${categoryFromUrl}/${bab.slug}" class="home-card">
-    <h3>${bab.category}</h3>
-    <p class="small">${bab.title}</p>
-  </a>
-`).join('');
+  // Render langsung dari 'data'
+  list.innerHTML = data.map(bab => `
+    <a href="#materi/${categoryFromUrl.toLowerCase()}/${bab.slug}" class="home-card">
+      <h3>${bab.title}</h3>
+      <p class="small">${bab.subtitle || ''}</p> 
+    </a>
+  `).join('');
 }
