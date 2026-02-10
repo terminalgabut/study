@@ -135,7 +135,7 @@ export const quizCore = {
   },
 
   updateProgressUI() {
-    // Sesuai rujukan: progres dihitung dari index soal saat ini
+    // Progres dihitung dari index soal saat ini
     const progress = ((quizState.currentStep + 1) / quizState.totalQuestions) * 100;
     const bar = document.getElementById('quizBar');
     const scoreEl = document.getElementById('liveScore');
@@ -144,42 +144,47 @@ export const quizCore = {
     if (scoreEl) scoreEl.textContent = quizState.correctCount;
   },
 
-  
   async finish() {
-  quizTimer.stop();
-  const rate = quizState.getScoreRate();
-  let nextChapter = null;
+    quizTimer.stop();
+    const rate = quizState.getScoreRate();
+    let nextChapter = null;
 
-  try {
-    // 1. Ambil data materi saat ini dari tabel 'materials' (BUKAN 'materi')
-    const { data: currentData } = await supabase
-      .from('materials') // PERBAIKAN DI SINI
-      .select('order, category')
-      .eq('slug', this.slug)
-      .single();
+    try {
+      // 1. Ambil data materi saat ini
+      const { data: currentData } = await supabase
+        .from('materials')
+        .select('order, category')
+        .eq('slug', this.slug)
+        .single();
 
-    if (currentData) {
-      // 2. Cari materi berikutnya dengan kategori yang sama
-      const { data: nextData } = await supabase
-        .from('materials') // PERBAIKAN DI SINI JUGA
-        .select('slug, title')
-        .eq('category', currentData.category)
-        .gt('order', currentData.order)
-        .order('order', { ascending: true })
-        .limit(1)
-        .maybeSingle();
+      if (currentData) {
+        // 2. Cari materi berikutnya berdasarkan urutan (order)
+        const { data: nextData } = await supabase
+          .from('materials')
+          .select('slug, title')
+          .eq('category', currentData.category)
+          .gt('order', currentData.order)
+          .order('order', { ascending: true })
+          .limit(1)
+          .maybeSingle();
 
-      if (nextData) {
-        nextChapter = {
-          url: `#materi/${this.categoryPath}/${nextData.slug}`,
-          title: nextData.title 
-        };
+        if (nextData) {
+          nextChapter = {
+            url: `#materi/${this.categoryPath}/${nextData.slug}`,
+            title: nextData.title 
+          };
+        }
       }
+    } catch (err) {
+      console.error("Gagal memuat bab berikutnya:", err);
     }
-  } catch (err) {
-    console.error("Gagal memuat bab berikutnya:", err);
-  }
 
-  this.container.innerHTML = quizView.finalResult(rate, quizState.correctCount, quizState.totalQuestions, nextChapter);
+    // Render hasil akhir
+    this.container.innerHTML = quizView.finalResult(
+      rate, 
+      quizState.correctCount, 
+      quizState.totalQuestions, 
+      nextChapter
+    );
   }
-            };
+};
