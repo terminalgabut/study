@@ -32,14 +32,14 @@ import { initNoteDetail } from '../ui/noteDetails.js';
 import { performaController } from '../controllers/performaController.js';
 
 // js/router/hashRouter.js
-__DEBUG__?.log('hashRouter loaded');
+window.__DEBUG__?.log('hashRouter loaded');
 
 export function navigate(page) {
   location.hash = page;
 }
 
 export async function handleRoute() {
-  __DEBUG__?.log('handleRoute()', location.hash); // ← TAMBAHAN
+  window.__DEBUG__?.log('handleRoute()', location.hash); // ← TAMBAHAN
 
   const content = document.getElementById('content');
   if (!content) return;
@@ -48,14 +48,14 @@ export async function handleRoute() {
   // Jika URL hanya https://.../study/ tanpa hash, kita anggap itu #home
   let rawHash = location.hash || '#home';
   let hash = rawHash.replace(/^#\/?/, '');
-  __DEBUG__?.log('Normalized hash:', hash); // ← TAMBAHAN
+  window.__DEBUG__?.log('Normalized hash:', hash); // ← TAMBAHAN
   
   // --- [1] ROUTE GUARD LOGIC (Real-time Session Check) ---
   // getSession() lebih cepat dari getUser() untuk routing
   const { data: { session } } = await supabase.auth.getSession();
 const isAuthPage = hash === 'login' || hash === 'register';
 
-__DEBUG__?.log('Route Guard', {
+window.__DEBUG__?.log('Route Guard', {
   hash,
   isAuthPage,
   hasSession: !!session
@@ -109,19 +109,19 @@ __DEBUG__?.log('Route Guard', {
       switch (hash) {
           
         case 'login':
-          __DEBUG__?.log('Route → login');
+          window.__DEBUG__?.log('Route → login');
           content.innerHTML = loginView;
           initLogin();
         break;
           
         case 'register':
-          __DEBUG__?.log('Route → register');
+          window.__DEBUG__?.log('Route → register');
           content.innerHTML = registerView;
           initRegister();
         break;
           
         case 'home':
-          __DEBUG__?.log('Route → home');
+          window.__DEBUG__?.log('Route → home');
           content.innerHTML = homeView;
           initLastRead();
           initMotivation();
@@ -131,35 +131,35 @@ __DEBUG__?.log('Route Guard', {
         break;
           
         case 'materi':
-          __DEBUG__?.log('Route → materi');
+          window.__DEBUG__?.log('Route → materi');
           content.innerHTML = materiView;
         break;
           
         case 'bookmark':
-          __DEBUG__?.log('Route → bookmark');
+          window.__DEBUG__?.log('Route → bookmark');
           content.innerHTML = bookmarkView;
           initBookmarkPage(); 
         break;
           
         case 'riwayat':
-          __DEBUG__?.log('Route → riwayat');
+          window.__DEBUG__?.log('Route → riwayat');
           content.innerHTML = historyView;
           initHistoryPage();
         break;
           
         case 'catatan':
-          __DEBUG__?.log('Route → catatan');
+          window.__DEBUG__?.log('Route → catatan');
           content.innerHTML = notesView;
           initNotesList();
         break;
 
         case 'profile':
-          __DEBUG__?.log('Route → profile');
+          window.__DEBUG__?.log('Route → profile');
           content.innerHTML = `<div class="home-card"><h2>Profil Pengguna</h2><p>Selamat datang di halaman profil!</p></div>`;
         break;
 
         case 'performa':
-          __DEBUG__?.log('Route → performa');
+          window.__DEBUG__?.log('Route → performa');
           content.innerHTML = performaView;
           performaController.init();
         break;
@@ -169,7 +169,7 @@ __DEBUG__?.log('Route Guard', {
       }
     }
   } catch (err) {
-  __DEBUG__?.error('Router error:', err); // ← TAMBAHAN
+  window.__DEBUG__?.error('Router error:', err); // ← TAMBAHAN
   console.error('Router error:', err);
   content.innerHTML = '<div class="home-card"><h2>Terjadi kesalahan sistem</h2></div>';
 }
@@ -191,7 +191,7 @@ __DEBUG__?.log('Route Guard', {
 }
 
 export function initRouter() {
-  __DEBUG__?.log('Router initialized'); // ← TAMBAHAN
+  window.__DEBUG__?.log('Router initialized'); // ← TAMBAHAN
   window.addEventListener('hashchange', handleRoute);
   handleRoute();
 }
