@@ -18,19 +18,28 @@ export async function handleBookmarkToggle(slug) {
   if (existing) btn.classList.add('active');
 
   btn.onclick = async () => {
-    const isActive = btn.classList.contains('active');
+  const isActive = btn.classList.contains('active');
 
-    if (isActive) {
-      const { error } = await supabase.from('bookmark').delete().eq('material_slug', slug);
-      if (!error) btn.classList.remove('active');
-    } else {
-      const { error } = await supabase
-        .from('bookmark')
-        .insert([{ material_slug: slug }]);
-      
-      if (!error) btn.classList.add('active');
-    }
-  };
+  if (isActive) {
+    // PERBAIKAN: Gunakan urutan .from().delete().eq()
+    const { error } = await supabase
+      .from('bookmark')
+      .delete() // Panggil delete dulu
+      .eq('material_slug', slug); // Baru filter mana yang mau dihapus
+
+    if (!error) btn.classList.remove('active');
+    else console.error("Gagal hapus:", error.message);
+    
+  } else {
+    // Proses simpan tetap sama
+    const { error } = await supabase
+      .from('bookmark')
+      .insert([{ material_slug: slug }]);
+    
+    if (!error) btn.classList.add('active');
+    else console.error("Gagal simpan:", error.message);
+  }
+};
 }
 
 /**
