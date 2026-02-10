@@ -180,7 +180,7 @@ const { data: nextData, error: err2 } = await supabase
       if (nextData) {
         nextChapter = {
           // Gunakan currentPath dari URL agar navigasi konsisten
-          url: `#materi/${currentPath}/${nextData.slug}`,
+          url: `https://terminalgabut.github.io/study/#materi/${currentPath}/${nextData.slug}`,
           title: nextData.title 
         };
       }
