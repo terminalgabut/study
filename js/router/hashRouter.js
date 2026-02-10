@@ -107,53 +107,62 @@ __DEBUG__?.log('Route Guard', {
     // --- [3] ROUTE STATIS ---
     else {
       switch (hash) {
+          
         case 'login':
+          __DEBUG__?.log('Route → login');
           content.innerHTML = loginView;
           initLogin();
-          break;
+        break;
           
         case 'register':
+          __DEBUG__?.log('Route → register');
           content.innerHTML = registerView;
           initRegister();
-          break;
+        break;
           
         case 'home':
+          __DEBUG__?.log('Route → home');
           content.innerHTML = homeView;
           initLastRead();
           initMotivation();
           initProgress();
           initDailyTarget();
           initRekomendasi();
-          break;
+        break;
           
         case 'materi':
+          __DEBUG__?.log('Route → materi');
           content.innerHTML = materiView;
-          break;
+        break;
           
         case 'bookmark':
+          __DEBUG__?.log('Route → bookmark');
           content.innerHTML = bookmarkView;
           initBookmarkPage(); 
-          break;
+        break;
           
         case 'riwayat':
+          __DEBUG__?.log('Route → riwayat');
           content.innerHTML = historyView;
           initHistoryPage();
-          break;
+        break;
           
         case 'catatan':
+          __DEBUG__?.log('Route → catatan');
           content.innerHTML = notesView;
           initNotesList();
-          break;
+        break;
 
         case 'profile':
+          __DEBUG__?.log('Route → profile');
           content.innerHTML = `<div class="home-card"><h2>Profil Pengguna</h2><p>Selamat datang di halaman profil!</p></div>`;
-          break;
+        break;
 
         case 'performa':
-  __DEBUG__?.log('Route → performa'); // ← TAMBAHAN
-  content.innerHTML = performaView;
-  performaController.init();
-  break;
+          __DEBUG__?.log('Route → performa');
+          content.innerHTML = performaView;
+          performaController.init();
+        break;
        
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
