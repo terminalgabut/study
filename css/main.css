@@ -7,7 +7,6 @@
 @import url("layout/layout.css");
 @import url("layout/header.css");
 @import url("layout/sidebar.css");
-@import url("layout/stats-cards.css");
 
 /* COMPONENTS */
 @import url("components/button.css");
