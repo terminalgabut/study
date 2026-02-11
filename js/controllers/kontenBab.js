@@ -9,6 +9,9 @@ let currentTitle = null;
  * Inisialisasi halaman materi
  */
 export async function initKontenBab(category, slug) {
+  console.log("--- DEBUG START ---");
+  console.log("Slug:", slug);
+  console.log("Category:", category);
   const titleEl = document.getElementById('learningTitle');
   const contentEl = document.getElementById('learningContent');
   const noteArea = document.getElementById('noteArea');
