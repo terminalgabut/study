@@ -1,21 +1,34 @@
-// compenents/babModalView.js
+// components/babModalView.js
 
 export const babModalView = {
-    /**
-     * Fungsi utama untuk menampilkan modal
-     * @param {Array} progressData - Data bab yang sudah dipelajari
-     * @param {Array} allCategories - Daftar semua kategori di sistem
-     */
+    // Properti internal untuk melacak state listener agar tidak double
+    _isListenerAttached: false,
+
     show(progressData, allCategories) {
+        // 1. Guard: Pastikan base sudah ada sebelum manipulasi isi
         this.renderBase();
+        
+        const bodyEl = document.getElementById('bab-modal-body');
+        const overlayEl = document.getElementById('bab-modal-overlay');
+
+        if (!bodyEl || !overlayEl) {
+            window.__DEBUG__.error("Elemen modal tidak ditemukan di DOM");
+            return;
+        }
+
         const content = this.generateContent(progressData, allCategories);
-        document.getElementById('bab-modal-body').innerHTML = content;
-        document.getElementById('bab-modal-overlay').classList.add('active');
+        bodyEl.innerHTML = content;
+        overlayEl.classList.add('active');
+        
+        // Kunci scroll body utama saat modal buka
+        document.body.style.overflow = 'hidden';
     },
 
-    // Membuat kerangka dasar modal jika belum ada
     renderBase() {
+        // Guard 1: Cek apakah elemen sudah ada di DOM
         if (document.getElementById('bab-modal-overlay')) return;
+
+        window.__DEBUG__.log("Menyuntikkan Base BabModal ke DOM");
 
         const html = `
             <div id="bab-modal-overlay" class="modal-stat-overlay">
@@ -28,17 +41,26 @@ export const babModalView = {
                 </div>
             </div>
         `;
+        
+        // Masukkan ke body untuk menghindari masalah z-index di layout SPA
         document.body.insertAdjacentHTML('beforeend', html);
         this.setupEventListeners();
     },
 
-    // Mengolah data menjadi HTML (Minimalis Teks & Rasio)
-    generateContent(progressData, allCategories) {
-        // Urutkan kategori secara alfabetis
+    generateContent(progressData = [], allCategories = []) {
+        // Guard 2: Pastikan data adalah array untuk menghindari crash .map()
+        if (!Array.isArray(progressData) || !Array.isArray(allCategories)) {
+            return '<div class="bab-text-empty">Data tidak tersedia.</div>';
+        }
+
+        if (allCategories.length === 0) {
+            return '<div class="bab-text-empty">Belum ada kategori materi.</div>';
+        }
+
         return allCategories.sort().map(cat => {
             const completedInCat = progressData.filter(item => item.category === cat);
             const count = completedInCat.length;
-            const total = 10; // Placeholder, nanti bisa dinamis
+            const total = 10; 
             const isEmpty = count === 0;
 
             return `
@@ -50,7 +72,7 @@ export const babModalView = {
                     ${!isEmpty ? `
                         <div class="bab-item-list">
                             ${completedInCat.map(bab => `
-                                <div class="bab-text-row">${bab.bab_title}</div>
+                                <div class="bab-text-row">${bab.bab_title || 'Materi Tanpa Judul'}</div>
                             `).join('')}
                         </div>
                     ` : `
@@ -62,17 +84,31 @@ export const babModalView = {
     },
 
     setupEventListeners() {
+        // Guard 3: Jangan pasang listener berkali-kali (Event Leak)
+        if (this._isListenerAttached) return;
+
         const overlay = document.getElementById('bab-modal-overlay');
         const closeBtn = document.getElementById('close-bab-modal');
 
-        const hide = () => overlay.classList.remove('active');
+        const hide = () => {
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; // Kembalikan scroll body
+        };
 
-        closeBtn.onclick = hide;
-        overlay.onclick = (e) => { if (e.target === overlay) hide(); };
+        if (closeBtn) closeBtn.onclick = hide;
+
+        if (overlay) {
+            overlay.onclick = (e) => {
+                if (e.target === overlay) hide();
+            };
+        }
         
-        // Menutup dengan tombol Escape
+        // Shortcut Keyboard
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && overlay.classList.contains('active')) hide();
         });
+
+        this._isListenerAttached = true;
+        window.__DEBUG__.log("Event Listeners BabModal berhasil dipasang");
     }
 };
