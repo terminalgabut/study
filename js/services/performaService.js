@@ -5,12 +5,14 @@ export const performaService = {
     window.__DEBUG__.log("--- [DEBUG] Fetching Dashboard Data (Agregat Mode) ---");
 
     try {
+      // Mengambil data dari tabel permanen (bukan riwayat sementara)
       const [profileRes, progressRes, achievementRes] = await Promise.all([
         supabase.from('profile').select('*').maybeSingle(), 
         supabase.from('study_progress').select('*').order('updated_at', { ascending: false }),
         supabase.from('user_achievements').select('*, achievements(*)').order('earned_at', { ascending: false })
       ]);
 
+      // Logging untuk mempermudah pelacakan jika data kosong
       if (profileRes.error) {
         window.__DEBUG__.warn("[Service] Profile tidak ditemukan:", profileRes.error.message);
       }
@@ -23,11 +25,13 @@ export const performaService = {
       const progress = progressRes.data ?? [];
       const achievements = achievementRes.data ?? [];
 
+      window.__DEBUG__.log(`[Service] Load Berhasil: ${progress.length} Bab ditemukan.`);
+
       return {
         profile: profileRes.data || { full_name: 'Pelajar', xp: 0 },
         progress: progress, 
         achievements: achievements,
-        stats: this.calculateStatsFromProgress(progress)
+        stats: this.calculateStatsFromProgress(progress) // Mengirim hasil kalkulasi ke Controller
       };
     } catch (err) {
       window.__DEBUG__.error("[Service] Critical Error:", err.message);
@@ -36,16 +40,19 @@ export const performaService = {
   },
 
   calculateStatsFromProgress(progress = []) {
+    // 1. Hitung akumulasi dasar
     const totalMateri = progress.length;
     const totalPoints = progress.reduce((acc, p) => acc + (p.total_score_points || 0), 0);
     const totalAttempts = progress.reduce((acc, p) => acc + (p.attempts_count || 0), 0);
     const totalReadCount = progress.reduce((acc, p) => acc + (p.read_count || 0), 0);
     
+    // 2. Hitung total durasi (Membaca + Kuis)
     const totalSeconds = progress.reduce(
       (acc, p) => acc + (Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0)),
       0
     );
 
+    // 3. Konversi format waktu
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const timeString = hours > 0 ? `${hours}j ${minutes}m` : `${minutes}m`;
@@ -53,6 +60,7 @@ export const performaService = {
     return { 
       totalMateri, 
       timeString, 
+      // Akurasi: (Benar/Total Soal) * 100
       avgScore: totalAttempts > 0 ? Math.round((totalPoints / totalAttempts) * 100) : 0, 
       totalPoints,
       totalReadCount,
