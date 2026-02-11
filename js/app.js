@@ -53,11 +53,10 @@ window.__DEBUG__.log('App init() dipanggil');
 
   // 2. Inject Modals
   const headerRight = document.querySelector('.header-right');
-  if (headerRight) {
+if (headerRight) {
     headerRight.insertAdjacentHTML('beforeend', modalsettingsView);
-    headerRight.insertAdjacentHTML('beforeend', modalprofilView);
     babModalView.renderBase();
-  }
+}
 
   // 3. Listener Auth Global (Diletakkan setelah render dasar)
   supabase.auth.onAuthStateChange((event, session) => {
