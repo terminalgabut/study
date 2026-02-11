@@ -4,6 +4,7 @@ import { supabase } from '../services/supabase.js';
 let startTime = null;
 let currentSlug = null;
 let currentTitle = null;
+let currentCategory = null; // TAMBAHKAN INI
 
 /**
  * Inisialisasi halaman materi
@@ -19,8 +20,9 @@ export async function initKontenBab(category, slug) {
 
   // Set state awal
   currentSlug = slug;
+  currentCategory = category; // SIMPAN KATEGORI KE VARIABLE GLOBAL
   startTime = Date.now();
-  window.__DEBUG__.log(`[Materi] Membuka: ${slug}`);
+  window.__DEBUG__.log(`[Materi] Membuka: ${slug} (Kategori: ${category})`);
 
   // 1. Ambil data materi dan catatan secara paralel
   const [materiRes, catatanRes] = await Promise.all([
@@ -40,28 +42,20 @@ export async function initKontenBab(category, slug) {
   contentEl.innerHTML = materiRes.data.content;
   if (noteArea) noteArea.value = catatanRes.data ? catatanRes.data.content : "";
 
-  // 3. Catat riwayat akses (Hanya jika user login)
+  // 3. Catat riwayat akses (Log Aktivitas Biasa)
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    const { error: upsertError } = await supabase.from('riwayat').upsert({ 
+    await supabase.from('riwayat').upsert({ 
       material_slug: slug, 
       bab_title: currentTitle,
       last_accessed: new Date().toISOString() 
     }, { onConflict: 'user_id, material_slug' });
-
-    if (upsertError) {
-      window.__DEBUG__.error(`[Riwayat] Upsert Gagal: ${upsertError.message}`);
-    } else {
-      window.__DEBUG__.log(`[Riwayat] Berhasil mencatat kunjungan: ${currentTitle}`);
-    }
   }
 
-  // 4. Setup Event Listeners (Tombol & Timer)
+  // 4. Setup Event Listeners
   if (saveBtn) saveBtn.onclick = () => handleSaveNote();
 
-  // Bersihkan listener lama agar tidak double
   window.removeEventListener('beforeunload', saveProgress);
-  // Pasang listener baru
   window.addEventListener('hashchange', saveProgress, { once: true });
   window.addEventListener('beforeunload', saveProgress);
 }
@@ -99,29 +93,32 @@ async function handleSaveNote() {
  * SIMPAN PROGRESS (RPC)
  */
 async function saveProgress() {
-  if (!startTime || !currentSlug) return;
+  // Pastikan ada kategori dan judul agar bisa masuk ke Primary Key study_progress
+  if (!startTime || !currentCategory || !currentTitle) return;
 
   const endTime = Date.now();
   const durationInSeconds = Math.floor((endTime - startTime) / 1000);
 
-  // Hanya jalankan RPC jika durasi masuk akal (minimal 5 detik)
   if (durationInSeconds >= 5) {
-    window.__DEBUG__.log(`[RPC] Mengirim durasi: ${durationInSeconds}s`);
+    window.__DEBUG__.log(`[RPC] Mengirim durasi ke ${currentCategory} - ${currentTitle}`);
     
+    // SESUAIKAN PARAMETER DENGAN RPC BARU DI DATABASE
     const { error } = await supabase.rpc('increment_duration', { 
-      slug: currentSlug, 
-      seconds: durationInSeconds 
+      p_category: currentCategory, 
+      p_title: currentTitle,
+      p_seconds: durationInSeconds 
     });
 
     if (error) {
       window.__DEBUG__.error(`[RPC] Gagal: ${error.message}`);
     } else {
-      window.__DEBUG__.log(`[RPC] ✅ Durasi terupdate`);
+      window.__DEBUG__.log(`[RPC] ✅ Progress ${currentTitle} terupdate`);
     }
   }
 
-  // Reset state agar tidak terjadi pengiriman ganda
+  // Reset state
   startTime = null;
   currentSlug = null;
   currentTitle = null;
+  currentCategory = null; 
 }
