@@ -32,6 +32,7 @@ import { headerView } from '../components/headerView.js';
 import { sidebarView } from '../components/sidebarView.js';
 import { modalsettingsView } from '../components/modal-settingsView.js';
 import { modalprofilView } from '../components/modalprofilView.js';
+import { babModalView } from '../compenents/babModalView.js
 
 function init() {
 window.__DEBUG__.log('App init() dipanggil');
