@@ -53,30 +53,29 @@ export const performaService = {
   },
 
   calculateStatsFromProgress(progress = []) {
-    // Menghitung total dari data agregat study_progress
-    const totalMateri = progress.length; // Jumlah baris = jumlah bab unik yang pernah dipelajari
-    
-    const totalSeconds = progress.reduce(
-      (acc, p) => acc + (Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0)),
-      0
-    );
+  const totalMateri = progress.length;
+  const totalPoints = progress.reduce((acc, p) => acc + (p.total_score_points || 0), 0);
+  const totalAttempts = progress.reduce((acc, p) => acc + (p.attempts_count || 0), 0);
+  
+  // Hitung total repetisi (Materi Diulang)
+  const totalReadCount = progress.reduce((acc, p) => acc + (p.read_count || 0), 0);
+  
+  const totalSeconds = progress.reduce(
+    (acc, p) => acc + (Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0)),
+    0
+  );
 
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const timeString = hours > 0 ? `${hours}j ${minutes}m` : `${minutes}m`;
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const timeString = hours > 0 ? `${hours}j ${minutes}m` : `${minutes}m`;
 
-    const totalPoints = progress.reduce((acc, p) => acc + (p.total_score_points || 0), 0);
-    const totalAttempts = progress.reduce((acc, p) => acc + (p.attempts_count || 0), 0);
-    
-    // Akurasi: (Total Poin / Total Soal) * 100
-    const avgScore = totalAttempts > 0 ? Math.round((totalPoints / totalAttempts) * 100) : 0;
-
-    return { 
-      totalMateri, 
-      timeString, 
-      avgScore, 
-      totalPoints,
-      streak: progress.length > 0 ? 1 : 0 // Streak nanti bisa dikembangkan dengan tabel log harian
-    };
-  }
+  return { 
+    totalMateri, 
+    timeString, 
+    avgScore: totalAttempts > 0 ? Math.round((totalPoints / totalAttempts) * 100) : 0, 
+    totalPoints,
+    totalReadCount, // Ditambahkan agar controller tinggal pakai
+    streak: progress.length > 0 ? 1 : 0 
+  };
+}
 };
