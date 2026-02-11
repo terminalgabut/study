@@ -4,16 +4,14 @@ export const performaController = {
   async init() {
     window.__DEBUG__.log("--- [DEBUG] Inisialisasi PerformaController ---");
     try {
-      // 1. Ambil data agregat (hanya dari profile, study_progress, & achievements)
+      // Ambil data agregat (Data sudah dihitung di Service)
       const data = await performaService.getDashboardData();
       window.__DEBUG__.log("[Performa] Data Diterima:", data);
 
-      // Pastikan data dikirim ke fungsi render yang sesuai
-      this.renderSummary(data.profile, data.progress);
+      // Kirim stats yang sudah matang dari service ke fungsi render
+      this.renderSummary(data.profile, data.stats);
       this.renderAchievements(data.achievements);
       this.renderCharts(data.progress);
-      
-      // Jurnal aktivitas kini diambil dari urutan update di study_progress
       this.renderActivityJournal(data.progress); 
       
     } catch (error) {
@@ -22,55 +20,42 @@ export const performaController = {
     }
   },
 
-  renderSummary(profile, progress = []) {
+  renderSummary(profile, stats) {
     window.__DEBUG__.log("[Performa] Rendering Summary...");
     
-    // Hitung statistik langsung dari array progress
-    const stats = {
-      totalMateri: progress.length,
-      totalSeconds: progress.reduce((acc, curr) => 
-        acc + (Number(curr.total_reading_seconds || 0) + Number(curr.total_quiz_seconds || 0)), 0),
-      totalPoin: progress.reduce((acc, curr) => acc + (curr.total_score_points || 0), 0),
-      totalReadCount: progress.reduce((acc, curr) => acc + (curr.read_count || 0), 0),
-      totalAttempts: progress.reduce((acc, curr) => acc + (curr.attempts_count || 0), 0)
-    };
-
-    // Update Nama (Menggunakan tabel 'profile' sesuai request)
+    // 1. Update Nama
     const nameEl = document.getElementById('user-fullname');
     if (nameEl) nameEl.textContent = profile?.full_name || 'Pelajar';
     
-    // Logika Leveling (Sederhana: tiap 500 poin naik level)
-    const level = Math.floor(stats.totalPoin / 500) + 1;
-    const progressXP = stats.totalPoin % 500;
+    // 2. Logika Leveling (Menggunakan stats.totalPoints yang sudah dihitung Service)
+    const level = Math.floor(stats.totalPoints / 500) + 1;
+    const progressXP = stats.totalPoints % 500;
     const progressPercent = (progressXP / 500) * 100;
     
-    document.getElementById('user-rank').textContent = `Level ${level} Scholar`;
-    document.getElementById('xp-text').textContent = `${stats.totalPoin} Poin Total`;
-    document.getElementById('xp-fill').style.width = `${progressPercent}%`;
+    const rankEl = document.getElementById('user-rank');
+    const xpTextEl = document.getElementById('xp-text');
+    const xpFillEl = document.getElementById('xp-fill');
 
-    // Pasang ke UI element
-    if(document.getElementById('stat-materi')) 
-      document.getElementById('stat-materi').textContent = stats.totalMateri;
-      
-    if(document.getElementById('stat-waktu')) 
-      document.getElementById('stat-waktu').textContent = `${Math.floor(stats.totalSeconds / 60)}m`;
-      
-    if(document.getElementById('stat-read-count')) 
-      document.getElementById('stat-read-count').textContent = stats.totalReadCount;
-    
-    // Akurasi berdasarkan poin berbanding total soal yang dijawab
-    const accuracy = stats.totalAttempts > 0 ? 
-      Math.round((stats.totalPoin / stats.totalAttempts) * 100) : 0;
-    
-    if(document.getElementById('stat-skor')) 
-      document.getElementById('stat-skor').textContent = `${accuracy}%`;
+    if (rankEl) rankEl.textContent = `Level ${level} Scholar`;
+    if (xpTextEl) xpTextEl.textContent = `${stats.totalPoints} Poin Total`;
+    if (xpFillEl) xpFillEl.style.width = `${progressPercent}%`;
+
+    // 3. Pasang data statistik dari Service ke UI element
+    const updateText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    updateText('stat-materi', stats.totalMateri);
+    updateText('stat-waktu', stats.timeString);
+    updateText('stat-read-count', stats.totalReadCount);
+    updateText('stat-skor', `${stats.avgScore}%`);
   },
 
   renderActivityJournal(progress = []) {
     const listContainer = document.getElementById('activity-list');
     if (!listContainer) return;
 
-    // Sort berdasarkan aktivitas terbaru di study_progress
     const recent = [...progress]
       .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
       .slice(0, 5);
@@ -83,7 +68,7 @@ export const performaController = {
     listContainer.innerHTML = recent.map(item => `
       <li>
         <div class="task-info">
-          <strong>${item.bab_title || 'Materi Tanpa Judul'}</strong>
+          <strong>${item.bab_title || 'Materi'}</strong>
           <span class="small gray">${item.category || 'Umum'} • Dilihat ${item.read_count}x</span>
         </div>
         <div class="task-meta">
@@ -97,8 +82,6 @@ export const performaController = {
     const container = document.getElementById('badge-container');
     if (!container) return;
     
-    window.__DEBUG__.log(`[Performa] Rendering ${badges.length} lencana`);
-
     if (badges.length === 0) {
       container.innerHTML = '<p class="small gray">Belum ada lencana yang diraih.</p>';
       return;
@@ -128,7 +111,6 @@ export const performaController = {
 
     if (!progress || progress.length === 0) return;
 
-    // 1. Chart Efektivitas: Poin vs Menit Baca per Bab
     if (trendEl) {
       new Chart(trendEl.getContext('2d'), {
         type: 'bar',
@@ -153,7 +135,6 @@ export const performaController = {
       });
     }
 
-    // 2. Chart Kategori: Akumulasi Poin per Kategori
     if (catEl) {
       const catData = {};
       progress.forEach(p => {
