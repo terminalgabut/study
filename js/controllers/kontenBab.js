@@ -70,12 +70,15 @@ async function handleSaveNote() {
 
   if (statusEl) statusEl.textContent = "⏳ Menyimpan...";
 
-  const { error } = await supabase.from('catatan').upsert({ 
+const { data: { user } } = await supabase.auth.getUser();
+
+const { error } = await supabase.from('catatan').upsert({ 
+    user_id: user.id, // PASTIKAN INI DIKIRIM
     material_slug: currentSlug, 
     bab_title: currentTitle,
     content: noteArea.value.trim(),
     updated_at: new Date().toISOString() 
-  }, { onConflict: 'user_id, material_slug' });
+}, { onConflict: 'user_id, material_slug' });
 
   if (error) {
     window.__DEBUG__.error(`[Catatan] Gagal: ${error.message}`);
