@@ -1,0 +1,75 @@
+/* STATS CARDS SPECIFIC STYLES
+   Menggunakan variabel dari CSS Global untuk konsistensi tema
+*/
+
+.perf-card {
+    /* Gunakan variabel --card dan --radius dari global */
+    background-color: var(--card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: var(--space-md);
+    
+    /* Perilaku Dasar */
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Cegah teks terpilih saat klik cepat */
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+/* Efek Hover (Saat Disentuh) */
+.perf-card:hover {
+    /* Gunakan --accent-soft untuk kilauan halus */
+    background-color: var(--accent-soft);
+    
+    /* Sedikit elevasi ke atas */
+    transform: translateY(-4px);
+    
+    /* Gunakan warna accent untuk border agar terlihat 'hidup' */
+    border-color: var(--accent);
+    
+    /* Gunakan shadow global yang sudah kamu definisikan */
+    box-shadow: var(--shadow-sm), 0 8px 20px -4px rgba(56, 189, 248, 0.2);
+}
+
+/* Efek Active (Saat Ditekan) */
+.perf-card:active {
+    transform: translateY(-1px) scale(0.98);
+    transition: all 0.1s;
+}
+
+/* Indikator Panah di Pojok */
+.card-arrow {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.4;
+    transition: all 0.2s;
+}
+
+.perf-card:hover .card-arrow {
+    color: var(--accent);
+    opacity: 1;
+    transform: translate(2px, -2px);
+}
+
+/* Menyesuaikan teks highlight di dalam kartu agar tetap kontras */
+.perf-card .highlight {
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0;
+}
+
+.perf-card .small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
