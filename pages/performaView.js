@@ -6,8 +6,8 @@ export const performaView = `
     
     <div class="xp-container">
       <div class="xp-info">
-        <span class="small">Progress XP</span>
-        <span class="small" id="xp-text">0 / 100</span>
+        <span class="small">Akumulasi Poin</span>
+        <span class="small" id="xp-text">0 Poin</span>
       </div>
       <div class="xp-bar-bg">
         <div id="xp-fill" class="xp-bar-fill" style="width: 0%"></div>
@@ -16,20 +16,20 @@ export const performaView = `
 
     <div class="stats-header-grid">
       <div class="stat-item">
-        <span class="small">Total Materi</span>
+        <span class="small">Bab Dipelajari</span>
         <p class="highlight" id="stat-materi">0</p>
       </div>
       <div class="stat-item">
-        <span class="small">Investasi Waktu</span>
+        <span class="small">Total Durasi</span>
         <p class="highlight" id="stat-waktu">0m</p>
       </div>
       <div class="stat-item">
-        <span class="small">Rata-rata Skor</span>
-        <p class="highlight" id="stat-skor">0%</p>
+        <span class="small">Materi Diulang</span>
+        <p class="highlight" id="stat-read-count">0</p>
       </div>
       <div class="stat-item">
-        <span class="small">Streak</span>
-        <p class="highlight" id="stat-streak">🔥 0</p>
+        <span class="small">Akurasi Kuis</span>
+        <p class="highlight" id="stat-skor">0%</p>
       </div>
     </div>
   </div>
@@ -37,16 +37,16 @@ export const performaView = `
   <div class="home-grid">
     
     <div class="home-card wide-card">
-      <h3>📈 Tren & Konsistensi</h3>
-      <p class="small gray">Perbandingan kualitas skor dan durasi membaca</p>
+      <h3>📈 Efektivitas Belajar</h3>
+      <p class="small gray">Hubungan antara waktu baca dan perolehan skor</p>
       <div class="chart-wrapper">
         <canvas id="trendChart"></canvas>
       </div>
     </div>
 
     <div class="home-card">
-      <h3>📊 Peta Kekuatan</h3>
-      <p class="small gray">Analisis kemampuan per kategori</p>
+      <h3>📊 Distribusi Poin</h3>
+      <p class="small gray">Peta kekuatan berdasarkan kategori materi</p>
       <div class="chart-wrapper">
         <canvas id="categoryChart"></canvas>
       </div>
@@ -55,7 +55,7 @@ export const performaView = `
     <div class="home-card">
       <h3>🏆 Lencana Milestone</h3>
       <div id="badge-container" class="badge-list">
-        <p class="small gray">Belum ada lencana diraih</p>
+        <p class="small gray">Memuat lencana...</p>
       </div>
     </div>
 
