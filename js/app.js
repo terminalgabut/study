@@ -56,6 +56,7 @@ window.__DEBUG__.log('App init() dipanggil');
   if (headerRight) {
     headerRight.insertAdjacentHTML('beforeend', modalsettingsView);
     headerRight.insertAdjacentHTML('beforeend', modalprofilView);
+    babModalView.renderBase();
   }
 
   // 3. Listener Auth Global (Diletakkan setelah render dasar)
