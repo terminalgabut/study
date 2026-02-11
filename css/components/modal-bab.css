@@ -1,0 +1,101 @@
+/* styles/modal-bab.css */
+
+.modal-stat-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.modal-stat-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-stat-content {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-stat-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.modal-stat-scroll-area {
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Styling Kategori & List */
+.cat-group {
+    margin-bottom: 1.2rem;
+}
+
+.cat-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+.cat-ratio {
+    color: #6366f1; /* Warna aksen untuk angka progres */
+}
+
+.text-muted {
+    color: #94a3b8;
+}
+
+.text-muted .cat-ratio {
+    color: #cbd5e1;
+}
+
+.bab-text-row {
+    font-size: 0.95rem;
+    color: #334155;
+    padding: 6px 0 6px 12px;
+    border-left: 2px solid #e2e8f0;
+    margin-left: 2px;
+}
+
+.bab-text-empty {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #94a3b8;
+    padding-left: 12px;
+}
+
+.close-btn-minimal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+}
