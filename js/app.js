@@ -51,11 +51,12 @@ window.__DEBUG__.log('App init() dipanggil');
     <main id="content"></main>
   `;
 
+  babModalView.renderBase();
+
   // 2. Inject Modals
   const headerRight = document.querySelector('.header-right');
 if (headerRight) {
-    headerRight.insertAdjacentHTML('beforeend', modalsettingsView);
-    babModalView.renderBase();
+    headerRight.insertAdjacentHTML('beforeend', modalsettingsView);    
 }
 
   // 3. Listener Auth Global (Diletakkan setelah render dasar)
