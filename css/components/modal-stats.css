@@ -1,0 +1,39 @@
+/* Container Utama Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active { opacity: 1; }
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content { transform: translateY(0); }
+
+/* Interaktivitas pada stat-item */
+.stat-item {
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.stat-item:hover {
+    background-color: #f9fafb;
+    transform: translateY(-2px);
+}
