@@ -1,51 +1,146 @@
-/* Layout Khusus Performa */
+/* ==========================================================================
+   PERFORMA PAGE STYLES (Integrated with Stats Cards)
+   ========================================================================== */
+
+/* 1. Layout & XP Progress Section */
 .xp-container {
-  margin: 15px 0;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 12px;
-  border-radius: 12px;
+  margin: var(--space-md) 0;
+  background: var(--card);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
 }
 
 .xp-bar-bg {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--surface);
   height: 10px;
   border-radius: 5px;
-  margin-top: 8px;
+  margin-top: var(--space-sm);
   overflow: hidden;
 }
 
 .xp-bar-fill {
-  background: #ffffff;
+  background: var(--accent);
   height: 100%;
   width: 0%;
-  transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* 2. Grid System */
 .stats-header-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border);
 }
 
+/* 3. Interactive Stats Cards (.perf-card) */
+.perf-card {
+  background-color: var(--card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: var(--space-md);
+  
+  /* Interactivity */
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Content Alignment */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  user-select: none;
+}
+
+/* Hover & Active States */
+.perf-card:hover {
+  background-color: var(--accent-soft);
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm), 0 8px 20px -4px rgba(56, 189, 248, 0.15);
+}
+
+.perf-card:active {
+  transform: translateY(-1px) scale(0.98);
+  transition: all 0.1s;
+}
+
+/* Typography inside Cards */
+.perf-card .small {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.perf-card .highlight {
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Visual Indicator (Arrow) */
+.card-arrow {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.4;
+  transition: all 0.2s ease;
+}
+
+.perf-card:hover .card-arrow {
+  color: var(--accent);
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+/* 4. Charts & Visualizations */
 .chart-wrapper {
   position: relative;
   height: 220px;
   width: 100%;
-  margin-top: 15px;
+  margin-top: var(--space-md);
+  background: var(--card);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
 }
 
+/* 5. Achievements & Badges */
 .badge-list {
   display: flex;
-  gap: 12px;
+  gap: var(--space-sm);
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: var(--space-sm);
 }
 
+.badge-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+
+.badge-icon:hover {
+  transform: scale(1.1);
+  border-color: var(--accent);
+}
+
+/* 6. Utility Classes */
 .wide-card {
-  grid-column: 1 / -1; /* Mengambil seluruh lebar grid pada mobile/desktop */
+  grid-column: 1 / -1;
 }
 
 /* Responsivitas Grid */
