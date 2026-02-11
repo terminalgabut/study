@@ -15,24 +15,27 @@ export const performaView = `
     </div>
 
     <div class="stats-header-grid">
-      <div class="stat-item">
-        <span class="small">Bab Dipelajari</span>
-        <p class="highlight" id="stat-materi">0</p>
-      </div>
-      <div class="stat-item">
-        <span class="small">Total Durasi</span>
-        <p class="highlight" id="stat-waktu">0m</p>
-      </div>
-      <div class="stat-item">
-        <span class="small">Materi Diulang</span>
-        <p class="highlight" id="stat-read-count">0</p>
-      </div>
-      <div class="stat-item">
-        <span class="small">Akurasi Kuis</span>
-        <p class="highlight" id="stat-skor">0%</p>
-      </div>
-    </div>
+  <div class="stat-item perf-card" id="card-materi">
+    <span class="small">Bab Dipelajari</span>
+    <p class="highlight" id="stat-materi">0</p>
+    <span class="card-arrow">↗</span>
   </div>
+
+  <div class="stat-item perf-card" id="card-waktu">
+    <span class="small">Total Durasi</span>
+    <p class="highlight" id="stat-waktu">0m</p>
+  </div>
+
+  <div class="stat-item">
+    <span class="small">Materi Diulang</span>
+    <p class="highlight" id="stat-read-count">0</p>
+  </div>
+
+  <div class="stat-item">
+    <span class="small">Akurasi Kuis</span>
+    <p class="highlight" id="stat-skor">0%</p>
+  </div>
+</div>
 
   <div class="home-grid">
     
