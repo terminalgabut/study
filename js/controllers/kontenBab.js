@@ -10,8 +10,6 @@ let currentTitle = null;
  */
 export async function initKontenBab(category, slug) {
   console.log("--- DEBUG START ---");
-  console.log("Slug:", slug);
-  console.log("Category:", category);
   const titleEl = document.getElementById('learningTitle');
   const contentEl = document.getElementById('learningContent');
   const noteArea = document.getElementById('noteArea');
@@ -19,11 +17,12 @@ export async function initKontenBab(category, slug) {
 
   if (!titleEl || !contentEl) return;
 
+  // Set state awal
   currentSlug = slug;
   startTime = Date.now();
-  window.__DEBUG__.log(`[Materi] Membuka: ${slug} pada ${new Date(startTime).toLocaleTimeString()}`);
+  window.__DEBUG__.log(`[Materi] Membuka: ${slug}`);
 
-  // 1. Ambil data materi dan catatan
+  // 1. Ambil data materi dan catatan secara paralel
   const [materiRes, catatanRes] = await Promise.all([
     supabase.from('materials').select('title, content').eq('slug', slug).single(),
     supabase.from('catatan').select('content').eq('material_slug', slug).maybeSingle()
@@ -35,27 +34,34 @@ export async function initKontenBab(category, slug) {
     return;
   }
 
+  // 2. Render konten ke UI
   currentTitle = materiRes.data.title;
   titleEl.textContent = currentTitle;
   contentEl.innerHTML = materiRes.data.content;
-  
   if (noteArea) noteArea.value = catatanRes.data ? catatanRes.data.content : "";
 
-  // 2. Upsert Riwayat Akses
-  // 5. Catat riwayat akses (Otomatis menyertakan user_id dari session)
-const { data: { user } } = await supabase.auth.getUser();
+  // 3. Catat riwayat akses (Hanya jika user login)
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { error: upsertError } = await supabase.from('riwayat').upsert({ 
+      material_slug: slug, 
+      bab_title: currentTitle,
+      last_accessed: new Date().toISOString() 
+    }, { onConflict: 'user_id, material_slug' });
 
-if (user) {
-  const { error: upsertError } = await supabase.from('riwayat').upsert({ 
-  material_slug: slug, 
-  bab_title: currentTitle,
-  last_accessed: new Date().toISOString() 
-}, { onConflict: 'user_id, material_slug' });
+    if (upsertError) {
+      window.__DEBUG__.error(`[Riwayat] Upsert Gagal: ${upsertError.message}`);
+    } else {
+      window.__DEBUG__.log(`[Riwayat] Berhasil mencatat kunjungan: ${currentTitle}`);
+    }
+  }
 
+  // 4. Setup Event Listeners (Tombol & Timer)
   if (saveBtn) saveBtn.onclick = () => handleSaveNote();
 
-  // 3. Event Listeners untuk Timer
+  // Bersihkan listener lama agar tidak double
   window.removeEventListener('beforeunload', saveProgress);
+  // Pasang listener baru
   window.addEventListener('hashchange', saveProgress, { once: true });
   window.addEventListener('beforeunload', saveProgress);
 }
@@ -81,7 +87,7 @@ async function handleSaveNote() {
     window.__DEBUG__.error(`[Catatan] Gagal: ${error.message}`);
     if (statusEl) statusEl.textContent = "❌ Gagal";
   } else {
-    window.__DEBUG__.log(`[Catatan] Berhasil disimpan untuk ${currentSlug}`);
+    window.__DEBUG__.log(`[Catatan] Berhasil disimpan`);
     if (statusEl) {
       statusEl.textContent = "✅ Tersimpan!";
       setTimeout(() => { statusEl.textContent = ""; }, 2000);
@@ -90,7 +96,7 @@ async function handleSaveNote() {
 }
 
 /**
- * SIMPAN PROGRESS (RPC) - Dengan Debug Lengkap
+ * SIMPAN PROGRESS (RPC)
  */
 async function saveProgress() {
   if (!startTime || !currentSlug) return;
@@ -98,28 +104,23 @@ async function saveProgress() {
   const endTime = Date.now();
   const durationInSeconds = Math.floor((endTime - startTime) / 1000);
 
-  window.__DEBUG__.log(`[Timer] Sesi selesai. Durasi: ${durationInSeconds} detik.`);
-
-  // Hanya simpan jika durasi lebih dari 5 detik agar tidak membebani database
+  // Hanya jalankan RPC jika durasi masuk akal (minimal 5 detik)
   if (durationInSeconds >= 5) {
-    window.__DEBUG__.log(`[RPC] Mengirim durasi ke database untuk slug: ${currentSlug}...`);
+    window.__DEBUG__.log(`[RPC] Mengirim durasi: ${durationInSeconds}s`);
     
-    const { data, error } = await supabase.rpc('increment_duration', { 
+    const { error } = await supabase.rpc('increment_duration', { 
       slug: currentSlug, 
       seconds: durationInSeconds 
     });
 
     if (error) {
-      window.__DEBUG__.error(`[RPC] Gagal update durasi: ${error.code} - ${error.message}`);
-      console.error('Detail Error RPC:', error);
+      window.__DEBUG__.error(`[RPC] Gagal: ${error.message}`);
     } else {
-      window.__DEBUG__.log(`[RPC] ✅ Sukses! Durasi ${durationInSeconds}s ditambahkan ke ${currentSlug}`);
+      window.__DEBUG__.log(`[RPC] ✅ Durasi terupdate`);
     }
-  } else {
-    window.__DEBUG__.log(`[RPC] Dilewati (Durasi < 5 detik)`);
   }
 
-  // Reset variabel global
+  // Reset state agar tidak terjadi pengiriman ganda
   startTime = null;
   currentSlug = null;
   currentTitle = null;
