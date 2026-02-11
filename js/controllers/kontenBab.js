@@ -47,23 +47,10 @@ const { data: { user } } = await supabase.auth.getUser();
 
 if (user) {
   const { error: upsertError } = await supabase.from('riwayat').upsert({ 
-    user_id: user.id,            // Eksplisit masukkan user_id
-    material_slug: slug, 
-    bab_title: currentTitle,
-    last_accessed: new Date().toISOString() 
-  }, { 
-    onConflict: 'user_id, material_slug' 
-  });
-
-  if (upsertError) {
-    window.__DEBUG__.error(`[Riwayat] Initial Upsert Gagal: ${upsertError.message}`);
-    console.error("Detail Error:", upsertError);
-  } else {
-    window.__DEBUG__.log(`[Riwayat] Sesi dimulai untuk: ${currentTitle}`);
-  }
-} else {
-  window.__DEBUG__.error("[Riwayat] Gagal: User tidak terdeteksi (belum login)");
-}
+  material_slug: slug, 
+  bab_title: currentTitle,
+  last_accessed: new Date().toISOString() 
+}, { onConflict: 'user_id, material_slug' });
 
   if (saveBtn) saveBtn.onclick = () => handleSaveNote();
 
