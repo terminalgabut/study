@@ -2,117 +2,162 @@ import { performaService } from '../services/performaService.js';
 
 export const performaController = {
   async init() {
+    window.__DEBUG__.log("--- [DEBUG] Inisialisasi PerformaController ---");
     try {
+      // 1. Ambil data dari tabel study_progress (Agregat)
       const data = await performaService.getDashboardData();
-      this.renderSummary(data.profile, data.stats);
-      this.renderActivityJournal(data.attempts, data.history);
+      
+      window.__DEBUG__.log("[Performa] Data Diterima:", data);
+
+      this.renderSummary(data.profile, data.progress);
       this.renderAchievements(data.achievements);
-      this.renderCharts(data.attempts, data.history);
+      this.renderCharts(data.progress);
+      this.renderActivityJournal(data.progress); // Menggunakan bab terakhir
+      
     } catch (error) {
+      window.__DEBUG__.error("[Performa] Gagal:", error.message);
       console.error("Gagal inisialisasi Performa:", error);
     }
   },
 
-  renderSummary(profile, stats) {
+  renderSummary(profile, progress = []) {
+    window.__DEBUG__.log("[Performa] Rendering Summary...");
+    
+    // Perhitungan Total dari tabel study_progress
+    const stats = {
+      totalMateri: progress.length,
+      totalSeconds: progress.reduce((acc, curr) => acc + (Number(curr.total_reading_seconds || 0) + Number(curr.total_quiz_seconds || 0)), 0),
+      totalPoin: progress.reduce((acc, curr) => acc + (curr.total_score_points || 0), 0),
+      totalReadCount: progress.reduce((acc, curr) => acc + (curr.read_count || 0), 0),
+      totalAttempts: progress.reduce((acc, curr) => acc + (curr.attempts_count || 0), 0)
+    };
+
     const nameEl = document.getElementById('user-fullname');
     if (nameEl) nameEl.textContent = profile?.full_name || 'Pelajar';
     
-    const xp = profile?.xp || 0;
-    const level = Math.floor(xp / 100) + 1;
-    const currentXP = xp % 100;
+    // Logika Leveling berdasarkan TOTAL POIN (bukan XP lama)
+    const level = Math.floor(stats.totalPoin / 500) + 1;
+    const progressXP = stats.totalPoin % 500;
+    const progressPercent = (progressXP / 500) * 100;
     
     document.getElementById('user-rank').textContent = `Level ${level} Scholar`;
-    document.getElementById('xp-text').textContent = `${currentXP} / 100 XP`;
-    document.getElementById('xp-fill').style.width = `${currentXP}%`;
+    document.getElementById('xp-text').textContent = `${stats.totalPoin} Poin`;
+    document.getElementById('xp-fill').style.width = `${progressPercent}%`;
 
+    // Pasang ke UI sesuai ID baru kita
     document.getElementById('stat-materi').textContent = stats.totalMateri;
-    document.getElementById('stat-waktu').textContent = stats.timeString;
-    document.getElementById('stat-skor').textContent = `${stats.avgScore}%`;
-    document.getElementById('stat-streak').textContent = `🔥 ${stats.streak}`;
+    document.getElementById('stat-waktu').textContent = `${Math.floor(stats.totalSeconds / 60)}m`;
+    document.getElementById('stat-read-count').textContent = stats.totalReadCount;
+    
+    // Hitung Akurasi (Poin / Total Soal)
+    const accuracy = stats.totalAttempts > 0 ? Math.round((stats.totalPoin / stats.totalAttempts) * 100) : 0;
+    document.getElementById('stat-skor').textContent = `${accuracy}%`;
   },
 
-  renderActivityJournal(attempts, history) {
+  renderActivityJournal(progress = []) {
     const listContainer = document.getElementById('activity-list');
     if (!listContainer) return;
 
-    const recentActivity = [...attempts].reverse().slice(0, 5);
-    if (recentActivity.length === 0) {
-      listContainer.innerHTML = '<li class="small gray">Belum ada aktivitas.</li>';
+    // Ambil 5 materi yang baru saja diupdate
+    const recent = [...progress]
+      .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+      .slice(0, 5);
+
+    if (recent.length === 0) {
+      listContainer.innerHTML = '<li class="small gray">Belum ada aktivitas belajar.</li>';
       return;
     }
 
-    listContainer.innerHTML = recentActivity.map(act => `
+    listContainer.innerHTML = recent.map(item => `
       <li>
         <div class="task-info">
-          <strong>${act.dimension || 'Kuis'}</strong>
-          <span class="small gray">${new Date(act.submitted_at).toLocaleDateString()}</span>
+          <strong>${item.bab_title || 'Materi'}</strong>
+          <span class="small gray">${item.category || ''} • Diulang ${item.read_count}x</span>
         </div>
-        <div class="task-meta"><span class="badge-score">${act.score}%</span></div>
+        <div class="task-meta">
+           <span class="small gray">${new Date(item.updated_at).toLocaleDateString()}</span>
+        </div>
       </li>
     `).join('');
   },
 
-  renderAchievements(badges) {
+  renderAchievements(badges = []) {
     const container = document.getElementById('badge-container');
     if (!container) return;
-    if (!badges || badges.length === 0) {
-      container.innerHTML = '<p class="small gray">Belum ada lencana.</p>';
+    
+    window.__DEBUG__.log(`[Performa] Rendering ${badges.length} lencana`);
+
+    if (badges.length === 0) {
+      container.innerHTML = '<p class="small gray">Selesaikan materi untuk meraih lencana.</p>';
       return;
     }
 
     container.innerHTML = badges.map(b => `
       <div class="badge-icon active" title="${b.achievements?.description || ''}">
         ${this.getBadgeEmoji(b.achievements?.title)}
+        <span class="badge-tooltip">${b.achievements?.title}</span>
       </div>
     `).join('');
   },
 
   getBadgeEmoji(title) {
-    const map = { 'Si Paling Tekun': '⏳', 'Sempurna!': '💎', 'Pemanasan': '🔥' };
+    const map = { 
+      'Langkah Awal': '🌱', 
+      'Kutu Buku I': '📚', 
+      'Petarung Kuis': '⚔️',
+      'Eksplorer Ulung': '🗺️'
+    };
     return map[title] || '🏆';
   },
 
-  renderCharts(attempts = [], history = []) {
-  const trendEl = document.getElementById('trendChart');
-  const catEl = document.getElementById('categoryChart');
+  renderCharts(progress = []) {
+    const trendEl = document.getElementById('trendChart');
+    const catEl = document.getElementById('categoryChart');
 
-  if (trendEl && Array.isArray(attempts) && attempts.length > 0) {
-    new Chart(trendEl.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: attempts.slice(-7).map(a =>
-          new Date(a.submitted_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
-        ),
-        datasets: [{
-          data: attempts.slice(-7).map(a => a.score),
-          tension: 0.4
-        }]
-      },
-      options: { responsive: true, maintainAspectRatio: false }
-    });
-  }
+    if (!progress.length) return;
 
-  if (catEl && Array.isArray(attempts) && attempts.length > 0) {
-    const categoryMap = {};
+    // 1. Chart Efektivitas (Waktu vs Skor per Bab)
+    if (trendEl) {
+      new Chart(trendEl.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: progress.map(p => p.bab_title.substring(0, 10) + '..'),
+          datasets: [
+            {
+              label: 'Poin',
+              data: progress.map(p => p.total_score_points),
+              backgroundColor: '#4f46e5'
+            },
+            {
+              label: 'Menit Baca',
+              type: 'line',
+              data: progress.map(p => Math.floor(p.total_reading_seconds / 60)),
+              borderColor: '#10b981',
+              tension: 0.4
+            }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
 
-    attempts.forEach(att => {
-      const title = att.materi?.title || '';
-      const cat = title.split(' ')[0] || 'Umum';
+    // 2. Chart Kategori (Poin per Kategori)
+    if (catEl) {
+      const catData = {};
+      progress.forEach(p => {
+        catData[p.category] = (catData[p.category] || 0) + p.total_score_points;
+      });
 
-      if (!categoryMap[cat]) categoryMap[cat] = { total: 0, count: 0 };
-      categoryMap[cat].total += att.score || 0;
-      categoryMap[cat].count += 1;
-    });
-
-    new Chart(catEl.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: Object.keys(categoryMap),
-        datasets: [{
-          data: Object.values(categoryMap).map(v => Math.round(v.total / v.count))
-        }]
-      },
-      options: { indexAxis: 'y', responsive: true }
+      new Chart(catEl.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catData),
+          datasets: [{
+            data: Object.values(catData),
+            backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444']
+          }]
+        },
+        options: { responsive: true }
       });
     }
   }
