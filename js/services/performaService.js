@@ -6,44 +6,56 @@ export const performaService = {
 
     const [profileRes, progressRes, achievementRes] = await Promise.all([
       // 1. Ambil data profil (untuk XP/Level global jika masih pakai tabel profile)
-      supabase.from('profiles').select('*').single(), 
+      supabase.from('profile').select('*').single(), 
       
       // 2. Ambil data akumulasi dari tabel baru kita
       supabase.from('study_progress').select('*').order('updated_at', { ascending: false }),
+import { supabase } from './supabase.js';
 
-      // 3. Ambil lencana yang sudah diraih
-      supabase.from('user_achievements').select('*, achievements(*)').order('earned_at', { ascending: false })
-    ]);
+export const performaService = {
+  async getDashboardData() {
+    window.__DEBUG__.log("--- [DEBUG] Fetching Dashboard Data (Agregat Mode) ---");
 
-    // Debugging Response
-    if (progressRes.error) {
-      window.__DEBUG__.error("[Service] Gagal ambil study_progress:", progressRes.error.message);
-    } else {
-      window.__DEBUG__.log(`[Service] Berhasil ambil ${progressRes.data.length} baris progres.`);
+    try {
+      // Kita hanya ambil data dari sumber yang 'Reliable' (Permanen)
+      const [profileRes, progressRes, achievementRes] = await Promise.all([
+        supabase.from('profile').select('*').maybeSingle(), 
+        supabase.from('study_progress').select('*').order('updated_at', { ascending: false }),
+        supabase.from('user_achievements').select('*, achievements(*)').order('earned_at', { ascending: false })
+      ]);
+
+      // 1. Debug Profil
+      if (profileRes.error) {
+        window.__DEBUG__.warn("[Service] Profile tidak ditemukan:", profileRes.error.message);
+      }
+
+      // 2. Handle Error Progress (Ini jantungnya halaman performa)
+      if (progressRes.error) {
+        window.__DEBUG__.error("[Service] Gagal ambil study_progress:", progressRes.error.message);
+        throw progressRes.error; 
+      }
+
+      const progress = progressRes.data ?? [];
+      const achievements = achievementRes.data ?? [];
+
+      window.__DEBUG__.log(`[Service] Load Berhasil: ${progress.length} Bab ditemukan.`);
+
+      return {
+        profile: profileRes.data || { full_name: 'Pelajar', xp: 0 },
+        progress: progress, // Data ini sudah mengandung Judul Bab & Kategori
+        achievements: achievements,
+        stats: this.calculateStatsFromProgress(progress)
+      };
+    } catch (err) {
+      window.__DEBUG__.error("[Service] Critical Error:", err.message);
+      throw err;
     }
-
-    const progress = progressRes.data ?? [];
-    const achievements = achievementRes.data ?? [];
-
-    return {
-      profile: profileRes.data,
-      progress: progress,
-      achievements: achievements,
-      // Kita tetap kembalikan objek stats agar controller tidak pecah, 
-      // tapi isinya kita ambil langsung dari data progress
-      stats: this.calculateStatsFromProgress(progress)
-    };
   },
 
-  /**
-   * Menghitung statistik sederhana dari data agregat study_progress
-   */
   calculateStatsFromProgress(progress = []) {
-    window.__DEBUG__.log("[Service] Calculating stats dari data agregat...");
-
-    const totalMateri = progress.length;
+    // Menghitung total dari data agregat study_progress
+    const totalMateri = progress.length; // Jumlah baris = jumlah bab unik yang pernah dipelajari
     
-    // Total waktu gabungan membaca dan kuis (dalam detik)
     const totalSeconds = progress.reduce(
       (acc, p) => acc + (Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0)),
       0
@@ -53,28 +65,18 @@ export const performaService = {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const timeString = hours > 0 ? `${hours}j ${minutes}m` : `${minutes}m`;
 
-    // Akurasi Total (Total Poin / Total Soal yang Pernah Dijawab)
     const totalPoints = progress.reduce((acc, p) => acc + (p.total_score_points || 0), 0);
     const totalAttempts = progress.reduce((acc, p) => acc + (p.attempts_count || 0), 0);
+    
+    // Akurasi: (Total Poin / Total Soal) * 100
     const avgScore = totalAttempts > 0 ? Math.round((totalPoints / totalAttempts) * 100) : 0;
 
-    // Streak (Sederhana: Cek update terakhir di study_progress)
-    let streak = 0;
-    if (progress.length > 0) {
-        const dates = progress.map(p => p.updated_at.split('T')[0]);
-        const uniqueDates = [...new Set(dates)].sort().reverse();
-        
-        let today = new Date().toISOString().split('T')[0];
-        // Logika streak sederhana berdasarkan keteraturan tanggal update
-        streak = uniqueDates.length; // Contoh: jumlah hari unik aktif
-    }
-
-    return {
-      totalMateri,
-      timeString,
-      avgScore,
-      streak,
-      totalPoints // Kita tambahkan ini untuk level
+    return { 
+      totalMateri, 
+      timeString, 
+      avgScore, 
+      totalPoints,
+      streak: progress.length > 0 ? 1 : 0 // Streak nanti bisa dikembangkan dengan tabel log harian
     };
   }
 };
