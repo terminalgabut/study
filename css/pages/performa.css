@@ -1,8 +1,8 @@
 /* ==========================================================================
-   PERFORMA PAGE STYLES (Integrated with Stats Cards)
+   PERFORMA PAGE STYLES (Consistency Update)
    ========================================================================== */
 
-/* 1. Layout & XP Progress Section */
+/* 1. Progress Section */
 .xp-container {
   margin: var(--space-md) 0;
   background: var(--card);
@@ -23,6 +23,7 @@
   background: var(--accent);
   height: 100%;
   width: 0%;
+  /* Sesuai dengan reset: smooth transition */
   transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -47,100 +48,91 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease-in-out;
   
-  /* Content Alignment */
+  /* Layout */
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
   user-select: none;
 }
 
-/* Hover & Active States */
 .perf-card:hover {
   background-color: var(--accent-soft);
   transform: translateY(-4px);
   border-color: var(--accent);
-  box-shadow: var(--shadow-sm), 0 8px 20px -4px rgba(56, 189, 248, 0.15);
+  box-shadow: var(--shadow-sm);
 }
 
 .perf-card:active {
   transform: translateY(-1px) scale(0.98);
-  transition: all 0.1s;
 }
 
-/* Typography inside Cards */
+/* 4. Typography inside Cards (Sesuai Tipografi Anda) */
 .perf-card .small {
-  color: var(--text-muted);
-  font-size: 0.75rem;
+  /* Mengikuti small { font-size: 12px; } dari tipografi kamu */
+  color: var(--text-muted); 
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
 .perf-card .highlight {
+  /* Mengikuti p { color: var(--text); } tapi dengan aksen */
   color: var(--accent);
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
+  line-height: 1.2; /* Lebih rapat untuk angka besar */
 }
 
 /* Visual Indicator (Arrow) */
 .card-arrow {
   position: absolute;
-  top: var(--space-sm);
-  right: var(--space-sm);
-  font-size: 0.7rem;
+  top: 12px;
+  right: 12px;
+  font-size: 10px; /* Lebih kecil dari small */
   color: var(--text-muted);
   opacity: 0.4;
-  transition: all 0.2s ease;
+  transition: 0.2s;
 }
 
 .perf-card:hover .card-arrow {
-  color: var(--accent);
   opacity: 1;
+  color: var(--accent);
   transform: translate(2px, -2px);
 }
 
-/* 4. Charts & Visualizations */
+/* 5. Charts Wrapper */
 .chart-wrapper {
   position: relative;
   height: 220px;
   width: 100%;
   margin-top: var(--space-md);
   background: var(--card);
-  padding: var(--space-sm);
+  padding: var(--space-md);
   border-radius: var(--radius-md);
+  border: 1px solid var(--border);
 }
 
-/* 5. Achievements & Badges */
+/* 6. Badges & Activity List (Reset-friendly) */
 .badge-list {
   display: flex;
   gap: var(--space-sm);
   flex-wrap: wrap;
-  margin-top: var(--space-sm);
+  list-style: none; /* Sesuai reset ul, ol */
 }
 
-.badge-icon {
-  width: 40px;
-  height: 40px;
+.activity-list {
+  list-style: none; /* Sesuai reset ul, ol */
+}
+
+.activity-list li {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--border);
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  background: var(--surface);
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  font-size: 1.2rem;
-  transition: transform 0.2s;
-}
-
-.badge-icon:hover {
-  transform: scale(1.1);
-  border-color: var(--accent);
-}
-
-/* 6. Utility Classes */
-.wide-card {
-  grid-column: 1 / -1;
 }
 
 /* Responsivitas Grid */
