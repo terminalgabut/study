@@ -1,9 +1,10 @@
-/* css/components/modal-bab.css */
+/* ==========================================================================
+   MODAL STATS (Consistent with Reset & Typography)
+   ========================================================================== */
 
 .modal-stat-overlay {
     position: fixed;
     inset: 0;
-    /* Gunakan transparansi gelap agar elemen di belakangnya redup */
     background: rgba(2, 6, 23, 0.85); 
     backdrop-filter: blur(8px);
     display: flex;
@@ -21,13 +22,13 @@
 }
 
 .modal-stat-content {
-    /* Gunakan --surface atau --card untuk latar belakang modal */
     background: var(--surface);
     width: 95%;
     max-width: 420px;
     max-height: 85vh;
     border-radius: var(--radius-lg);
-    padding: var(--space-lg);
+    /* Menggunakan variabel space yang konsisten */
+    padding: var(--space-lg); 
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border);
@@ -42,18 +43,22 @@
 }
 
 .modal-stat-header h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
+    /* Mengikuti standar heading di tipografi kamu */
+    font-size: 1.25rem; 
+    font-weight: 600;
     margin: 0;
-    color: var(--text); /* Warna teks terang */
+    color: var(--text);
+    line-height: 1.2;
 }
 
 .modal-stat-scroll-area {
     overflow-y: auto;
     padding-right: var(--space-sm);
+    /* Mencegah pergeseran layout saat scrollbar muncul */
+    scrollbar-gutter: stable; 
 }
 
-/* Kustomisasi Scrollbar untuk Dark Theme */
+/* Scrollbar Style */
 .modal-stat-scroll-area::-webkit-scrollbar {
     width: 4px;
 }
@@ -70,58 +75,61 @@
 .cat-label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
-    font-weight: 800;
+    /* Sedikit lebih kecil dari body (14px) sesuai fungsi label */
+    font-size: 12px; 
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
     border-bottom: 1px solid var(--border);
     padding-bottom: var(--space-xs);
     margin-bottom: var(--space-sm);
-    color: var(--text);
 }
 
 .cat-ratio {
-    color: var(--accent); /* Warna biru langit kamu */
+    color: var(--accent);
+    font-variant-numeric: tabular-nums; /* Angka tetap sejajar */
 }
 
-.text-muted {
-    color: var(--text-muted);
-}
-
-.text-muted .cat-ratio {
-    color: var(--border);
-}
-
+/* Row Styling */
 .bab-text-row {
-    font-size: 0.9rem;
+    font-size: 14px; /* Sesuai font-size body di tipografi */
     color: var(--text-muted);
     padding: var(--space-sm) 0 var(--space-sm) var(--space-md);
     border-left: 1px solid var(--border);
-    margin-left: var(--space-xs);
-    transition: color 0.2s;
+    margin-left: 2px;
+    line-height: 1.4;
+    transition: all 0.2s;
 }
 
 .bab-text-row:hover {
     color: var(--text);
     border-left-color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .bab-text-empty {
-    font-size: 0.8rem;
+    font-size: 12px;
     font-style: italic;
     color: var(--text-muted);
     padding-left: var(--space-md);
     opacity: 0.6;
 }
 
+/* Close Button (Sesuai Reset) */
 .close-btn-minimal {
     background: none;
     border: none;
+    padding: 0;
+    font-family: inherit; /* PENTING: Ikuti font reset */
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--text-muted);
     transition: color 0.2s;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .close-btn-minimal:hover {
