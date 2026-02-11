@@ -1,4 +1,5 @@
 import { performaService } from '../services/performaService.js';
+import { babModalView } from '../../compenents/babModalView.js';
 
 export const performaController = {
   async init() {
