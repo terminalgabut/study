@@ -1,3 +1,5 @@
+// root/js/controllers/performaControllers.js
+
 import { performaService } from '../services/performaService.js';
 import { babModalView } from '../../components/babModalView.js';
 
@@ -9,9 +11,22 @@ export const performaController = {
       this.renderSummary(data.profile, data.stats);
       this.renderAchievements(data.achievements);
       this.renderCharts(data.progress);
-      this.renderActivityJournal(data.progress); 
+      this.renderActivityJournal(data.progress);
+      this.setupStatClicks(data.progress);
     } catch (error) {
       window.__DEBUG__.error("[Performa] Gagal:", error.message);
+    }
+  },
+
+  setupStatClicks(progressData) {
+    const babCard = document.getElementById('card-materi');
+    if (babCard) {
+      babCard.onclick = () => {
+        // Ambil kategori unik dari data progres
+        const allCategories = [...new Set(progressData.map(p => p.category))];
+        // Tampilkan modal
+        babModalView.show(progressData, allCategories);
+      };
     }
   },
 
