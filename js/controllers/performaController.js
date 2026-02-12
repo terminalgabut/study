@@ -42,6 +42,14 @@ export const performaController = {
         }
       };
     }
+
+    // Handle Klik Kartu Materi Diulang (Analisis)
+const ulangCard = document.getElementById('card-ulang');
+if (ulangCard) {
+    ulangCard.onclick = () => {
+        ulangModalView.show(progressData);
+    };
+}
   },
 
   renderSummary(profile, stats) {
