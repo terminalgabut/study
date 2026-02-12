@@ -28,8 +28,8 @@ export async function initLastRead() {
 
     // 2. Ambil judul lengkap dari tabel materi [cite: 14]
     const { data: material, error: e2 } = await supabase
-      .from('materi')
-      .select('category')
+      .from('materials')
+      .select('title')
       .eq('slug', history.material_slug)
       .single();
 
