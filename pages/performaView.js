@@ -27,7 +27,7 @@ export const performaView = `
     <span class="card-arrow">↗</span>
   </div>
 
-  <div class="stat-item perf-card" id="card-count">
+  <div class="stat-item perf-card" id="card-ulang">
     <span class="small">Materi Diulang</span>
     <p class="highlight" id="stat-read-count">0</p>
     <span class="card-arrow">↗</span>
