@@ -42,7 +42,7 @@ export const performaView = `
   </div>
   <div class="home-grid" style="margin-top: var(--space-md);">
     
-    <div class="home-card">
+    <div class="home-card hero">
       <h3>📈 Efektivitas Belajar</h3>
       <p class="small gray">Hubungan waktu baca vs perolehan poin</p>
       <div class="chart-wrapper" style="height: 250px; margin-top: 15px;">
@@ -50,7 +50,7 @@ export const performaView = `
       </div>
     </div>
 
-    <div class="home-card">
+    <div class="home-card hero">
       <h3>📊 Distribusi Poin</h3>
       <p class="small gray">Peta kekuatan materi</p>
       <div class="chart-wrapper" style="height: 250px; margin-top: 15px;">
