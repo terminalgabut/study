@@ -36,7 +36,7 @@ export async function initLastRead() {
     if (e2) throw e2;
 
     // 3. Update UI secara otomatis
-    titleEl.textContent = material.category; // Mengisi judul utuh
+    titleEl.textContent = material.title; // Mengisi judul utuh
     
     // Opsional: Ubah teks "Terakhir dibuka" menjadi tanggal asli
     if (dateEl) {
