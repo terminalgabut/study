@@ -30,7 +30,7 @@ import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
 import { initSettingsModal } from './ui/settingsModal.js';
-import { initProfileModal } from './ui/profileModal.js';
+import { initProfileModal } from './ui/auth/profileModal.js';
 
 // views
 import { headerView } from '../components/headerView.js';
