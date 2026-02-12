@@ -37,7 +37,7 @@ export async function initRekomendasi() {
     listEl.innerHTML = tigaSaran.map(m => {
       const pathKat = m.category ? m.category.split(' ')[0].toLowerCase() : 'umum';
       return `
-        <li style="list-style:none; border-bottom:1px solid #eee;">
+        <li style="list-style:none; border-bottom:1px solid rgba(56, 189, 248, 0.15);">
           <a href="#materi/${pathKat}/${m.slug}" style="display:block; padding:10px 0; text-decoration:none; color:#4f46e5;">
             <div style="font-size:0.75em; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">${m.category}</div>
             <div style="font-weight:600; margin-top:2px; color:#1e293b;">
