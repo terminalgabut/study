@@ -39,6 +39,20 @@ export const performaService = {
     }
   },
 
+  async getLearningSessions() {
+    window.__DEBUG__.log("[Service] Fetching Learning Sessions...");
+    const { data, error } = await supabase
+      .from('learning_sessions')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      window.__DEBUG__.error("[Service] Gagal ambil sesi:", error.message);
+      return [];
+    }
+    return data;
+  },
+
   calculateStatsFromProgress(progress = []) {
     // 1. Hitung akumulasi dasar
     const totalMateri = progress.length;
