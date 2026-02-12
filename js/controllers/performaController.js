@@ -2,6 +2,7 @@
 
 import { performaService } from '../services/performaService.js';
 import { babModalView } from '../../components/babModalView.js';
+import { durasiModalView } from '../../components/durasiModalView.js';
 
 export const performaController = {
   async init() {
@@ -26,6 +27,19 @@ export const performaController = {
         const allCategories = [...new Set(progressData.map(p => p.category))];
         // Tampilkan modal
         babModalView.show(progressData, allCategories);
+      };
+    }
+
+    const durasiCard = document.getElementById('card-durasi'); // Pastikan ID ini ada di HTML
+    if (durasiCard) {
+      durasiCard.onclick = async () => {
+        try {
+          // Tampilkan loading state jika perlu
+          const sessionData = await performaService.getLearningSessions();
+          durasiModalView.show(sessionData);
+        } catch (err) {
+          window.__DEBUG__.error("[Controller] Gagal memuat modal durasi");
+        }
       };
     }
   },
