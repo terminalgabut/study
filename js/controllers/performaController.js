@@ -122,32 +122,100 @@ if (akurasiCard) {
   },
 
   renderCharts(progress = []) {
-    const trendEl = document.getElementById('trendChart');
-    const catEl = document.getElementById('categoryChart');
-    if (!progress || progress.length === 0) return;
+  const trendEl = document.getElementById('trendChart');
+  const catEl = document.getElementById('categoryChart');
+  if (!progress || progress.length === 0) return;
 
-    if (trendEl) {
-      new Chart(trendEl.getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: progress.map(p => p.bab_title ? p.bab_title.substring(0, 10) + '..' : 'Bab'),
-          datasets: [
-            { label: 'Poin', data: progress.map(p => p.total_score_points), backgroundColor: '#4f46e5' },
-            { label: 'Menit Baca', type: 'line', data: progress.map(p => Math.floor(p.total_reading_seconds / 60)), borderColor: '#10b981', tension: 0.4 }
-          ]
+  // 1. GRAFIK EFEKTIVITAS (HORIZONTAL BAR)
+  if (trendEl) {
+    // Ambil 7 data terbaru agar tidak terlalu sesak di layar
+    const limitedProgress = progress.slice(0, 7);
+    
+    new Chart(trendEl.getContext('2d'), {
+      type: 'bar',
+      data: {
+        // Judul di kiri (Y-axis), dipotong di 25 karakter
+        labels: limitedProgress.map(p => 
+          p.bab_title && p.bab_title.length > 25 
+            ? p.bab_title.substring(0, 25) + '...' 
+            : (p.bab_title || 'Bab')
+        ),
+        datasets: [
+          { 
+            label: 'Poin Kuis', 
+            data: limitedProgress.map(p => p.total_score_points || 0), 
+            backgroundColor: '#4f46e5',
+            borderRadius: 4
+          },
+          { 
+            label: 'Menit Baca', 
+            data: limitedProgress.map(p => Math.floor((p.total_reading_seconds || 0) / 60)), 
+            backgroundColor: '#10b981',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: { 
+        indexAxis: 'y', // Mengubah menjadi Horizontal
+        responsive: true, 
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' }
         },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-    }
-
-    if (catEl) {
-      const catData = {};
-      progress.forEach(p => { catData[p.category || 'Lainnya'] = (catData[p.category || 'Lainnya'] || 0) + p.total_score_points; });
-      new Chart(catEl.getContext('2d'), {
-        type: 'doughnut',
-        data: { labels: Object.keys(catData), datasets: [{ data: Object.values(catData), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444'] }] },
-        options: { responsive: true }
-      });
-    }
+        scales: {
+          x: { beginAtZero: true },
+          y: { 
+            ticks: { 
+              font: { size: 11 } 
+            } 
+          }
+        }
+      }
+    });
   }
+
+  // 2. GRAFIK DISTRIBUSI (DOUGHNUT - LEGEND DI KIRI)
+  if (catEl) {
+    const catData = {};
+    progress.forEach(p => { 
+      catData[p.category || 'Lainnya'] = (catData[p.category || 'Lainnya'] || 0) + p.total_score_points; 
+    });
+
+    new Chart(catEl.getContext('2d'), {
+      type: 'doughnut',
+      data: { 
+        labels: Object.keys(catData), 
+        datasets: [{ 
+          data: Object.values(catData), 
+          backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] 
+        }] 
+      },
+      options: { 
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'left', // PINDAH KE KIRI sesuai diskusi
+            align: 'center',
+            labels: {
+              boxWidth: 12,
+              padding: 20,
+              font: { size: 12 }
+            }
+          }
+        },
+        // Memberikan sedikit ruang ekstra di sisi kanan agar grafik bulat simetris
+        layout: {
+          padding: {
+            left: 10,
+            right: 40, 
+            top: 10,
+            bottom: 10
+          }
+        }
+      }
+    });
+  }
+}
 };
