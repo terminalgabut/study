@@ -33,7 +33,7 @@ export const performaView = `
     <span class="card-arrow">↗</span>
   </div>
 
-  <div class="stat-item perf-card" id="card-skor">
+  <div class="stat-item perf-card" id="card-akurasi">
     <span class="small">Akurasi Kuis</span>
     <p class="highlight" id="stat-skor">0%</p>
     <span class="card-arrow">↗</span>
