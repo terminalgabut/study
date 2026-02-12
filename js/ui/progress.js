@@ -9,14 +9,14 @@ export async function initProgress() {
   try {
     // 1. Hitung total semua materi yang tersedia
     const { count: totalMateri, error: errTotal } = await supabase
-      .from('materi')
+      .from('materials')
       .select('*', { count: 'exact', head: true });
 
     // 2. Hitung jumlah materi yang sudah pernah dibuka (di riwayat)
     // Serta ambil total durasi belajar
     const { data: historyData, error: errHistory } = await supabase
-      .from('riwayat')
-      .select('duration_seconds');
+      .from('study_progess')
+      .select('total_reading_seconds');
 
     if (errTotal || errHistory) throw (errTotal || errHistory);
 
