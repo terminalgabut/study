@@ -26,12 +26,12 @@ export const performaView = `
     <p class="highlight" id="stat-waktu">0m</p>
   </div>
 
-  <div class="stat-item">
+  <div class="stat-item perf-card" id="card-count">
     <span class="small">Materi Diulang</span>
     <p class="highlight" id="stat-read-count">0</p>
   </div>
 
-  <div class="stat-item">
+  <div class="stat-item perf-card" id="card-skor">
     <span class="small">Akurasi Kuis</span>
     <p class="highlight" id="stat-skor">0%</p>
   </div>
