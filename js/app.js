@@ -39,6 +39,8 @@ import { modalsettingsView } from '../components/modal-settingsView.js';
 import { modalprofilView } from '../components/modalprofilView.js';
 import { babModalView } from '../components/babModalView.js';
 import { durasiModalView } from '../components/durasiModalView.js';
+import { ulangModalView } from '../components/ulangModalView.js';
+import { akurasiModalView } from '../components/akurasiModalView.js';
 
 function init() {
 window.__DEBUG__.log('App init() dipanggil');
@@ -59,6 +61,8 @@ window.__DEBUG__.log('App init() dipanggil');
 
   babModalView.renderBase();
   durasiModalView.renderBase();
+  ulangModalView.renderBase();
+  akurasiModalView.renderBase();
 
 
   // 2. Inject Modals
