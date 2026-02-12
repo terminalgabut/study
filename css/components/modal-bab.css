@@ -135,3 +135,36 @@
 .close-btn-minimal:hover {
     color: var(--accent);
 }
+
+/* Styling Mentor/Akurasi Modal */
+.mentor-card {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.mentor-card.warning { border-left: 5px solid #ef4444; }
+.mentor-card.success { border-left: 5px solid #10b981; }
+
+.mentor-header { display: flex; gap: 12px; margin-bottom: 15px; align-items: center; }
+.mentor-avatar { font-size: 28px; }
+
+.mentor-bubble {
+    background: var(--surface-light);
+    padding: 15px;
+    border-radius: 4px 16px 16px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.suggestion-list {
+    margin: 10px 0;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.suggestion-list li { margin-bottom: 8px; }
