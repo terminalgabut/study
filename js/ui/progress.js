@@ -5,13 +5,12 @@ export async function initProgress() {
   if (!statsEl || !timeEl) return;
 
   try {
-    // 1. Ambil JUMLAH TOTAL materi yang ada di database
+    // 1. Ambil semua ID dari tabel materials untuk menghitung total materi
+    const { data: allMaterials, error: e1 } = await supabase
+      .from('materials')
+      .select('id'); // Mengambil kolom id saja agar ringan
 
-const { count: totalMateri, error: errTotal } = await supabase
-.from('materials')
-.select('*', { count: 'exact', head: true });
-
-    // 2. Ambil data materi yang sudah dipelajari user
+    // 2. Ambil data dari study_progress user
     const { data: progress, error: e2 } = await supabase
       .from('study_progress')
       .select('total_reading_seconds');
@@ -19,8 +18,8 @@ const { count: totalMateri, error: errTotal } = await supabase
     if (e1 || e2) throw (e1 || e2);
 
     // --- LOGIKA PERHITUNGAN ---
+    const totalMateri = allMaterials ? allMaterials.length : 0;
     const materiDilihat = progress ? progress.length : 0;
-    const totalMateri = totalTersedia || 0;
 
     const totalSeconds = progress 
       ? progress.reduce((acc, curr) => acc + (curr.total_reading_seconds || 0), 0) 
@@ -29,10 +28,10 @@ const { count: totalMateri, error: errTotal } = await supabase
     const totalMinutes = Math.floor(totalSeconds / 60);
 
     // --- UPDATE UI ---
-    // Sekarang akan tampil seperti "3 / 10" (dinamis)
+    // Hasilnya akan menjadi: "3 / 10" (berdasarkan jumlah baris ID)
     statsEl.textContent = `${materiDilihat} / ${totalMateri}`;
 
-    // Format Waktu Belajar
+    // Format waktu
     if (totalMinutes >= 60) {
       const h = Math.floor(totalMinutes / 60);
       const m = totalMinutes % 60;
@@ -42,7 +41,7 @@ const { count: totalMateri, error: errTotal } = await supabase
     }
 
   } catch (err) {
-    console.error('Gagal memuat progres:', err);
+    console.error('Error initProgress:', err);
     statsEl.textContent = "0 / 0";
     timeEl.textContent = "0 menit";
   }
