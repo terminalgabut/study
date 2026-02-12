@@ -1,4 +1,4 @@
-// ===== GLOBAL DEBUG =====
+// ===== GLOBAL DEBUG (Versi Detail) =====
 const DEV =
   location.hostname === 'localhost' ||
   location.hostname === '127.0.0.1';
@@ -9,16 +9,21 @@ window.__DEBUG__ = {
   error: (...args) => console.error('[ERROR]', ...args),
 };
 
-// Tangkap error JS biasa
+// Tangkap error JS biasa dengan detail lokasi file
 window.addEventListener('error', e => {
-window.__DEBUG__.error('Global Error:', e.message, e.error);
+  // Mengambil nama file saja dari path lengkap (misal: 'durasiModalView.js')
+  const fileName = e.filename ? e.filename.split('/').pop() : 'unknown_file';
+  const location = `${fileName}:${e.lineno}:${e.colno}`;
+  
+  window.__DEBUG__.error(`[${location}] Global Error:`, e.message);
 });
 
 // Tangkap error async / Promise
 window.addEventListener('unhandledrejection', e => {
-window.__DEBUG__.error('Unhandled Promise:', e.reason);
+  const reason = e.reason?.message || e.reason || 'Unknown Promise Rejection';
+  window.__DEBUG__.error('[Async/Promise] Error:', reason);
 });
-// ========================
+// =======================================
 
 import { supabase } from './services/supabase.js'; // Pastikan diimport paling atas
 import { initRouter } from './router/hashRouter.js';
