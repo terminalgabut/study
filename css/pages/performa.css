@@ -135,6 +135,27 @@
   align-items: center;
 }
 
+.consultation-card {
+    background: var(--surface-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    border-left: 4px solid var(--accent);
+}
+.consultation-card.warning { border-left-color: #ef4444; }
+.mentor-header { display: flex; gap: 12px; margin-bottom: 15px; align-items: center; }
+.mentor-avatar { font-size: 24px; background: #eee; padding: 8px; border-radius: 50%; }
+.mentor-bubble {
+    background: white;
+    padding: 15px;
+    border-radius: 0 15px 15px 15px;
+    margin-bottom: 20px;
+    font-style: italic;
+    line-height: 1.5;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.action-plan ul { padding-left: 20px; margin-top: 10px; }
+.action-plan li { margin-bottom: 8px; font-size: 13px; }
+
 /* Responsivitas Grid */
 @media (min-width: 768px) {
   .stats-header-grid {
