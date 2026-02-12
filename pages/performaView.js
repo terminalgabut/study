@@ -21,19 +21,22 @@ export const performaView = `
     <span class="card-arrow">↗</span>
   </div>
 
-  <div class="stat-item perf-card" id="card-waktu">
+  <div class="stat-item perf-card" id="card-durasi">
     <span class="small">Total Durasi</span>
-    <p class="highlight" id="stat-waktu">0m</p>
+    <p class="highlight" id="stat-durasi">0m</p>
+    <span class="card-arrow">↗</span>
   </div>
 
   <div class="stat-item perf-card" id="card-count">
     <span class="small">Materi Diulang</span>
     <p class="highlight" id="stat-read-count">0</p>
+    <span class="card-arrow">↗</span>
   </div>
 
   <div class="stat-item perf-card" id="card-skor">
     <span class="small">Akurasi Kuis</span>
     <p class="highlight" id="stat-skor">0%</p>
+    <span class="card-arrow">↗</span>
   </div>
 </div>
 
