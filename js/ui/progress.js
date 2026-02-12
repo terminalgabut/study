@@ -1,5 +1,3 @@
-import { supabase } from '../services/supabase.js';
-
 export async function initProgress() {
   const statsEl = document.getElementById('progressStats');
   const timeEl = document.getElementById('studyTime');
@@ -7,46 +5,39 @@ export async function initProgress() {
   if (!statsEl || !timeEl) return;
 
   try {
-    // 1. Hitung total semua materi yang tersedia
-    const { count: totalMateri, error: errTotal } = await supabase
-      .from('materials')
-      .select('*', { count: 'exact', head: true });
+    // Ambil data progres dari tabel tunggal
+    const { data: progress, error } = await supabase
+      .from('study_progress')
+      .select('total_reading_seconds, read_count');
 
-    // 2. Hitung jumlah materi yang sudah pernah dibuka (di riwayat)
-    // Serta ambil total durasi belajar
-    const { data: historyData, error: errHistory } = await supabase
-      .from('study_progess')
-      .select('total_reading_seconds');
-
-    if (errTotal || errHistory) throw (errTotal || errHistory);
+    if (error) throw error;
 
     // --- LOGIKA PERHITUNGAN ---
-
-    // Jumlah materi unik yang sudah dibaca
-    const materiDilihat = historyData ? historyData.length : 0;
-    const total = totalMateri || 0;
-
-    // Total durasi dalam menit (konversi dari detik)
-    const totalSeconds = historyData ? historyData.reduce((acc, curr) => acc + (curr.duration_seconds || 0), 0) : 0;
+    const totalMaterials = progress ? progress.length : 0;
+    
+    // Menghitung total durasi dari semua baris materi
+    const totalSeconds = progress 
+      ? progress.reduce((acc, curr) => acc + (curr.total_reading_seconds || 0), 0) 
+      : 0;
+    
     const totalMinutes = Math.floor(totalSeconds / 60);
 
     // --- UPDATE UI ---
-    
-    // Update teks 3 / 10
-    statsEl.textContent = `${materiDilihat} / ${total}`;
+    // Materi dilihat / Total Baris di Progress
+    statsEl.textContent = `${totalMaterials} Materi`;
 
-    // Update teks durasi belajar
-    if (totalMinutes > 60) {
-      const hours = Math.floor(totalMinutes / 60);
-      const mins = totalMinutes % 60;
-      timeEl.textContent = `${hours} jam ${mins} menit`;
+    // Format waktu agar lebih profesional
+    if (totalMinutes >= 60) {
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+      timeEl.textContent = `${h}j ${m}m`;
     } else {
       timeEl.textContent = `${totalMinutes} menit`;
     }
 
   } catch (err) {
-    console.error('Gagal memuat data progres:', err);
-    statsEl.textContent = "- / -";
+    console.error(err);
+    statsEl.textContent = "0";
     timeEl.textContent = "0 menit";
   }
 }
