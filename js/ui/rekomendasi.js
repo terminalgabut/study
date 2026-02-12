@@ -1,64 +1,55 @@
 import { supabase } from '../services/supabase.js';
 
 export async function initRekomendasi() {
-  const rekomendasiListEl = document.querySelector('.link-list');
-  
-  // Guard clause: pastikan elemen ada di halaman
-  if (!rekomendasiListEl) return;
+  const listEl = document.querySelector('.link-list');
+  if (!listEl) return;
 
   try {
-    // 1. Ambil data materi dan riwayat secara paralel
-    const [materiRes, riwayatRes] = await Promise.all([
-      supabase.from('materi').select('slug, category'),
-      supabase.from('riwayat').select('material_slug')
+    const [materiRes, progressRes] = await Promise.all([
+      supabase.from('materials').select('slug, category, title'),
+      supabase.from('study_progress').select('category, bab_title')
     ]);
 
-    if (materiRes.error || riwayatRes.error) {
-      throw new Error("Gagal mengambil data dari database");
-    }
+    if (materiRes.error || progressRes.error) throw new Error("DB Error");
 
     const daftarMateri = materiRes.data;
-    // Gunakan Set untuk pencarian yang lebih cepat (O(1))
-    const sudahDibaca = new Set(riwayatRes.data.map(r => r.material_slug));
+    
+    // Buat Set berisi gabungan "kategori|judul" untuk pengecekan cepat
+    const sudahDibaca = new Set(
+      progressRes.data.map(p => `${p.category}|${p.bab_title}`)
+    );
 
-    // 2. Filter materi yang BELUM pernah dibaca oleh user
-    const belumDibaca = daftarMateri.filter(m => !sudahDibaca.has(m.slug));
+    // Filter: Materi dianggap "belum dibaca" jika gabungan category|title-nya TIDAK ADA di Set
+    const belumDibaca = daftarMateri.filter(m => {
+      const key = `${m.category}|${m.title}`;
+      return !sudahDibaca.has(key);
+    });
 
-    // 3. Acak urutan (Fisher-Yates atau Sort Random) dan ambil 3 teratas
     const tigaSaran = belumDibaca
       .sort(() => 0.5 - Math.random())
       .slice(0, 3);
 
-    // 4. Cek jika data kosong
     if (tigaSaran.length === 0) {
-      rekomendasiListEl.innerHTML = `
-        <li style="color:var(--text-muted); padding:10px;">
-          🎉 Semua materi telah kamu selesaikan!
-        </li>`;
+      listEl.innerHTML = '<li style="color:gray; padding:10px;">🎉 Semua materi selesai!</li>';
       return;
     }
 
-    // 5. Render ke HTML
-    rekomendasiListEl.innerHTML = tigaSaran.map(m => {
-      /**
-       * LOGIKA PATH KATEGORI:
-       * Jika m.category = "Bahasa Indonesia 1", maka pathKategori = "bahasa"
-       * Ini agar link menjadi #materi/bahasa/slug
-       */
-      const pathKategori = m.category ? m.category.split(' ')[0].toLowerCase() : 'umum';
-
+    listEl.innerHTML = tigaSaran.map(m => {
+      const pathKat = m.category ? m.category.split(' ')[0].toLowerCase() : 'umum';
       return `
-        <li>
-          <a href="#materi/${pathKategori}/${m.slug}" class="recom-link" style="display:block; padding:8px 0; text-decoration:none; color:var(--accent); transition:0.2s;">
-            <i class="fas fa-book-reader" style="margin-right:8px; font-size:0.9em;"></i>
-            ${m.category}
+        <li style="list-style:none; border-bottom:1px solid #eee;">
+          <a href="#materi/${pathKat}/${m.slug}" style="display:block; padding:10px 0; text-decoration:none; color:#4f46e5;">
+            <div style="font-size:0.75em; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">${m.category}</div>
+            <div style="font-weight:600; margin-top:2px; color:#1e293b;">
+              <i class="fas fa-book-open" style="margin-right:6px; font-size:0.8em; color:#94a3b8;"></i>${m.title}
+            </div>
           </a>
         </li>
       `;
     }).join('');
 
   } catch (err) {
-    console.error('Rekomendasi Error:', err);
-    rekomendasiListEl.innerHTML = '<li style="color:red;">Gagal memuat saran materi</li>';
+    console.error(err);
+    listEl.innerHTML = '<li style="color:red; font-size:0.9em;">Gagal memuat rekomendasi</li>';
   }
 }
