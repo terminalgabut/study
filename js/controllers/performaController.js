@@ -3,6 +3,7 @@
 import { performaService } from '../services/performaService.js';
 import { babModalView } from '../../components/babModalView.js';
 import { durasiModalView } from '../../components/durasiModalView.js';
+import { ulangModalView } from '../../components/ulangModalView.js';
 
 export const performaController = {
   async init() {
