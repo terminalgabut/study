@@ -41,7 +41,7 @@ export async function initRekomendasi() {
           <a href="#materi/${pathKat}/${m.slug}" style="display:block; padding:10px 0; text-decoration:none; color:#4f46e5;">
             <div style="font-size:0.75em; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">${m.category}</div>
             <div style="font-weight:600; margin-top:2px; color:#1e293b;">
-              <i class="fas fa-book-open" style="margin-right:6px; font-size:0.8em; color:#94a3b8;"></i>${m.title}
+              <i class="fas fa-book-open" style="margin-right:6px; font-size:0.8em; color:#7dd3fc;"></i>${m.title}
             </div>
           </a>
         </li>
