@@ -38,13 +38,19 @@ export async function initRekomendasi() {
       const pathKat = m.category ? m.category.split(' ')[0].toLowerCase() : 'umum';
       return `
         <li style="list-style:none; border-bottom:1px solid rgba(56, 189, 248, 0.15);">
-          <a href="#materi/${pathKat}/${m.slug}" style="display:block; padding:10px 0; text-decoration:none; color:#4f46e5;">
-            <div style="font-size:0.75em; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">${m.category}</div>
-            <div style="font-weight:600; margin-top:2px; color:#1e293b;">
-              <i class="fas fa-book-open" style="margin-right:6px; font-size:0.8em; color:#38bdf8;"></i>${m.title}
-            </div>
-          </a>
-        </li>
+  <a href="#materi/${pathKat}/${m.slug}" style="display:block; padding:12px 0; text-decoration:none;">
+    
+    <div style="font-size:0.7em; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">
+      ${m.category}
+    </div>
+
+    <div style="font-weight:600; color:#7dd3fc; display:flex; align-items:center;">
+      <i class="fas fa-book-open" style="margin-right:8px; font-size:0.85em; color:#38bdf8;"></i>
+      ${m.title}
+    </div>
+    
+  </a>
+</li>
       `;
     }).join('');
 
