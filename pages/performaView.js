@@ -40,7 +40,6 @@ export const performaView = `
       </div>
     </div>
   </div>
-  <div class="home-grid" style="margin-top: var(--space-md);">
     
     <div class="home-card hero">
       <h3>📈 Efektivitas Belajar</h3>
