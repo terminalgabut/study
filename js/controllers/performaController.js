@@ -4,6 +4,7 @@ import { performaService } from '../services/performaService.js';
 import { babModalView } from '../../components/babModalView.js';
 import { durasiModalView } from '../../components/durasiModalView.js';
 import { ulangModalView } from '../../components/ulangModalView.js';
+import { akurasiModalView } from '../../components/akurasiModalView.js';
 
 export const performaController = {
   async init() {
@@ -49,6 +50,13 @@ const ulangCard = document.getElementById('card-ulang');
 if (ulangCard) {
     ulangCard.onclick = () => {
         ulangModalView.show(progressData);
+    };
+}
+
+    const akurasiCard = document.getElementById('card-akurasi');
+if (akurasiCard) {
+    akurasiCard.onclick = () => {
+        akurasiModalView.show(progressData);
     };
 }
   },
