@@ -54,6 +54,7 @@ window.__DEBUG__.log('App init() dipanggil');
   `;
 
   babModalView.renderBase();
+  durasiModalView.renderBase();
 
   // 2. Inject Modals
   const headerRight = document.querySelector('.header-right');
