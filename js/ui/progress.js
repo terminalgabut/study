@@ -6,10 +6,10 @@ export async function initProgress() {
 
   try {
     // 1. Ambil JUMLAH TOTAL materi yang ada di database
-    // Menggunakan count: 'exact' agar Supabase mengembalikan angka total baris
-    const { count: totalTersedia, error: e1 } = await supabase
-      .from('materials')
-      .select('*', { count: 'exact', head: true });
+
+const { count: totalMateri, error: errTotal } = await supabase
+.from('materials')
+.select('*', { count: 'exact', head: true });
 
     // 2. Ambil data materi yang sudah dipelajari user
     const { data: progress, error: e2 } = await supabase
