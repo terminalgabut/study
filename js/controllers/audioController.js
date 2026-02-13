@@ -1,3 +1,5 @@
+// study/js/controllers/audioController.js
+
 import { islandController } from './islandController.js';
 
 let player = null;
@@ -89,9 +91,11 @@ export const audioController = {
         if (isPlaying) {
             playBtn.textContent = 'Pause';
             if (wave) wave.classList.remove('music-wave-hidden');
+            islandController.show('Music Paused', 'music');
         } else {
             playBtn.textContent = 'Play';
             if (wave) wave.classList.add('music-wave-hidden');
+            islandController.hide();
         }
     }
 };
