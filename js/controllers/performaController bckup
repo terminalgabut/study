@@ -5,8 +5,14 @@ import { babModalView } from '../../components/babModalView.js';
 import { durasiModalView } from '../../components/durasiModalView.js';
 import { ulangModalView } from '../../components/ulangModalView.js';
 import { akurasiModalView } from '../../components/akurasiModalView.js';
+import { initCalendar } from '../lib/kalender.js';
 
 export const performaController = {
+  charts: {
+    trend: null,
+    category: null
+  },
+  
   async init() {
     window.__DEBUG__.log("--- [DEBUG] Inisialisasi PerformaController ---");
     try {
