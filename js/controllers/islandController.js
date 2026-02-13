@@ -8,52 +8,60 @@ export const islandController = {
         if (!island) return;
 
         island.onclick = () => {
-            // Klik untuk "Peek" (melihat judul sebentar saat status aktif)
             if (island.classList.contains('icon-only')) {
-                const msg = document.getElementById('island-text').textContent;
-                this.expandTemporary(msg);
+                const textSpan = document.getElementById('island-text');
+                const currentMsg = textSpan ? textSpan.textContent : "Music Playing";
+                const isTimer = !document.getElementById('icon-music').classList.contains('hidden') === false;
+                this.expandTemporary(currentMsg);
             }
         };
     },
 
-    // Dipanggil saat musik mulai/ganti lagu
     show(message, type = 'music') {
         const container = document.getElementById('dynamic-island-container');
-        const island = document.getElementById('dynamic-island');
-        
-        if (!container || !island) return;
+        if (!container) return;
 
-        // Pastikan container terlihat (Status: On)
+        // 1. Pastikan container muncul di DOM terlebih dahulu
         container.classList.remove('island-hidden');
         
-        // Atur Icon
+        // 2. Atur Icon yang sesuai
         const isMusic = type === 'music';
-        document.getElementById('icon-music').classList.toggle('hidden', !isMusic);
-        document.getElementById('icon-timer').classList.toggle('hidden', isMusic);
+        document.getElementById('icon-music')?.classList.toggle('hidden', !isMusic);
+        document.getElementById('icon-timer')?.classList.toggle('hidden', isMusic);
 
-        this.expandTemporary(message);
+        // 3. Panggil expand dengan sedikit delay (trick agar transisi CSS terbaca)
+        setTimeout(() => {
+            this.expandTemporary(message);
+        }, 50);
     },
 
-    // Fungsi untuk melebar lalu mengecil otomatis (tapi tidak hilang)
     expandTemporary(message) {
         const island = document.getElementById('dynamic-island');
         const textSpan = document.getElementById('island-text');
+        if (!island) return;
 
+        // Bersihkan timeout lama agar tidak bentrok
         if (this.timeout) clearTimeout(this.timeout);
 
+        // MELEBAR
         island.classList.remove('icon-only');
         island.classList.add('expanded');
-        if (textSpan) textSpan.textContent = message;
+        
+        if (textSpan) {
+            textSpan.textContent = message;
+            textSpan.style.opacity = "1";
+        }
 
+        // Timer untuk MENGUNCUP setelah 6 detik
         this.timeout = setTimeout(() => {
             island.classList.remove('expanded');
             island.classList.add('icon-only');
         }, 6000);
     },
 
-    // Hanya dipanggil saat musik benar-benar STOP/PAUSE
     hide() {
         const container = document.getElementById('dynamic-island-container');
+        if (this.timeout) clearTimeout(this.timeout);
         if (container) container.classList.add('island-hidden');
     }
 };
