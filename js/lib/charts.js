@@ -76,11 +76,18 @@ export const chartLib = {
                     }
                 },
                 scales: {
-                    x: { 
-                        beginAtZero: true,
-                        ticks: { color: '#64748b', font: { size: 10 } },
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                    },
+  x: { 
+    beginAtZero: true,
+    ticks: { 
+      color: '#64748b', 
+      font: { size: 10 },
+      // Memaksa sumbu X menampilkan desimal jika angkanya kecil
+      callback: function(value) {
+        return value % 1 === 0 ? value : value.toFixed(1);
+      }
+    },
+    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+  },
                     y: { 
                         ticks: { color: '#94a3b8', font: { size: 11 } },
                         grid: { display: false }
