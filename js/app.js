@@ -26,6 +26,7 @@ window.addEventListener('unhandledrejection', e => {
 // =======================================
 
 import { audioController } from './controllers/audioController.js';
+import { islandController } from './controllers/islandController.js';
 import { supabase } from './services/supabase.js'; // Pastikan diimport paling atas
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
@@ -97,6 +98,7 @@ if (headerRight) {
 
   // 4. Inisialisasi Logika UI
   audioController.init();
+  islandController.init();
   initHeader();
   initSidebar();
   initSettingsModal();
