@@ -65,7 +65,7 @@ export const performaService = {
     window.__DEBUG__.log("[Service] Fetching Learning Sessions...");
     const { data, error } = await supabase
       .from('learning_sessions')
-      .select('created_at, duration_seconds')
+      .select('created_at, duration_seconds, quiz_seconds')
       .order('created_at', { ascending: true });
 
     if (error) {
