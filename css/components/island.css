@@ -1,24 +1,87 @@
+/* Container Utama */
+#dynamic-island-container {
+  position: absolute;
+  left: 50%;
+  top: 10px; /* Sedikit di atas agar proporsional dengan header-height 56px */
+  transform: translateX(-50%);
+  z-index: 9999;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* Mencegah barrier klik saat hidden */
+}
+
+/* State: Tersembunyi */
+.island-hidden {
+  opacity: 0;
+  top: -20px !important;
+  transform: translateX(-50%) scale(0.8);
+}
+
+/* Badan Island */
+#dynamic-island {
+  /* Menggunakan warna surface gelap agar kontras dengan bg */
+  background: var(--surface); 
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg); /* Menggunakan radius 14px */
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 var(--space-md); /* Menggunakan spacing 16px */
+  
+  cursor: pointer;
+  pointer-events: auto;
+  
+  /* Efek Melayang Premium */
+  box-shadow: var(--shadow-sm); 
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Konten di Dalam */
+.island-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm); /* Spasi antara icon dan teks (8px) */
+  white-space: nowrap;
+}
+
+/* State: Mode Melebar (Expanded) */
+#dynamic-island.expanded {
+  min-width: 160px;
+  max-width: 300px;
+}
+
+/* State: Mode Icon (Shrink) */
+#dynamic-island.icon-only {
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+  border-radius: 50%; /* Berubah jadi lingkaran sempurna */
+}
+
+#dynamic-island.icon-only #island-text {
+  width: 0;
+  opacity: 0;
+  margin: 0;
+  display: none;
+}
+
+/* Typography & Icons */
+#island-text {
+  font-size: 13px; /* Sedikit lebih kecil dari body 14px */
+  font-weight: 500;
+  color: var(--text);
+}
+
 .island-icon {
-  stroke: #fff;
+  stroke: var(--accent); /* Menggunakan warna biru cerah #38bdf8 */
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
 }
 
 .island-icon.hidden {
   display: none;
-}
-
-/* Animasi berdenyut halus saat musik jalan */
-#icon-music {
-  animation: music-float 2s ease-in-out infinite;
-}
-
-@keyframes music-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
-
-/* Style tambahan untuk memastikan teks tidak goyang saat transisi */
-#island-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
