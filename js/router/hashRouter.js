@@ -164,6 +164,12 @@ window.__DEBUG__?.log('Route Guard', {
           content.innerHTML = performaView;
           performaController.init();
         break;
+
+          case 'audio':
+          window.__DEBUG__?.log('Route → audio');
+          content.innerHTML = audioView;
+          audioController.init();
+        break;
        
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
