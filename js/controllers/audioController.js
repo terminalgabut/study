@@ -71,6 +71,7 @@ export const audioController = {
                     document.getElementById('track-status').textContent = "Sedang diputar...";
                     isPlaying = true;
                     this.updateUI();
+                    islandController.show(title, 'music');
                 } else {
                     alert("Player sedang disiapkan, mohon tunggu 2 detik...");
                 }
