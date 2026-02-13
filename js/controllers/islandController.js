@@ -2,6 +2,7 @@
 
 export const islandController = {
     timeout: null,
+    isLocked: false, // Kunci agar tidak tertimpa updateUI
 
     init() {
         const island = document.getElementById('dynamic-island');
@@ -9,59 +10,52 @@ export const islandController = {
 
         island.onclick = () => {
             if (island.classList.contains('icon-only')) {
-                const textSpan = document.getElementById('island-text');
-                const currentMsg = textSpan ? textSpan.textContent : "Music Playing";
-                const isTimer = !document.getElementById('icon-music').classList.contains('hidden') === false;
-                this.expandTemporary(currentMsg);
+                const msg = document.getElementById('island-text').textContent;
+                this.show(msg, document.getElementById('icon-music').classList.contains('hidden') ? 'timer' : 'music');
             }
         };
     },
 
     show(message, type = 'music') {
         const container = document.getElementById('dynamic-island-container');
-        if (!container) return;
+        const island = document.getElementById('dynamic-island');
+        const textSpan = document.getElementById('island-text');
 
-        // 1. Pastikan container muncul di DOM terlebih dahulu
-        container.classList.remove('island-hidden');
+        if (!container || !island) return;
+
+        // Kunci status agar updateUI tidak bisa mengubah ke icon-only
+        this.isLocked = true;
+
+        // 1. Setup Konten
+        if (textSpan) textSpan.textContent = message;
         
-        // 2. Atur Icon yang sesuai
         const isMusic = type === 'music';
         document.getElementById('icon-music')?.classList.toggle('hidden', !isMusic);
         document.getElementById('icon-timer')?.classList.toggle('hidden', isMusic);
 
-        // 3. Panggil expand dengan sedikit delay (trick agar transisi CSS terbaca)
-        setTimeout(() => {
-            this.expandTemporary(message);
-        }, 50);
-    },
-
-    expandTemporary(message) {
-        const island = document.getElementById('dynamic-island');
-        const textSpan = document.getElementById('island-text');
-        if (!island) return;
-
-        // Bersihkan timeout lama agar tidak bentrok
-        if (this.timeout) clearTimeout(this.timeout);
-
-        // MELEBAR
-        island.classList.remove('icon-only');
-        island.classList.add('expanded');
+        // 2. Tampilkan & Paksa Melebar
+        container.classList.remove('island-hidden');
         
-        if (textSpan) {
-            textSpan.textContent = message;
-            textSpan.style.opacity = "1";
-        }
+        // Gunakan requestAnimationFrame agar transisi CSS 'expanded' pasti terpicu
+        requestAnimationFrame(() => {
+            island.classList.remove('icon-only');
+            island.classList.add('expanded');
+        });
 
-        // Timer untuk MENGUNCUP setelah 6 detik
+        // 3. Timer untuk melepas kunci dan menguncup
+        if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
+            this.isLocked = false; // Buka kunci
             island.classList.remove('expanded');
             island.classList.add('icon-only');
         }, 6000);
     },
 
     hide() {
+        // Jangan sembunyikan jika sedang dikunci (lagi pamer judul)
+        if (this.isLocked) return;
+        
         const container = document.getElementById('dynamic-island-container');
-        if (this.timeout) clearTimeout(this.timeout);
         if (container) container.classList.add('island-hidden');
     }
 };
