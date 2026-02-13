@@ -84,20 +84,20 @@ export const audioController = {
     },
 
     updateUI() {
-        const playBtn = document.getElementById('mainPlayBtn');
-        const wave = document.getElementById('music-wave');
-        if (!playBtn) return;
+    const playBtn = document.getElementById('mainPlayBtn');
+    const wave = document.getElementById('music-wave');
+    if (!playBtn) return;
 
-        if (isPlaying) {
-            playBtn.textContent = 'Pause';
-            if (wave) wave.classList.remove('music-wave-hidden');
-            // Kita tidak panggil islandController.show di sini agar tidak spam animasi
-        } else {
-            playBtn.textContent = 'Play';
-            if (wave) wave.classList.add('music-wave-hidden');
-            
-            // Island hanya sembunyi jika musik benar-benar berhenti/pause
-            islandController.hide();
-        }
+    if (isPlaying) {
+        playBtn.textContent = 'Pause';
+        if (wave) wave.classList.remove('music-wave-hidden');
+        // JANGAN panggil islandController di sini agar tidak mengganggu animasi show()
+    } else {
+        playBtn.textContent = 'Play';
+        if (wave) wave.classList.add('music-wave-hidden');
+        
+        // HANYA sembunyikan island jika player benar-benar PAUSED/STOP
+        islandController.hide();
     }
+}
 };
