@@ -32,7 +32,7 @@ export const durasiModalView = {
                         <button id="close-durasi-modal" class="close-btn-minimal" aria-label="Close">&times;</button>
                     </div>
                     
-                    <div class="chart-wrapper" style="margin-bottom: var(--space-lg);">
+                    <div class="chart-wrapper" style="margin-bottom: var(--space-lg); height: 250px;">
                         <canvas id="durationChart"></canvas>
                     </div>
 
@@ -56,107 +56,94 @@ export const durasiModalView = {
     },
 
     renderChart(data = []) {
-    const ctx = document.getElementById('durationChart');
-    if (!ctx) return;
+        const ctx = document.getElementById('durationChart');
+        if (!ctx) return;
 
-    if (this._chartInstance) {
-        this._chartInstance.destroy();
-    }
+        if (this._chartInstance) {
+            this._chartInstance.destroy();
+        }
 
-    // 1. Inisialisasi 24 jam (0-23)
-    // 1. Inisialisasi 2 array untuk masing-masing tipe durasi
-// 1. Definisikan keranjang datanya
-const readingHourly = new Array(24).fill(0);
-const quizHourly = new Array(24).fill(0);
+        // 1. Inisialisasi 2 array (Gunakan nama baru agar sinkron dengan database)
+        const readingHourly = new Array(24).fill(0);
+        const quizHourly = new Array(24).fill(0);
+        const combinedHourly = new Array(24).fill(0);
 
-data.forEach(session => {
-    if (session.created_at) {
-        const hour = new Date(session.created_at).getHours();
-        
-        // GANTI hourlyData[hour] MENJADI INI:
-        // Gunakan reading_seconds (hasil rename tadi) dan quiz_seconds
-        readingHourly[hour] += (Number(session.reading_seconds || 0) / 60);
-        quizHourly[hour] += (Number(session.quiz_seconds || 0) / 60);
-    }
-});
+        data.forEach(session => {
+            if (session.created_at) {
+                const hour = new Date(session.created_at).getHours();
+                const rMin = (Number(session.reading_seconds || 0) / 60);
+                const qMin = (Number(session.quiz_seconds || 0) / 60);
 
-// 2. Pastikan di bagian dataset Chart.js juga memanggil variabel yang sama
-// datasets: [{ label: 'Baca', data: readingHourly }, { label: 'Kuis', data: quizHourly }]
+                readingHourly[hour] += rMin;
+                quizHourly[hour] += qMin;
+                combinedHourly[hour] += (rMin + qMin);
+            }
+        });
 
-// 2. Gunakan kedua array ini di datasets Chart.js
-// Garis Indigo untuk Membaca, Garis Amber untuk Soal
+        // 2. Logika Peak Hour (Gunakan gabungan keduanya)
+        const maxVal = Math.max(...combinedHourly);
+        const peakHour = combinedHourly.indexOf(maxVal);
+        const peakHourTextEl = document.getElementById('peakHourText');
+        const insightTextEl = document.getElementById('durasi-insight-text');
 
-    // 2. Buat Label 00:00 sampai 23:00
-    const labels = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+        if (maxVal > 0) {
+            if (peakHourTextEl) peakHourTextEl.textContent = `${peakHour.toString().padStart(2, '0')}:00`;
+            if (insightTextEl) {
+                const isMostlyQuiz = quizHourly.reduce((a,b) => a+b, 0) > readingHourly.reduce((a,b) => a+b, 0);
+                insightTextEl.innerHTML = `Kamu paling produktif jam <strong>${peakHour}:00</strong>. ${isMostlyQuiz ? 'Kamu fokus pada latihan soal!' : 'Kamu fokus pada pendalaman materi.'}`;
+            }
+        } else {
+            if (insightTextEl) insightTextEl.textContent = "Belum ada aktivitas belajar hari ini.";
+        }
 
-    // --- TAMBAHKAN LOGIKA INI ---
-    const maxVal = Math.max(...hourlyData);
-    const peakHour = hourlyData.indexOf(maxVal);
-    const peakHourTextEl = document.getElementById('peakHourText');
-    const insightTextEl = document.getElementById('durasi-insight-text');
+        const labels = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
 
-    if (maxVal > 0) {
-        if (peakHourTextEl) peakHourTextEl.textContent = `${peakHour.toString().padStart(2, '0')}:00`;
-        if (insightTextEl) insightTextEl.textContent = `Kamu paling produktif sekitar jam ${peakHour}. Pertahankan ritme ini!`;
-    } else {
-        if (insightTextEl) insightTextEl.textContent = "Belum ada aktivitas belajar yang tercatat.";
-    }
-    // ----------------------------
-
-    this._chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Menit Belajar',
-                data: hourlyData.map(val => parseFloat(val.toFixed(1))), // Batasi desimal agar rapi
-                borderColor: '#4f46e5',
-                backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                fill: true,
-                tension: 0.4,
-                pointRadius: 3,
-                pointHitRadius: 10
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: (context) => `Durasi: ${context.parsed.y} menit`
+        this._chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Membaca (m)',
+                        data: readingHourly.map(v => parseFloat(v.toFixed(1))),
+                        borderColor: '#4f46e5', // Indigo
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Kuis (m)',
+                        data: quizHourly.map(v => parseFloat(v.toFixed(1))),
+                        borderColor: '#f59e0b', // Amber/Orange
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        fill: true,
+                        tension: 0.4
                     }
-                }
+                ]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Menit', font: { size: 10 } },
-                    ticks: { maxTicksLimit: 5 }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                    tooltip: { mode: 'index', intersect: false }
                 },
-                x: {
-                    grid: { display: false },
-                    ticks: {
-                        autoSkip: true,
-                        maxRotation: 0,
-                        // Menampilkan label setiap 3 jam agar tidak sesak di mobile
-                        callback: function(val, index) {
-                            return index % 3 === 0 ? this.getLabelForValue(val) : '';
+                scales: {
+                    y: { beginAtZero: true, ticks: { maxTicksLimit: 5 } },
+                    x: {
+                        ticks: {
+                            callback: function(val, index) { return index % 4 === 0 ? this.getLabelForValue(val) : ''; }
                         }
                     }
                 }
             }
-        }
-    });
-},
+        });
+    },
 
     setupEventListeners() {
         if (this._isListenerAttached) return;
-        
         const overlay = document.getElementById('durasi-modal-overlay');
         const closeBtn = document.getElementById('close-durasi-modal');
-
         if (!overlay || !closeBtn) return;
 
         const hide = () => {
@@ -169,7 +156,6 @@ data.forEach(session => {
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && overlay.classList.contains('active')) hide();
         });
-
         this._isListenerAttached = true;
     }
 };
