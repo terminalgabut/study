@@ -78,22 +78,31 @@ export const performaService = {
     const totalReadCount = progress.reduce((acc, p) => acc + (p.read_count || 0), 0);
     
     // 2. Hitung total durasi (Membaca + Kuis)
-    const totalSeconds = progress.reduce(
+    const totalSeconds = allProgress.reduce(
       (acc, p) => acc + (Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0)),
       0
     );
 
-    // 3. Konversi format waktu
+    // 3. Konversi format waktu secara dinamis
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const timeString = hours > 0 ? `${hours}j ${minutes}m` : `${minutes}m`;
 
-    return { 
+    let timeString = "";
+    if (hours > 0) {
+        // Jika menitnya 0, tampilkan jam saja (misal: 1j), jika ada sisa, tampilkan keduanya
+        timeString = minutes > 0 ? `${hours}j ${minutes}m` : `${hours}j`;
+    } else {
+        // Jika di bawah 1 jam, tampilkan menit saja (misal: 45m)
+        // Jika benar-benar 0 detik, tetap tampilkan 0m
+        timeString = `${minutes}m`;
+    }
+
+    return {
       totalMateri, 
-      timeString, 
+      timeString,
+      totalPoints: allProgress.reduce((acc, p) => acc + (p.total_score_points || 0), 0),
       // Akurasi: (Benar/Total Soal) * 100
       avgScore: totalAttempts > 0 ? Math.round((totalPoints / totalAttempts) * 100) : 0, 
-      totalPoints,
       totalReadCount,
       streak: progress.length > 0 ? 1 : 0 
     };
