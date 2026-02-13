@@ -17,3 +17,28 @@
   align-items: center;
   gap: 10px;
 }
+
+/* Animasi Musik Wave */
+#music-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 20px;
+}
+#music-wave span {
+  width: 3px;
+  background: var(--primary-color, #4f46e5);
+  animation: wave 1s infinite alternate;
+}
+#music-wave span:nth-child(2) { animation-delay: 0.2s; height: 15px; }
+#music-wave span:nth-child(3) { animation-delay: 0.4s; height: 10px; }
+
+@keyframes wave {
+  from { height: 5px; }
+  to { height: 20px; }
+}
+
+.music-wave-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
