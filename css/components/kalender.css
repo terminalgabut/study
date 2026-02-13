@@ -1,0 +1,72 @@
+/* Tombol Filter Kalender */
+#calendar-trigger {
+  all: unset; /* Reset default button */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-md); /* Menggunakan spacing-md  */
+  background: var(--accent-soft); /* Menggunakan warna biru transparan  */
+  border: 1px solid var(--border); /* Menggunakan warna border standar [cite: 2] */
+  border-radius: var(--radius-md); /* Menggunakan radius 10px [cite: 4] */
+  color: var(--accent); /* Warna teks biru cerah  */
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+#calendar-trigger:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent);
+}
+
+#calendar-trigger i {
+  color: var(--accent);
+}
+
+#selected-date-range {
+  font-size: 13px; /* Mengikuti typography dasar  */
+  color: var(--text); /* Warna teks utama [cite: 2] */
+}
+
+/* Container Utama Kalender */
+.flatpickr-calendar {
+  background: var(--card) !important; /* Warna kartu gelap  */
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important; /* Radius lebih besar untuk popover [cite: 4] */
+  box-shadow: var(--shadow-sm) !important; /* Shadow halus [cite: 4] */
+  font-family: inherit !important; /* Mengikuti typography.css  */
+}
+
+/* Header & Nama Bulan */
+.flatpickr-month, .flatpickr-weekday {
+  color: var(--text-muted) !important; /* Warna teks redup [cite: 2] */
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Hari dan Seleksi */
+.flatpickr-day {
+  color: var(--text) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.flatpickr-day.selected, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange {
+  background: var(--accent) !important; /* Warna biru aksen  */
+  border-color: var(--accent) !important;
+  color: var(--bg) !important; /* Teks gelap di atas background terang */
+}
+
+.flatpickr-day.inRange {
+  background: var(--accent-soft) !important;
+  border-color: transparent !important;
+  color: var(--accent) !important;
+}
+
+.flatpickr-day:hover {
+  background: var(--border) !important;
+}
