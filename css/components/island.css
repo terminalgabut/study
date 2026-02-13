@@ -32,9 +32,9 @@
   box-shadow: var(--shadow-sm); 
   /* Transisi Morphing (Melebar/Menguncup) */
   transition: 
-    width 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
-    border-radius 0.6s ease,
-    padding 0.6s ease;
+    width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-radius 0.5s ease;
   overflow: hidden; /* Penting agar teks tidak keluar jalur saat menciut */
 }
 
