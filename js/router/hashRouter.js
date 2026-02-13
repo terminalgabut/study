@@ -31,6 +31,7 @@ import { initHistoryPage } from '../ui/riwayat.js';
 import { initNotesList } from '../ui/notes.js';
 import { initNoteDetail } from '../ui/noteDetails.js'; 
 import { performaController } from '../controllers/performaController.js';
+import { auioController } from '../controllers/audioController.js';
 
 // js/router/hashRouter.js
 window.__DEBUG__?.log('hashRouter loaded');
