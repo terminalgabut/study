@@ -65,22 +65,23 @@ export const durasiModalView = {
 
     // 1. Inisialisasi 24 jam (0-23)
     // 1. Inisialisasi 2 array untuk masing-masing tipe durasi
+// 1. Definisikan keranjang datanya
 const readingHourly = new Array(24).fill(0);
 const quizHourly = new Array(24).fill(0);
 
 data.forEach(session => {
     if (session.created_at) {
-        const date = new Date(session.created_at);
-        const hour = date.getHours(); 
+        const hour = new Date(session.created_at).getHours();
         
-        // Ambil data dari kolom baru, konversi ke menit
-        const rMin = Number(session.reading_seconds || 0) / 60;
-        const qMin = Number(session.quiz_seconds || 0) / 60;
-
-        readingHourly[hour] += rMin;
-        quizHourly[hour] += qMin;
+        // GANTI hourlyData[hour] MENJADI INI:
+        // Gunakan reading_seconds (hasil rename tadi) dan quiz_seconds
+        readingHourly[hour] += (Number(session.reading_seconds || 0) / 60);
+        quizHourly[hour] += (Number(session.quiz_seconds || 0) / 60);
     }
 });
+
+// 2. Pastikan di bagian dataset Chart.js juga memanggil variabel yang sama
+// datasets: [{ label: 'Baca', data: readingHourly }, { label: 'Kuis', data: quizHourly }]
 
 // 2. Gunakan kedua array ini di datasets Chart.js
 // Garis Indigo untuk Membaca, Garis Amber untuk Soal
