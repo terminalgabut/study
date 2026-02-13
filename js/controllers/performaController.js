@@ -1,4 +1,4 @@
-// root/js/controllers/performaControllers.js
+// root/js/controllers/performaController.js
 
 import { performaService } from '../services/performaService.js';
 import { babModalView } from '../../components/babModalView.js';
