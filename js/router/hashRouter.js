@@ -14,6 +14,7 @@ import { historyView } from '../../pages/riwayatView.js';
 import { notesView } from '../../pages/notesView.js';
 import { notesDetailView } from '../../pages/notesDetailView.js';
 import { performaView } from '../../pages/performaView.js';
+import { audioView } from '../../pages/audioView.js';
 
 // ===== LOGIC =====
 import { initLogin, initRegister } from '../ui/auth/auth.js';
