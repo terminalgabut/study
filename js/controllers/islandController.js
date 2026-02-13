@@ -1,3 +1,5 @@
+// study/js/controllers/islandController.js
+
 export const islandController = {
     timeout: null,
 
@@ -5,13 +7,13 @@ export const islandController = {
         const island = document.getElementById('dynamic-island');
         if (!island) return;
 
-        // Fitur klik: Jika sedang kecil, klik untuk melihat info
+        // Klik manual: Jika sedang mode icon, klik untuk melihat info kembali
         island.onclick = () => {
             if (island.classList.contains('icon-only')) {
-                // Ambil pesan terakhir yang ada di span
                 const currentMsg = document.getElementById('island-text').textContent;
-                const activeIcon = document.getElementById('icon-music').classList.contains('hidden') ? 'timer' : 'music';
-                this.show(currentMsg, activeIcon);
+                // Cek icon mana yang sedang aktif (tidak hidden)
+                const isTimer = !document.getElementById('icon-timer').classList.contains('hidden');
+                this.show(currentMsg, isTimer ? 'timer' : 'music');
             }
         };
     },
@@ -25,16 +27,15 @@ export const islandController = {
 
         if (!container || !island) return;
 
-        // 1. Munculkan container utama
+        // 1. Trigger Pop Up (Hapus class hidden)
         container.classList.remove('island-hidden');
 
         // 2. Mode MELEBAR
         island.classList.remove('icon-only');
         island.classList.add('expanded');
         
-        // 3. Update Konten
+        // 3. Update Konten & Icon
         textSpan.textContent = message;
-        textSpan.style.display = "inline-block"; // Pastikan teks terlihat
 
         if (type === 'music') {
             musicIcon.classList.remove('hidden');
@@ -45,16 +46,19 @@ export const islandController = {
         }
 
         // 4. Timer untuk MENGUNCUP
+        // Gunakan 6000ms (6 detik) agar judul terbaca dengan jelas
         if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
             island.classList.remove('expanded');
             island.classList.add('icon-only');
-            // Sembunyikan teks setelah animasi menguncup selesai (opsional via CSS)
-        }, 3000);
+        }, 6000); 
     },
 
     hide() {
         const container = document.getElementById('dynamic-island-container');
-        if (container) container.classList.add('island-hidden');
+        if (container) {
+            // Menutup dengan efek menyusut ke tengah (scale 0)
+            container.classList.add('island-hidden');
+        }
     }
 };
