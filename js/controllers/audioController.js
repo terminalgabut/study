@@ -1,34 +1,46 @@
-// root/js/controllers/audioController.js
+// controllers/audioController.js
 
-let player;
+let player = null; // Inisialisasi dengan null
 let isPlaying = false;
 
 export const audioController = {
-    // 1. Inisialisasi Player (Panggil sekali di main.js)
     init() {
-        window.onYouTubeIframeAPIReady = () => {
-            player = new YT.Player('youtube-player', {
-                height: '0',
-                width: '0',
-                videoId: 'jfKfPfyJRdk', // Default: Lofi Girl
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'rel': 0
-                },
-                events: {
-                    'onStateChange': (event) => {
-                        // 1 = Playing, 2 = Paused
-                        isPlaying = (event.data === 1);
-                        this.updateUI();
-                    }
-                }
-            });
-        };
+        // Cek jika API YouTube sudah dimuat
+        if (window.YT && window.YT.Player) {
+            this.setupPlayer();
+        } else {
+            // Jika belum, pasang global listener
+            window.onYouTubeIframeAPIReady = () => {
+                this.setupPlayer();
+            };
+        }
     },
 
-    // 2. Pasang Listener ke UI (Panggil setiap kali render audioView)
+    setupPlayer() {
+        // Jangan buat player baru jika sudah ada
+        if (player) return;
+
+        player = new YT.Player('youtube-player', {
+            height: '0',
+            width: '0',
+            videoId: 'jfKfPfyJRdk',
+            playerVars: {
+                'autoplay': 0,
+                'controls': 0,
+                'rel': 0,
+                'showinfo': 0
+            },
+            events: {
+                'onReady': () => window.__DEBUG__?.log('YouTube Player Ready'),
+                'onStateChange': (event) => {
+                    // YT.PlayerState.PLAYING = 1, PAUSED = 2
+                    isPlaying = (event.data === 1);
+                    this.updateUI();
+                }
+            }
+        });
+    },
+
     bindEvents() {
         const playBtn = document.getElementById('mainPlayBtn');
         const volSlider = document.getElementById('volumeRange');
@@ -36,16 +48,16 @@ export const audioController = {
 
         if (playBtn) {
             playBtn.onclick = () => {
-                if (isPlaying) player.pauseVideo();
-                else player.playVideo();
+                if (!player || typeof player.playVideo !== 'function') return;
+                isPlaying ? player.pauseVideo() : player.playVideo();
             };
         }
 
         if (volSlider) {
             volSlider.oninput = (e) => {
-                player.setVolume(e.target.value);
-                const volText = document.getElementById('volume-level');
-                if (volText) volText.textContent = `${e.target.value}%`;
+                if (player && player.setVolume) {
+                    player.setVolume(e.target.value);
+                }
             };
         }
 
@@ -54,9 +66,16 @@ export const audioController = {
                 const vid = card.getAttribute('data-vid');
                 const title = card.getAttribute('data-title');
                 
-                player.loadVideoById(vid);
-                document.getElementById('current-title').textContent = title;
-                document.getElementById('track-status').textContent = "Sedang diputar...";
+                // PROTEKSI: Cek apakah player sudah siap sebelum panggil loadVideoById
+                if (player && typeof player.loadVideoById === 'function') {
+                    player.loadVideoById(vid);
+                    
+                    const titleEl = document.getElementById('current-title');
+                    if (titleEl) titleEl.textContent = title;
+                } else {
+                    console.warn("YouTube Player belum siap. Tunggu sebentar...");
+                    alert("Player sedang disiapkan, silakan klik lagi dalam 2 detik.");
+                }
             };
         });
 
@@ -65,19 +84,7 @@ export const audioController = {
 
     updateUI() {
         const playBtn = document.getElementById('mainPlayBtn');
-        const statusText = document.getElementById('track-status');
-        const wave = document.getElementById('music-wave');
-
         if (!playBtn) return;
-
-        if (isPlaying) {
-            playBtn.textContent = 'Pause';
-            statusText.textContent = 'Musik menemani belajarmu...';
-            if (wave) wave.classList.remove('music-wave-hidden');
-        } else {
-            playBtn.textContent = 'Play';
-            statusText.textContent = 'Musik berhenti';
-            if (wave) wave.classList.add('music-wave-hidden');
-        }
+        playBtn.textContent = isPlaying ? 'Pause' : 'Play';
     }
 };
