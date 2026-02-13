@@ -3,89 +3,85 @@
   position: absolute;
   left: 50%;
   top: 10px; 
-  transform: translateX(-50%) scale(1); /* Posisi normal */
+  transform: translateX(-50%) scale(1);
   z-index: 9999;
   opacity: 1;
-  /* Kunci animasi pop up: cubic-bezier membal */
+  /* Transisi Pop-Up */
   transition: 
     opacity 0.3s ease, 
-    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    top 0.4s ease;
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* State Hidden: Mengecil ke tengah dan memudar */
 .island-hidden {
   opacity: 0 !important;
-  transform: translateX(-50%) scale(0) !important; /* Mengecil ke titik pusat */
+  transform: translateX(-50%) scale(0) !important;
   pointer-events: none;
 }
 
-/* Badan Island */
 #dynamic-island {
-  /* Menggunakan warna surface gelap agar kontras dengan bg */
   background: var(--surface); 
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg); /* Menggunakan radius 14px */
-  
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   height: 36px;
-  padding: 0 var(--space-md); /* Menggunakan spacing 16px */
-  
+  padding: 0 var(--space-md);
   cursor: pointer;
-  pointer-events: auto;
-  
-  /* Efek Melayang Premium */
   box-shadow: var(--shadow-sm); 
-  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  /* Transisi Morphing (Melebar/Menguncup) */
+  transition: 
+    width 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    border-radius 0.6s ease,
+    padding 0.6s ease;
+  overflow: hidden; /* Penting agar teks tidak keluar jalur saat menciut */
 }
 
-/* Konten di Dalam */
 .island-content {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--space-sm); /* Spasi antara icon dan teks (8px) */
+  gap: var(--space-sm);
   white-space: nowrap;
 }
 
-/* State: Mode Melebar (Expanded) */
 #dynamic-island.expanded {
   min-width: 160px;
   max-width: 300px;
 }
 
-/* State: Mode Icon (Shrink) */
 #dynamic-island.icon-only {
   width: 40px;
   min-width: 40px;
   padding: 0;
-  border-radius: 50%; /* Berubah jadi lingkaran sempurna */
+  border-radius: 20px; /* Tetap membulat sempurna */
+}
+
+/* Transisi Teks agar halus (Fade & Slide) */
+#island-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  opacity: 1;
+  max-width: 200px;
+  transition: opacity 0.3s ease, max-width 0.4s ease;
 }
 
 #dynamic-island.icon-only #island-text {
-  width: 0;
   opacity: 0;
+  max-width: 0;
   margin: 0;
-  display: none;
-}
-
-/* Typography & Icons */
-#island-text {
-  font-size: 13px; /* Sedikit lebih kecil dari body 14px */
-  font-weight: 500;
-  color: var(--text);
+  /* Jangan gunakan display:none agar transisi opacity jalan */
 }
 
 .island-icon {
-  stroke: var(--accent); /* Menggunakan warna biru cerah #38bdf8 */
+  stroke: var(--accent);
   width: 18px;
   height: 18px;
   flex-shrink: 0;
 }
 
 .island-icon.hidden {
-  display: none;
+  display: none !important;
 }
