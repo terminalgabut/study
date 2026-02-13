@@ -1,3 +1,5 @@
+import { islandController } from './islandController.js';
+
 let player = null;
 let isPlaying = false;
 
