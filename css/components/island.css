@@ -1,0 +1,24 @@
+.island-icon {
+  stroke: #fff;
+  flex-shrink: 0;
+}
+
+.island-icon.hidden {
+  display: none;
+}
+
+/* Animasi berdenyut halus saat musik jalan */
+#icon-music {
+  animation: music-float 2s ease-in-out infinite;
+}
+
+@keyframes music-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* Style tambahan untuk memastikan teks tidak goyang saat transisi */
+#island-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
