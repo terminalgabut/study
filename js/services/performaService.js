@@ -7,8 +7,12 @@ export const performaService = {
     window.__DEBUG__.log("--- [DEBUG] Fetching Dashboard Data (Agregat Mode) ---");
 
     try {
-      // 1. Siapkan query untuk study_progress
-      let progressQuery = supabase
+      // 1. Query untuk STATISTIK TOTAL (Selalu ambil semua tanpa filter tanggal)
+      const allDataQuery = supabase
+        .from('study_progress')
+        .select('*');
+
+      let filteredQuery = supabase
         .from('study_progress')
         .select('*')
         .order('updated_at', { ascending: false });
@@ -23,32 +27,33 @@ export const performaService = {
         window.__DEBUG__.log(`[Service] Memfilter data: ${startDate.toDateString()} s/d ${endDate.toDateString()}`);
       }
       // Mengambil data dari tabel permanen (bukan riwayat sementara)
-      const [profileRes, progressRes, achievementRes] = await Promise.all([
+      const [profileRes, allProgressRes, filteredRes, achievementRes] = await Promise.all([
         supabase.from('profile').select('*').maybeSingle(), 
-        progressQuery, 
+        allDataQuery,    // Data untuk kartu statistik (Total)
+        filteredQuery,   // Data untuk Chart & Jurnal (Terfilter)
         supabase.from('user_achievements').select('*, achievements(*)').order('earned_at', { ascending: false })
       ]);
-
+      
       // Logging untuk mempermudah pelacakan jika data kosong
       if (profileRes.error) {
         window.__DEBUG__.warn("[Service] Profile tidak ditemukan:", profileRes.error.message);
       }
 
-      if (progressRes.error) {
-        window.__DEBUG__.error("[Service] Gagal ambil study_progress:", progressRes.error.message);
-        throw progressRes.error; 
-      }
+      if (allProgressRes.error) throw allProgressRes.error;
+      if (filteredRes.error) throw filteredRes.error;
 
-      const progress = progressRes.data ?? [];
+      const allProgress = allProgressRes.data ?? [];
+      const filteredProgress = filteredRes.data ?? [];
       const achievements = achievementRes.data ?? [];
 
-      window.__DEBUG__.log(`[Service] Load Berhasil: ${progress.length} Bab ditemukan.`);
+      window.__DEBUG__.log(`[Service] Load Berhasil. Total: ${allProgress.length} bab, Terfilter: ${filteredProgress.length} bab.`);
 
       return {
         profile: profileRes.data || { full_name: 'Pelajar', xp: 0 },
-        progress: progress, 
+        progress: filteredProgress, // Kirim data terfilter ke Chart & Jurnal
         achievements: achievements,
-        stats: this.calculateStatsFromProgress(progress) // Mengirim hasil kalkulasi ke Controller
+        // PERBAIKAN: Kirim allProgress agar fungsi kalkulator mengenalinya
+        stats: this.calculateStatsFromProgress(allProgress) 
       };
     } catch (err) {
       window.__DEBUG__.error("[Service] Critical Error:", err.message);
@@ -70,14 +75,14 @@ export const performaService = {
     return data;
   },
 
-  calculateStatsFromProgress(progress = []) {
-    // 1. Hitung akumulasi dasar
-    const totalMateri = progress.length;
-    const totalPoints = progress.reduce((acc, p) => acc + (p.total_score_points || 0), 0);
-    const totalAttempts = progress.reduce((acc, p) => acc + (p.attempts_count || 0), 0);
-    const totalReadCount = progress.reduce((acc, p) => acc + (p.read_count || 0), 0);
+  calculateStatsFromProgress(allProgress = []) { // GANTI progress -> allProgress di sini
+    // 1. Hitung akumulasi dasar menggunakan allProgress
+    const totalMateri = allProgress.length;
+    const totalPoints = allProgress.reduce((acc, p) => acc + (p.total_score_points || 0), 0);
+    const totalAttempts = allProgress.reduce((acc, p) => acc + (p.attempts_count || 0), 0);
+    const totalReadCount = allProgress.reduce((acc, p) => acc + (p.read_count || 0), 0);
     
-    // 2. Hitung total durasi (Membaca + Kuis)
+    // 2. Hitung total durasi
     const totalSeconds = allProgress.reduce(
       (acc, p) => acc + (Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0)),
       0
@@ -89,22 +94,18 @@ export const performaService = {
 
     let timeString = "";
     if (hours > 0) {
-        // Jika menitnya 0, tampilkan jam saja (misal: 1j), jika ada sisa, tampilkan keduanya
         timeString = minutes > 0 ? `${hours}j ${minutes}m` : `${hours}j`;
     } else {
-        // Jika di bawah 1 jam, tampilkan menit saja (misal: 45m)
-        // Jika benar-benar 0 detik, tetap tampilkan 0m
         timeString = `${minutes}m`;
     }
 
     return {
       totalMateri, 
       timeString,
-      totalPoints: allProgress.reduce((acc, p) => acc + (p.total_score_points || 0), 0),
-      // Akurasi: (Benar/Total Soal) * 100
+      totalPoints, // Gunakan variabel yang sudah dihitung di poin 1
       avgScore: totalAttempts > 0 ? Math.round((totalPoints / totalAttempts) * 100) : 0, 
       totalReadCount,
-      streak: progress.length > 0 ? 1 : 0 
+      streak: allProgress.length > 0 ? 1 : 0 
     };
-  }
+}
 };
