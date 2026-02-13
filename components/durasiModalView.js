@@ -56,54 +56,75 @@ export const durasiModalView = {
     },
 
     renderChart(data = []) {
-        const ctx = document.getElementById('durationChart');
-        if (!ctx) return;
+    const ctx = document.getElementById('durationChart');
+    if (!ctx) return;
 
-        if (this._chartInstance) {
-            this._chartInstance.destroy();
+    if (this._chartInstance) {
+        this._chartInstance.destroy();
+    }
+
+    // 1. Inisialisasi 24 jam (0-23)
+    const hourlyData = new Array(24).fill(0);
+    
+    data.forEach(session => {
+        if (session.created_at) {
+            const date = new Date(session.created_at);
+            const hour = date.getHours(); 
+            // Konversi ke menit dan tambahkan ke array sesuai jamnya
+            hourlyData[hour] += (Number(session.duration_seconds || 0) / 60);
         }
+    });
 
-        const hourlyData = new Array(24).fill(0);
-        data.forEach(session => {
-            if (session.created_at) {
-                const hour = new Date(session.created_at).getHours();
-                hourlyData[hour] += (session.duration_seconds / 60);
-            }
-        });
+    // 2. Buat Label 00:00 sampai 23:00
+    const labels = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
 
-        const maxVal = Math.max(...hourlyData);
-        const peakHour = hourlyData.indexOf(maxVal);
-        
-        if (maxVal > 0) {
-            document.getElementById('peakHourText').textContent = `${peakHour}:00`;
-            document.getElementById('durasi-insight-text').textContent = 
-                `Kamu paling produktif sekitar jam ${peakHour}. Pertahankan ritme ini!`;
-        }
-
-        this._chartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-                datasets: [{
-                    label: 'Menit Belajar',
-                    data: hourlyData,
-                    borderColor: '#4f46e5',
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
+    this._chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Menit Belajar',
+                data: hourlyData.map(val => parseFloat(val.toFixed(1))), // Batasi desimal agar rapi
+                borderColor: '#4f46e5',
+                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointHitRadius: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (context) => `Durasi: ${context.parsed.y} menit`
+                    }
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, display: true, grid: { display: false } },
-                    x: { grid: { display: false } }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Menit', font: { size: 10 } },
+                    ticks: { maxTicksLimit: 5 }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        autoSkip: true,
+                        maxRotation: 0,
+                        // Menampilkan label setiap 3 jam agar tidak sesak di mobile
+                        callback: function(val, index) {
+                            return index % 3 === 0 ? this.getLabelForValue(val) : '';
+                        }
+                    }
                 }
             }
-        });
-    },
+        }
+    });
+},
 
     setupEventListeners() {
         if (this._isListenerAttached) return;
