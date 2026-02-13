@@ -1,25 +1,19 @@
-// controllers/audioController.js
-
-let player = null; // Inisialisasi dengan null
+let player = null;
 let isPlaying = false;
 
 export const audioController = {
+    // Inisialisasi API & Player
     init() {
-        // Cek jika API YouTube sudah dimuat
         if (window.YT && window.YT.Player) {
             this.setupPlayer();
         } else {
-            // Jika belum, pasang global listener
-            window.onYouTubeIframeAPIReady = () => {
-                this.setupPlayer();
-            };
+            window.onYouTubeIframeAPIReady = () => this.setupPlayer();
         }
     },
 
     setupPlayer() {
-        // Jangan buat player baru jika sudah ada
-        if (player) return;
-
+        if (player) return; // Mencegah double init
+        
         player = new YT.Player('youtube-player', {
             height: '0',
             width: '0',
@@ -31,7 +25,7 @@ export const audioController = {
                 'showinfo': 0
             },
             events: {
-                'onReady': () => window.__DEBUG__?.log('YouTube Player Ready'),
+                'onReady': () => window.__DEBUG__?.log('Audio Engine Ready'),
                 'onStateChange': (event) => {
                     // YT.PlayerState.PLAYING = 1, PAUSED = 2
                     isPlaying = (event.data === 1);
@@ -41,6 +35,7 @@ export const audioController = {
         });
     },
 
+    // Menghubungkan tombol di View ke Player
     bindEvents() {
         const playBtn = document.getElementById('mainPlayBtn');
         const volSlider = document.getElementById('volumeRange');
@@ -66,25 +61,34 @@ export const audioController = {
                 const vid = card.getAttribute('data-vid');
                 const title = card.getAttribute('data-title');
                 
-                // PROTEKSI: Cek apakah player sudah siap sebelum panggil loadVideoById
                 if (player && typeof player.loadVideoById === 'function') {
                     player.loadVideoById(vid);
                     
-                    const titleEl = document.getElementById('current-title');
-                    if (titleEl) titleEl.textContent = title;
+                    // Update UI Instan
+                    document.getElementById('current-title').textContent = title;
+                    document.getElementById('track-status').textContent = "Sedang diputar...";
+                    isPlaying = true;
+                    this.updateUI();
                 } else {
-                    console.warn("YouTube Player belum siap. Tunggu sebentar...");
-                    alert("Player sedang disiapkan, silakan klik lagi dalam 2 detik.");
+                    alert("Player sedang disiapkan, mohon tunggu 2 detik...");
                 }
             };
         });
 
-        this.updateUI();
+        this.updateUI(); // Sinkronkan status saat halaman dibuka
     },
 
     updateUI() {
         const playBtn = document.getElementById('mainPlayBtn');
+        const wave = document.getElementById('music-wave');
         if (!playBtn) return;
-        playBtn.textContent = isPlaying ? 'Pause' : 'Play';
+
+        if (isPlaying) {
+            playBtn.textContent = 'Pause';
+            if (wave) wave.classList.remove('music-wave-hidden');
+        } else {
+            playBtn.textContent = 'Play';
+            if (wave) wave.classList.add('music-wave-hidden');
+        }
     }
 };
