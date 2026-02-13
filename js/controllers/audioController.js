@@ -91,10 +91,12 @@ export const audioController = {
         if (isPlaying) {
             playBtn.textContent = 'Pause';
             if (wave) wave.classList.remove('music-wave-hidden');
-            islandController.show('Music Paused', 'music');
+            // Kita tidak panggil islandController.show di sini agar tidak spam animasi
         } else {
             playBtn.textContent = 'Play';
             if (wave) wave.classList.add('music-wave-hidden');
+            
+            // Island hanya sembunyi jika musik benar-benar berhenti/pause
             islandController.hide();
         }
     }
