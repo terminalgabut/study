@@ -166,10 +166,11 @@ window.__DEBUG__?.log('Route Guard', {
           performaController.init();
         break;
 
-          case 'audio':
+        case 'audio':
           window.__DEBUG__?.log('Route → audio');
           content.innerHTML = audioView;
-          audioController.init();
+          audioController.init(); 
+          audioController.bindEvents(); 
         break;
        
         default:
