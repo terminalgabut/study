@@ -78,6 +78,20 @@ export const durasiModalView = {
     // 2. Buat Label 00:00 sampai 23:00
     const labels = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
 
+    // --- TAMBAHKAN LOGIKA INI ---
+    const maxVal = Math.max(...hourlyData);
+    const peakHour = hourlyData.indexOf(maxVal);
+    const peakHourTextEl = document.getElementById('peakHourText');
+    const insightTextEl = document.getElementById('durasi-insight-text');
+
+    if (maxVal > 0) {
+        if (peakHourTextEl) peakHourTextEl.textContent = `${peakHour.toString().padStart(2, '0')}:00`;
+        if (insightTextEl) insightTextEl.textContent = `Kamu paling produktif sekitar jam ${peakHour}. Pertahankan ritme ini!`;
+    } else {
+        if (insightTextEl) insightTextEl.textContent = "Belum ada aktivitas belajar yang tercatat.";
+    }
+    // ----------------------------
+
     this._chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
