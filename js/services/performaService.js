@@ -1,4 +1,4 @@
-// root/js/services/performaServices.js
+// root/js/service/performaServices.js
 
 import { supabase } from './supabase.js';
 
