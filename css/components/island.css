@@ -47,16 +47,18 @@
 }
 
 #dynamic-island.expanded {
-  width: auto !important;
-  min-width: 160px !important;
-  padding: 0 var(--space-md) !important;
+  width: auto; 
+  min-width: 160px;
+  max-width: 400px; /* Batas aman supaya teks bisa memanjang */
+  padding: 0 var(--space-md);
 }
 
 #dynamic-island.icon-only {
   width: 40px;
   min-width: 40px;
+  max-width: 40px; /* Kunci di 40px saat jadi icon */
   padding: 0;
-  border-radius: 20px; /* Tetap membulat sempurna */
+  border-radius: 20px;
 }
 
 /* Transisi Teks agar halus (Fade & Slide) */
@@ -65,15 +67,17 @@
   font-weight: 500;
   color: var(--text);
   opacity: 1;
-  max-width: 200px;
-  transition: opacity 0.5s ease; /* Halus */
+  /* Tambahkan display block agar margin/width bekerja */
+  display: inline-block; 
+  transition: opacity 0.3s ease;
 }
 
 #dynamic-island.icon-only #island-text {
   opacity: 0;
-  max-width: 0;
+  /* Gunakan visibility agar teks benar-benar tidak makan tempat tapi tetap ada */
+  visibility: hidden; 
+  width: 0;
   margin: 0;
-  /* Jangan gunakan display:none agar transisi opacity jalan */
 }
 
 .island-icon {
