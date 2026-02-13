@@ -64,12 +64,10 @@ export const performaController = {
    */
   renderCharts(progress = []) {
     if (!progress || progress.length === 0) {
-      window.__DEBUG__.warn("Data progress kosong untuk chart.");
-      // Opsional: tampilkan placeholder jika data kosong
-      return;
+      window.__DEBUG__.log("[Charts] Merender state kosong (tidak ada data).");
     }
     
-    // Memanggil fungsi dari root/js/lib/charts.js
+    // Tetap panggil library agar grafik lama dihapus & diganti placeholder/nol
     chartLib.renderTrendChart('trendChart', progress);
     chartLib.renderCategoryChart('categoryChart', progress);
   },
@@ -97,7 +95,7 @@ export const performaController = {
     if (xpFillEl) xpFillEl.style.width = `${progressPercent}%`;
 
     updateText('stat-materi', stats.totalMateri);
-    updateText('stat-waktu', stats.timeString); 
+    updateText('stat-durasi', stats.timeString); 
     updateText('stat-read-count', stats.totalReadCount);
     updateText('stat-skor', `${stats.avgScore}%`);
   },
