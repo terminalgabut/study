@@ -47,8 +47,9 @@
 }
 
 #dynamic-island.expanded {
-  min-width: 160px;
-  max-width: 300px;
+  width: auto !important;
+  min-width: 160px !important;
+  padding: 0 var(--space-md) !important;
 }
 
 #dynamic-island.icon-only {
@@ -65,7 +66,7 @@
   color: var(--text);
   opacity: 1;
   max-width: 200px;
-  transition: opacity 0.3s ease, max-width 0.4s ease;
+  transition: opacity 0.5s ease; /* Halus */
 }
 
 #dynamic-island.icon-only #island-text {
