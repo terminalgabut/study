@@ -64,16 +64,26 @@ export const durasiModalView = {
     }
 
     // 1. Inisialisasi 24 jam (0-23)
-    const hourlyData = new Array(24).fill(0);
-    
-    data.forEach(session => {
-        if (session.created_at) {
-            const date = new Date(session.created_at);
-            const hour = date.getHours(); 
-            // Konversi ke menit dan tambahkan ke array sesuai jamnya
-            hourlyData[hour] += (Number(session.duration_seconds || 0) / 60);
-        }
-    });
+    // 1. Inisialisasi 2 array untuk masing-masing tipe durasi
+const readingHourly = new Array(24).fill(0);
+const quizHourly = new Array(24).fill(0);
+
+data.forEach(session => {
+    if (session.created_at) {
+        const date = new Date(session.created_at);
+        const hour = date.getHours(); 
+        
+        // Ambil data dari kolom baru, konversi ke menit
+        const rMin = Number(session.reading_seconds || 0) / 60;
+        const qMin = Number(session.quiz_seconds || 0) / 60;
+
+        readingHourly[hour] += rMin;
+        quizHourly[hour] += qMin;
+    }
+});
+
+// 2. Gunakan kedua array ini di datasets Chart.js
+// Garis Indigo untuk Membaca, Garis Amber untuk Soal
 
     // 2. Buat Label 00:00 sampai 23:00
     const labels = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
