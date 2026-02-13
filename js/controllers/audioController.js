@@ -85,26 +85,24 @@ export const audioController = {
 
     updateUI() {
     const playBtn = document.getElementById('mainPlayBtn');
-    const wave = document.getElementById('music-wave');
     if (!playBtn) return;
 
     if (isPlaying) {
         playBtn.textContent = 'Pause';
-        wave?.classList.remove('music-wave-hidden');
+        document.getElementById('music-wave')?.classList.remove('music-wave-hidden');
         
-        // STATUS ON: Pastikan container muncul, tapi jangan paksa jadi icon-only 
-        // jika sedang ada animasi "show" yang berjalan
+        // Cek apakah container tertutup, jika ya buka sebagai icon
         const container = document.getElementById('dynamic-island-container');
-        if (container && container.classList.contains('island-hidden')) {
+        // HANYA jalankan jika island sedang tidak "dikunci" oleh animasi judul
+        if (!islandController.isLocked && container && container.classList.contains('island-hidden')) {
             container.classList.remove('island-hidden');
-            // Hanya jadikan icon-only jika sebelumnya benar-benar tersembunyi
             document.getElementById('dynamic-island').classList.add('icon-only');
         }
     } else {
         playBtn.textContent = 'Play';
-        wave?.classList.add('music-wave-hidden');
+        document.getElementById('music-wave')?.classList.add('music-wave-hidden');
         
-        // STATUS OFF: Sembunyikan total
+        // Matikan island jika musik berhenti
         islandController.hide();
     }
 }
