@@ -48,9 +48,10 @@ export const chartLib = {
                     { 
                         label: 'Menit Baca', 
                         data: limitedData.map(p => {
-                        const totalDetik = Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0);
-                        return Math.round(totalDetik / 60); // Gunakan Round agar 50 detik dihitung 1 menit
-                        }),
+                         const totalDetik = Number(p.total_reading_seconds || 0) + Number(p.total_quiz_seconds || 0);
+                         const menit = totalDetik / 60;
+                          return menit < 1 && menit > 0 ? parseFloat(menit.toFixed(1)) : Math.round(menit);
+                         }),
                         backgroundColor: '#10b981', // Success Green
                         borderRadius: 4,
                         barThickness: 12
