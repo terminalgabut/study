@@ -60,6 +60,14 @@ window.__DEBUG__.log('App init() dipanggil');
     <main id="content"></main>
   `;
 
+  if (!document.getElementById('youtube-player')) {
+    const ytDiv = document.createElement('div');
+    ytDiv.id = 'youtube-player';
+    // Sembunyikan jauh di luar layar agar tidak merusak UI
+    ytDiv.style.cssText = 'position:absolute; top:-9999px; left:-9999px; width:1px; height:1px;';
+    document.body.appendChild(ytDiv);
+  }
+
   babModalView.renderBase();
   durasiModalView.renderBase();
   ulangModalView.renderBase();
