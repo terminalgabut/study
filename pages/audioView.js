@@ -38,7 +38,7 @@ export const audioView = `
       <button class="ghost-btn">Pilih Suasana</button>
     </div>
 
-    <div class="home-card music-card" data-vid="5qx7dPa2u9Q" data-title="Deep Focus">
+    <div class="home-card music-card" data-vid="sj9G_S8v36M" data-title="Deep Focus">
       <div class="card-icon">🧠</div>
       <h3>Deep Focus</h3>
       <p class="desc">Ambient musik tanpa lirik untuk pengerjaan kuis.</p>
