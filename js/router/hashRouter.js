@@ -178,7 +178,7 @@ window.__DEBUG__?.log('Route Guard', {
         case 'timer':
           window.__DEBUG__?.log('Route → timer');
           content.innerHTML = timerView;
-          timerCController.init();
+          timerController.init();
         break;
        
         default:
