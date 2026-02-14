@@ -98,7 +98,6 @@ if (headerRight) {
 
   // 4. Inisialisasi Logika UI
   audioController.init();
-  islandController.init();
   initHeader();
   initSidebar();
   initSettingsModal();
