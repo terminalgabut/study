@@ -107,6 +107,7 @@ if (headerRight) {
 
   if (window.islandController) {
       window.islandController.init();
+  }
   
   // 5. Jalankan Router & Layout Check
   initRouter();
