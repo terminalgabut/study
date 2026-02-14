@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  
+  <script>
+  window.onerror = function (msg, url, line, col, error) {
+    document.body.innerHTML = `
+      <pre style="color:red;padding:20px;">
+ERROR:
+${msg}
+
+FILE:
+${url}
+
+LINE:
+${line}:${col}
+      </pre>
+    `;
+  };
+  </script>
+  
   <meta charset="UTF-8">
   <title>Study App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
