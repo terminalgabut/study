@@ -1,3 +1,5 @@
+// study/js/controllers/timerController.js
+
 import { islandController } from './islandController.js';
 
 let countdown = null;
@@ -25,17 +27,28 @@ export const timerController = {
         if (countdown) return;
         
         timeLeft = minutes * 60;
+        
+        // 1. Format waktu awal
+        const timeStr = this.getTimeString();
         this.updateDisplay();
         
-        // Beritahu Dynamic Island (Mode Melebar)
-        islandController.announce(`Fokus Dimulai: ${minutes} Menit`, 'timer');
+        // 2. Langsung tampilkan angka di Island (Mode Melebar otomatis oleh announce)
+        islandController.announce(timeStr, 'timer');
 
         document.getElementById('startTimerBtn').classList.add('hidden');
         document.getElementById('stopTimerBtn').classList.remove('hidden');
 
+        // 3. Jalankan interval
         countdown = setInterval(() => {
             timeLeft--;
+            
+            const currentTimeStr = this.getTimeString();
             this.updateDisplay();
+            
+            // Update teks di dalam Island secara real-time (di balik layar)
+            islandController.updateText(currentTimeStr);
+            
+            // Jaga agar icon tetap mode timer (Bulat)
             islandController.updateStatus(true, 'timer');
 
             if (timeLeft <= 0) {
@@ -50,8 +63,7 @@ export const timerController = {
         document.getElementById('startTimerBtn').classList.remove('hidden');
         document.getElementById('stopTimerBtn').classList.add('hidden');
         
-        // Sembunyikan Island jika tidak ada aktivitas lain
-        islandController.hide();
+        islandController.updateStatus(false); // Sembunyikan/Reset Island
     },
 
     reset(minutes) {
@@ -62,8 +74,15 @@ export const timerController = {
 
     finish() {
         this.stop();
-        islandController.announce("Waktu Habis! Istirahat sejenak ☕", 'timer');
-        alert("Sesi fokus selesai!");
+        // Melebar kembali untuk pengumuman selesai
+        islandController.announce("Selesai! Istirahat ☕", 'timer');
+    },
+
+    // Fungsi pembantu untuk mendapatkan format MM:SS
+    getTimeString() {
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     },
 
     updateDisplay() {
