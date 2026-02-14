@@ -103,6 +103,7 @@ if (headerRight) {
   initSettingsModal();
   initProfileModal(); 
 
+  // Panggil Island (Hanya via window karena sudah global module)
   if (window.islandController) {
       window.islandController.init();
   }
