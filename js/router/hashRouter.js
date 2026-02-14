@@ -15,6 +15,7 @@ import { notesView } from '../../pages/notesView.js';
 import { notesDetailView } from '../../pages/notesDetailView.js';
 import { performaView } from '../../pages/performaView.js';
 import { audioView } from '../../pages/audioView.js';
+import { timerView } from '../../pages/timerView.js';
 
 // ===== LOGIC =====
 import { initLogin, initRegister } from '../ui/auth/auth.js';
@@ -32,6 +33,7 @@ import { initNotesList } from '../ui/notes.js';
 import { initNoteDetail } from '../ui/noteDetails.js'; 
 import { performaController } from '../controllers/performaController.js';
 import { audioController } from '../controllers/audioController.js';
+import { timerController } from '../controllers/timerController.js';
 
 // js/router/hashRouter.js
 window.__DEBUG__?.log('hashRouter loaded');
@@ -171,6 +173,12 @@ window.__DEBUG__?.log('Route Guard', {
           content.innerHTML = audioView;
           audioController.init(); 
           audioController.bindEvents(); 
+        break;
+
+        case 'timer':
+          window.__DEBUG__?.log('Route → timer');
+          content.innerHTML = timerView;
+          timerCController.init();
         break;
        
         default:
