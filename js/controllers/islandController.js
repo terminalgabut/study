@@ -2,44 +2,46 @@
 
 export const islandController = {
     timeout: null,
-    isLocked: false,
+    isLocked: false, // Papan "Jangan Diganggu" saat pengumuman tayang
 
     init() {
         const island = document.getElementById('dynamic-island');
         if (!island) return;
 
+        // Klik pada icon untuk intip kembali pesan terakhir
         island.onclick = () => {
             if (island.classList.contains('icon-only')) {
-                const msg = document.getElementById('island-text').textContent;
-                this.show(msg);
+                const lastMsg = document.getElementById('island-text').textContent;
+                this.announce(lastMsg);
             }
         };
     },
 
-    show(message, type = 'music') {
+    /**
+     * FUNGSI SERVICE: Untuk Pengumuman (Ganti Lagu, Timer Habis, Notifikasi)
+     * Akan melebar dan mengunci tampilan selama 6 detik.
+     */
+    announce(message, type = 'music') {
         const container = document.getElementById('dynamic-island-container');
         const island = document.getElementById('dynamic-island');
         const textSpan = document.getElementById('island-text');
 
         if (!container || !island || !textSpan) return;
 
-        // Kunci status agar tidak diganggu updateUI dari audioController
+        // Pasang Kunci agar updateStatus tidak bisa mengganggu
         this.isLocked = true;
         if (this.timeout) clearTimeout(this.timeout);
 
-        // 1. Setup Konten & Icon
+        // 1. Ganti Konten
         textSpan.textContent = message;
-        
         const isMusic = type === 'music';
         document.getElementById('icon-music')?.classList.toggle('hidden', !isMusic);
         document.getElementById('icon-timer')?.classList.toggle('hidden', isMusic);
 
-        // 2. Tampilkan Container Utama (Pop Up Scale)
+        // 2. Munculkan & Melebarkan
         container.classList.remove('island-hidden');
-
-        // 3. Eksekusi Animasi Melebar
+        
         requestAnimationFrame(() => {
-            // Paksa teks untuk siap ditampilkan
             textSpan.style.display = "inline-block";
             textSpan.style.opacity = "1";
             textSpan.style.visibility = "visible";
@@ -50,14 +52,13 @@ export const islandController = {
             });
         });
 
-        // 4. Set Timer untuk kembali ke mode icon (setelah 6 detik)
+        // 3. Lepas Kunci dan Kembali jadi Bulat setelah 6 detik
         this.timeout = setTimeout(() => {
-            this.isLocked = false; // Buka kunci status
-            
+            this.isLocked = false;
             island.classList.remove('expanded');
             island.classList.add('icon-only');
 
-            // Opsional: Sembunyikan teks sepenuhnya setelah animasi menguncup selesai (0.5s)
+            // Sembunyikan teks setelah animasi ciut selesai
             setTimeout(() => {
                 if (!island.classList.contains('expanded')) {
                     textSpan.style.visibility = "hidden";
@@ -66,9 +67,34 @@ export const islandController = {
         }, 6000);
     },
 
+    /**
+     * FUNGSI CONTROLLER: Untuk Status (Musik Sedang Jalan/Berhenti)
+     * Hanya mengatur muncul/hilangnya lingkaran kecil (icon-only).
+     */
+    updateStatus(isActive) {
+        if (this.isLocked) return; // Jika sedang pamer judul, abaikan instruksi ini
+
+        const container = document.getElementById('dynamic-island-container');
+        const island = document.getElementById('dynamic-island');
+        const textSpan = document.getElementById('island-text');
+
+        if (!container || !island) return;
+
+        if (isActive) {
+            // Tampilkan sebagai lingkaran kecil
+            container.classList.remove('island-hidden');
+            island.classList.add('icon-only');
+            island.classList.remove('expanded');
+            if (textSpan) textSpan.style.visibility = "hidden";
+        } else {
+            // Sembunyikan total
+            container.classList.add('island-hidden');
+        }
+    },
+
+    // Fungsi darurat untuk menyembunyikan paksa
     hide() {
         if (this.isLocked) return;
-        const container = document.getElementById('dynamic-island-container');
-        if (container) container.classList.add('island-hidden');
+        document.getElementById('dynamic-island-container')?.classList.add('island-hidden');
     }
 };
