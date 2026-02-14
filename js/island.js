@@ -1,7 +1,6 @@
 // js/island.js
 // Jalur Utama: Mengelola UI Dynamic Island dan Global Timer Service
 
-// State Privat (Tidak bisa diakses langsung dari luar file untuk keamanan data)
 let globalCountdown = null;
 let globalTimeLeft = 0;
 
@@ -13,7 +12,23 @@ export const islandController = {
         this.container = document.getElementById('dynamic-island-container');
         this.textSpan = document.getElementById('island-text');
         
-        // Pastikan state awal sinkron dengan DOM
+        // Ambil elemen ikon untuk mengubah kontennya nanti
+        this.iconEl = this.island?.querySelector('.island-icon');
+
+        // PERBAIKAN: Tambahkan fitur klik pada Island
+        if (this.island) {
+            this.island.style.cursor = 'pointer'; // Sesuai island.css
+            this.island.onclick = () => {
+                const isExpanded = this.island.classList.contains('expanded');
+                if (isExpanded) {
+                    this.shrink();
+                } else {
+                    this.island.classList.remove('icon-only');
+                    this.island.classList.add('expanded');
+                }
+            };
+        }
+        
         if (globalCountdown) {
             this.updateStatus(true);
         }
@@ -25,23 +40,23 @@ export const islandController = {
     },
 
     /**
-     * Membuat Island melebar untuk memberikan informasi
-     * @param {string} message - Pesan yang ditampilkan
-     * @param {string} type - 'music' atau 'timer'
+     * PERBAIKAN: Mengelola Ikon berdasarkan tipe (Timer atau Musik)
      */
     announce(message, type = 'music') {
         if (!this.island) return;
-
         this.updateText(message);
         
-        // Mode Melebar (Expanded)
+        // Ganti Ikon secara dinamis
+        if (this.iconEl) {
+            this.iconEl.innerHTML = (type === 'timer') ? '⏱️' : '🎵';
+        }
+        
         this.island.classList.remove('icon-only');
         this.island.classList.add('expanded');
 
-        // Kembali jadi icon bulat setelah 6 detik
         setTimeout(() => {
-            // Jika ada timer aktif, jangan menciut total, tetap tampilkan angka
             if (globalCountdown) {
+                // Jika timer aktif, kembali ke mode icon tapi tetap tampil
                 this.island.classList.add('icon-only');
                 this.island.classList.remove('expanded');
             } else {
@@ -66,18 +81,13 @@ export const islandController = {
         }
     },
 
-    // 3. LOGIKA TIMER GLOBAL (Background Process)
-    /**
-     * Menjalankan timer yang tidak akan mati saat pindah page
-     * @param {number} minutes 
-     */
+    // 3. LOGIKA TIMER GLOBAL
     startTimer(minutes) {
-        // Bersihkan interval lama jika ada
         if (globalCountdown) clearInterval(globalCountdown);
-        
         globalTimeLeft = minutes * 60;
         
         this.updateStatus(true);
+        // Kirim tipe 'timer' agar ikon berubah jadi jam
         this.announce(this.formatTime(globalTimeLeft), 'timer');
 
         globalCountdown = setInterval(() => {
@@ -86,22 +96,15 @@ export const islandController = {
             if (globalTimeLeft <= 0) {
                 this.stopTimer();
                 this.announce("Selesai! ☕", 'timer');
-                // Beritahu sistem bahwa timer selesai
                 window.dispatchEvent(new CustomEvent('timerFinished'));
                 return;
             }
 
             const timeStr = this.formatTime(globalTimeLeft);
-            
-            // Update UI Island secara langsung (Real-time)
             this.updateText(timeStr);
-            
-            // Kirim event ke UI Page (Misal: Timer Page) agar angka di layar ikut berubah
+   
             window.dispatchEvent(new CustomEvent('timerTick', { 
-                detail: {
-                    seconds: globalTimeLeft,
-                    formatted: timeStr
-                }
+                detail: { seconds: globalTimeLeft, formatted: timeStr }
             }));
         }, 1000);
     },
@@ -114,22 +117,7 @@ export const islandController = {
         this.updateStatus(false);
     },
 
-    // 4. HELPER & GETTER
     formatTime(seconds) {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
         return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    },
-
-    getTimerState() {
-        return {
-            isActive: globalCountdown !== null,
-            timeLeft: globalTimeLeft,
-            formatted: this.formatTime(globalTimeLeft)
-        };
-    }
-};
-
-// EXPLICIT WINDOW MAPPING
-// Agar file non-module atau app.js bisa memanggil tanpa import berulang
-window.islandController = islandController;
