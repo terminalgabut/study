@@ -6,7 +6,7 @@ let player = null;
 let isPlaying = false;
 
 export const audioController = {
-    // Inisialisasi API & Player
+    // 1. Inisialisasi API & Player
     init() {
         if (window.YT && window.YT.Player) {
             this.setupPlayer();
@@ -16,7 +16,7 @@ export const audioController = {
     },
 
     setupPlayer() {
-        if (player) return; // Mencegah double init
+        if (player) return; 
         
         player = new YT.Player('youtube-player', {
             height: '0',
@@ -29,7 +29,7 @@ export const audioController = {
                 'showinfo': 0
             },
             events: {
-                'onReady': () => window.__DEBUG__?.log('Audio Engine Ready'),
+                'onReady': () => console.log('Audio Engine Ready'),
                 'onStateChange': (event) => {
                     // YT.PlayerState.PLAYING = 1, PAUSED = 2
                     isPlaying = (event.data === 1);
@@ -39,12 +39,13 @@ export const audioController = {
         });
     },
 
-    // Menghubungkan tombol di View ke Player
+    // 2. Event Listeners (Tombol & Kartu)
     bindEvents() {
         const playBtn = document.getElementById('mainPlayBtn');
         const volSlider = document.getElementById('volumeRange');
         const cards = document.querySelectorAll('.music-card');
 
+        // Play / Pause Utama
         if (playBtn) {
             playBtn.onclick = () => {
                 if (!player || typeof player.playVideo !== 'function') return;
@@ -52,6 +53,7 @@ export const audioController = {
             };
         }
 
+        // Volume
         if (volSlider) {
             volSlider.oninput = (e) => {
                 if (player && player.setVolume) {
@@ -60,58 +62,55 @@ export const audioController = {
             };
         }
 
+        // Pilih Lagu dari Kartu
         cards.forEach(card => {
             card.onclick = () => {
                 const vid = card.getAttribute('data-vid');
                 const title = card.getAttribute('data-title');
                 
                 if (player && typeof player.loadVideoById === 'function') {
+                    // Load lagu baru
                     player.loadVideoById(vid);
                     
-                    // Update UI Instan
+                    // --- SYNC ISLAND (PENGUMUMAN) ---
+                    islandController.announce(title, 'music');
+                    
+                    // Update teks di halaman
                     document.getElementById('current-title').textContent = title;
                     document.getElementById('track-status').textContent = "Sedang diputar...";
+                    
+                    // Set status dan update UI tombol
                     isPlaying = true;
                     this.updateUI();
-                    
                 } else {
-                    alert("Player sedang disiapkan, mohon tunggu 2 detik...");
+                    console.log("Player belum siap.");
                 }
             };
         });
 
-        this.updateUI(); // Sinkronkan status saat halaman dibuka
+        this.updateUI();
     },
 
-    // Di dalam export const audioController = { ...
-
+    // 3. Update Visual UI
     updateUI() {
         const playBtn = document.getElementById('mainPlayBtn');
+        const musicWave = document.getElementById('music-wave');
         if (!playBtn) return;
 
         if (isPlaying) {
+            // Tampilan halaman
             playBtn.textContent = 'Pause';
-            document.getElementById('music-wave')?.classList.remove('music-wave-hidden');
+            musicWave?.classList.remove('music-wave-hidden');
             
-            const container = document.getElementById('dynamic-island-container');
-            const island = document.getElementById('dynamic-island');
-
-            if (!islandController.isLocked && container && island) {
-                container.classList.remove('island-hidden');
-                
-                if (!island.classList.contains('expanded')) {
-                    island.classList.add('icon-only');
-                    const textSpan = document.getElementById('island-text');
-                    if (textSpan) textSpan.style.visibility = "hidden";
-                }
-            }
+            // --- SYNC ISLAND (STATUS AKTIF) ---
+            islandController.updateStatus(true);
         } else {
+            // Tampilan halaman
             playBtn.textContent = 'Play';
-            document.getElementById('music-wave')?.classList.add('music-wave-hidden');
+            musicWave?.classList.add('music-wave-hidden');
             
-            if (!islandController.isLocked) {
-                islandController.hide();
-            }
+            // --- SYNC ISLAND (MATIKAN) ---
+            islandController.updateStatus(false);
         }
-    } // Penutup fungsi tanpa tanda titik koma (;)
-}; // Penutup objek BARU menggunakan tanda titik koma (;)
+    }
+};
