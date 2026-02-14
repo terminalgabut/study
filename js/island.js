@@ -163,5 +163,9 @@ export const island = {
         if (this.textSpan) {
             this.textSpan.textContent = text;
         }
-    }
+    },
+
+    if (typeof window !== 'undefined') {
+  window.island = island;
+}
 };
