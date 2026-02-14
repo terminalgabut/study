@@ -39,14 +39,17 @@ window.addEventListener('unhandledrejection', e => {
   window.__DEBUG__.error('[Async/Promise] Error:', reason);
 });
 
+
+import { island } from './island.js';
+
+console.log('ISLAND IMPORT:', island);
+
 import { audioController } from './controllers/audioController.js';
 import { supabase } from './services/supabase.js'; // Pastikan diimport paling atas
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
-import { island } from './island.js';
 
-console.log('ISLAND IMPORT:', island);
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileModal } from './ui/auth/profileModal.js';
 
@@ -125,7 +128,7 @@ if (headerRight) {
   initRouter();
   window.addEventListener('hashchange', checkLayout);
   checkLayout();
-}
+} 
 
 function checkLayout() {
   const hash = window.location.hash;
