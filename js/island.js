@@ -1,6 +1,6 @@
 // js/island.js
 
-export const islandController = {
+export const island = {
 
     init() {
         this.island = document.getElementById('dynamic-island');
@@ -18,19 +18,19 @@ export const islandController = {
         this.autoShrinkTimeout = null;
         this.isManuallyExpanded = false;
 
-        if (this.island) {
-            this.island.onclick = () => {
-                if (this.island.classList.contains('expanded')) {
-                    this.isManuallyExpanded = false;
-                    this.shrink();
-                    this.resumeCycle();
-                } else {
-                    this.isManuallyExpanded = true;
-                    this.expand(false);
-                    this.pauseCycle();
-                }
-            };
-        }
+        if (!this.island) return;
+
+        this.island.onclick = () => {
+            if (this.island.classList.contains('expanded')) {
+                this.isManuallyExpanded = false;
+                this.shrink();
+                this.resumeCycle();
+            } else {
+                this.isManuallyExpanded = true;
+                this.expand(false);
+                this.pauseCycle();
+            }
+        };
 
         this.render();
     },
@@ -39,12 +39,7 @@ export const islandController = {
        STATUS MANAGEMENT
     ========================== */
 
-    setStatus(key, {
-        text,
-        icon,
-        priority = 0,
-        persistent = false
-    }) {
+    setStatus(key, { text, icon, priority = 0, persistent = false }) {
         this.statuses.set(key, { text, icon, priority, persistent });
         this.sortStatuses();
         this.startCycle();
@@ -98,13 +93,15 @@ export const islandController = {
     ========================== */
 
     render() {
+        if (!this.container || !this.island) return;
+
         if (this.sortedKeys.length === 0) {
-            this.container?.classList.add('island-hidden');
+            this.container.classList.add('island-hidden');
             this.shrink();
             return;
         }
 
-        this.container?.classList.remove('island-hidden');
+        this.container.classList.remove('island-hidden');
 
         const key = this.sortedKeys[this.currentIndex];
         const active = this.statuses.get(key);
@@ -168,5 +165,3 @@ export const islandController = {
         }
     }
 };
-
-window.islandController = islandController;
