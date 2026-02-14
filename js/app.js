@@ -1,3 +1,11 @@
+// Development Debugger (Eruda)
+if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    const script = document.createElement('script');
+    script.src = "//cdn.jsdelivr.net/npm/eruda";
+    document.body.appendChild(script);
+    script.onload = () => eruda.init();
+}
+
 // ===== APP BOOT CHECK =====
 console.log('[APP] app.js file loaded');
 
