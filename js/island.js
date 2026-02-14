@@ -1,24 +1,23 @@
 // js/island.js
-// Jalur Utama: Mengelola UI Dynamic Island dan Global Timer Service
 
 let globalCountdown = null;
 let globalTimeLeft = 0;
 
 export const islandController = {
-    // 1. INISIALISASI ELEMEN
     init() {
-        console.log("🏝️ Island Service (Module) Initialized");
+        console.log("🏝️ Island Service Initialized");
         this.island = document.getElementById('dynamic-island');
         this.container = document.getElementById('dynamic-island-container');
         this.textSpan = document.getElementById('island-text');
         
-        // Ambil elemen ikon untuk mengubah kontennya nanti
-        this.iconEl = this.island?.querySelector('.island-icon');
+        // Referensi Ikon SVG (Sesuai file ke-3)
+        this.iconMusic = document.getElementById('icon-music');
+        this.iconTimer = document.getElementById('icon-timer');
 
-        // PERBAIKAN: Tambahkan fitur klik pada Island
+        // 1. PERBAIKAN: Fitur Klik (Expand/Shrink)
         if (this.island) {
-            this.island.style.cursor = 'pointer'; // Sesuai island.css
-            this.island.onclick = () => {
+            this.island.onclick = (e) => {
+                // Jangan toggle jika yang diklik adalah tombol stop di dalam island (jika nanti ada)
                 const isExpanded = this.island.classList.contains('expanded');
                 if (isExpanded) {
                     this.shrink();
@@ -29,26 +28,28 @@ export const islandController = {
             };
         }
         
-        if (globalCountdown) {
-            this.updateStatus(true);
-        }
-    },
+        if (globalCountdown) this.updateStatus(true);
+    }
 
-    // 2. LOGIKA TAMPILAN (UI)
     updateText(msg) {
         if (this.textSpan) this.textSpan.textContent = msg;
     },
 
     /**
-     * PERBAIKAN: Mengelola Ikon berdasarkan tipe (Timer atau Musik)
+     * 2. PERBAIKAN: Logika Tukar Ikon SVG
      */
     announce(message, type = 'music') {
         if (!this.island) return;
         this.updateText(message);
         
-        // Ganti Ikon secara dinamis
-        if (this.iconEl) {
-            this.iconEl.innerHTML = (type === 'timer') ? '⏱️' : '🎵';
+        // Sembunyikan semua ikon dulu, lalu tampilkan yang sesuai
+        this.iconMusic?.classList.add('hidden');
+        this.iconTimer?.classList.add('hidden');
+
+        if (type === 'timer') {
+            this.iconTimer?.classList.remove('hidden');
+        } else {
+            this.iconMusic?.classList.remove('hidden');
         }
         
         this.island.classList.remove('icon-only');
@@ -56,7 +57,6 @@ export const islandController = {
 
         setTimeout(() => {
             if (globalCountdown) {
-                // Jika timer aktif, kembali ke mode icon tapi tetap tampil
                 this.island.classList.add('icon-only');
                 this.island.classList.remove('expanded');
             } else {
@@ -81,13 +81,13 @@ export const islandController = {
         }
     },
 
-    // 3. LOGIKA TIMER GLOBAL
+    // 3. LOGIKA TIMER
     startTimer(minutes) {
         if (globalCountdown) clearInterval(globalCountdown);
         globalTimeLeft = minutes * 60;
         
         this.updateStatus(true);
-        // Kirim tipe 'timer' agar ikon berubah jadi jam
+        // Panggil dengan tipe 'timer' agar SVG Timer muncul
         this.announce(this.formatTime(globalTimeLeft), 'timer');
 
         globalCountdown = setInterval(() => {
@@ -121,3 +121,15 @@ export const islandController = {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
         return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    },
+
+    getTimerState() {
+        return {
+            isActive: globalCountdown !== null,
+            timeLeft: globalTimeLeft,
+            formatted: this.formatTime(globalTimeLeft)
+        };
+    }
+};
+
+window.islandController = islandController;
