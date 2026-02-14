@@ -1,128 +1,139 @@
 // js/island.js
 
-let globalCountdown = null;
-let globalTimeLeft = 0;
-
 export const islandController = {
+
     init() {
         this.island = document.getElementById('dynamic-island');
         this.container = document.getElementById('dynamic-island-container');
         this.textSpan = document.getElementById('island-text');
-        
-        // Referensi Ikon SVG sesuai file ke-3
+
         this.iconMusic = document.getElementById('icon-music');
         this.iconTimer = document.getElementById('icon-timer');
 
-        // PERBAIKAN: Fitur Klik (Expand/Shrink manual)
+        this.statuses = new Map();   // semua status aktif
+        this.currentKey = null;      // status yg sedang tampil
+        this.cycleInterval = null;
+        this.autoShrinkTimeout = null;
+
         if (this.island) {
             this.island.onclick = () => {
-                const isExpanded = this.island.classList.contains('expanded');
-                if (isExpanded) {
+                if (this.island.classList.contains('expanded')) {
                     this.shrink();
                 } else {
-                    this.island.classList.remove('icon-only');
-                    this.island.classList.add('expanded');
+                    this.expand(false);
                 }
             };
         }
-        
-        if (globalCountdown) this.updateStatus(true);
+
+        this.render();
     },
 
-    updateText(msg) {
-        if (this.textSpan) this.textSpan.textContent = msg;
+    /* ==============================
+       STATUS MANAGEMENT
+    =============================== */
+
+    setStatus(key, { text, icon }) {
+        this.statuses.set(key, { text, icon });
+        this.startCycle();
+        this.render();
     },
 
-    /**
-     * PERBAIKAN: Logika Tukar Ikon SVG
-     */
-    announce(message, type = 'music') {
-        if (!this.island) return;
-        this.updateText(message);
-        
-        // Sembunyikan semua ikon dulu 
-        this.iconMusic?.classList.add('hidden');
-        this.iconTimer?.classList.add('hidden');
+    removeStatus(key) {
+        this.statuses.delete(key);
+        this.startCycle();
+        this.render();
+    },
 
-        // Tampilkan ikon yang sesuai tipe
-        if (type === 'timer') {
-            this.iconTimer?.classList.remove('hidden');
-        } else {
-            this.iconMusic?.classList.remove('hidden');
+    /* ==============================
+       CYCLING (Jika > 1 aktif)
+    =============================== */
+
+    startCycle() {
+        clearInterval(this.cycleInterval);
+
+        const keys = [...this.statuses.keys()];
+        if (keys.length === 0) {
+            this.currentKey = null;
+            return;
         }
-        
+
+        if (keys.length === 1) {
+            this.currentKey = keys[0];
+            return;
+        }
+
+        let index = 0;
+        this.currentKey = keys[index];
+
+        this.cycleInterval = setInterval(() => {
+            index = (index + 1) % keys.length;
+            this.currentKey = keys[index];
+            this.render();
+        }, 4000);
+    },
+
+    /* ==============================
+       RENDER
+    =============================== */
+
+    render() {
+        const keys = [...this.statuses.keys()];
+
+        if (keys.length === 0) {
+            this.container?.classList.add('island-hidden');
+            this.shrink();
+            return;
+        }
+
+        this.container?.classList.remove('island-hidden');
+
+        const active = this.statuses.get(this.currentKey);
+        if (!active) return;
+
+        this.updateText(active.text);
+        this.showIcon(active.icon);
+
+        if (!this.island.classList.contains('expanded')) {
+            this.island.classList.add('icon-only');
+        }
+    },
+
+    /* ==============================
+       VISUAL CONTROL
+    =============================== */
+
+    expand(auto = false) {
         this.island.classList.remove('icon-only');
         this.island.classList.add('expanded');
 
-        setTimeout(() => {
-            if (globalCountdown) {
-                this.island.classList.add('icon-only');
-                this.island.classList.remove('expanded');
-            } else {
+        if (auto) {
+            clearTimeout(this.autoShrinkTimeout);
+            this.autoShrinkTimeout = setTimeout(() => {
                 this.shrink();
-            }
-        }, 6000);
+            }, 5000);
+        }
     },
 
     shrink() {
-        if (this.island) {
-            this.island.classList.add('icon-only');
-            this.island.classList.remove('expanded');
+        this.island.classList.add('icon-only');
+        this.island.classList.remove('expanded');
+    },
+
+    showIcon(type) {
+        this.iconMusic?.classList.add('hidden');
+        this.iconTimer?.classList.add('hidden');
+
+        if (type === 'timer') {
+            this.iconTimer?.classList.remove('hidden');
+        } else if (type === 'music') {
+            this.iconMusic?.classList.remove('hidden');
         }
     },
 
-    updateStatus(active) {
-        if (active) {
-            this.container?.classList.remove('island-hidden');
-        } else {
-            this.container?.classList.add('island-hidden');
-            this.shrink();
+    updateText(text) {
+        if (this.textSpan) {
+            this.textSpan.textContent = text;
         }
-    },
-
-    startTimer(minutes) {
-        if (globalCountdown) clearInterval(globalCountdown);
-        globalTimeLeft = minutes * 60;
-        
-        this.updateStatus(true);
-        // Panggil dengan tipe 'timer' agar SVG Timer muncul
-        this.announce(this.formatTime(globalTimeLeft), 'timer');
-
-        globalCountdown = setInterval(() => {
-            globalTimeLeft--;
-            if (globalTimeLeft <= 0) {
-                this.stopTimer();
-                this.announce("Selesai! ☕", 'timer');
-                window.dispatchEvent(new CustomEvent('timerFinished'));
-                return;
-            }
-            this.updateText(this.formatTime(globalTimeLeft));
-            window.dispatchEvent(new CustomEvent('timerTick', { 
-                detail: { seconds: globalTimeLeft, formatted: this.formatTime(globalTimeLeft) }
-            }));
-        }, 1000);
-    },
-
-    stopTimer() {
-        if (globalCountdown) {
-            clearInterval(globalCountdown);
-            globalCountdown = null;
-        }
-        this.updateStatus(false);
-    },
-
-    formatTime(seconds) {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    },
-
-    getTimerState() {
-        return {
-            isActive: globalCountdown !== null,
-            timeLeft: globalTimeLeft,
-            formatted: this.formatTime(globalTimeLeft)
-        };
     }
 };
 
