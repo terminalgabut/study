@@ -160,14 +160,14 @@ export const island = {
     },
 
     updateText(text) {
-        if (this.textSpan) {
-            this.textSpan.textContent = text;
-        }
+    if (this.textSpan) {
+        this.textSpan.textContent = text;
     }
+}
 
-};
+};  // ← tutup object dulu
 
-
-    if (typeof window !== 'undefined') {
-  window.island = island;
-    }
+// GLOBAL
+if (typeof window !== 'undefined') {
+    window.island = island;
+}
