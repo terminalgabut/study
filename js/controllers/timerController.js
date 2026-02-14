@@ -46,15 +46,19 @@ export const timerController = {
             };
         }
 
-        // PERBAIKAN: Fungsi Reset berfungsi untuk menghentikan dan mengembalikan waktu [cite: 72, 86]
         if (resetBtn) {
-            resetBtn.onclick = () => {
-                window.islandController.stopTimer(); // Berhenti total
-                const mins = input.value || 25;
-                this.render(mins * 60); // Reset tampilan angka ke durasi input
-                this.toggleButtons(false); // Kembali ke mode tombol Start
-            };
-        }
+    resetBtn.onclick = () => {
+        // 1. Berhentikan mesin timer global
+        window.islandController.stopTimer(); 
+        
+        // 2. Kembalikan angka tampilan ke durasi default/input
+        const mins = input.value || 25;
+        this.render(mins * 60); 
+        
+        // 3. Update tombol
+        this.toggleButtons(false); 
+    };
+}
     },
 
     render(seconds) {
