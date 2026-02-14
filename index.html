@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
+  <script>
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    (function () {
+      var script = document.createElement('script');
+      script.src = "//cdn.jsdelivr.net/npm/eruda";
+      document.body.appendChild(script);
+      script.onload = function () { eruda.init(); };
+    })();
+  }
+  </script>
   
   <script>
   console.log('[BOOT] HTML parsing started');
