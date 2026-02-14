@@ -24,47 +24,6 @@ window.addEventListener('unhandledrejection', e => {
   window.__DEBUG__.error('[Async/Promise] Error:', reason);
 });
 
-// root/app.js - Letakkan di bagian atas setelah deklarasi DEBUG
-
-let globalCountdown = null;
-let globalTimeLeft = 0;
-
-window.timerGlobal = {
-    start(minutes) {
-        if (globalCountdown) return; // Cegah double timer
-        globalTimeLeft = minutes * 60;
-        
-        globalCountdown = setInterval(() => {
-            if (globalTimeLeft <= 0) {
-                this.stop();
-                window.dispatchEvent(new CustomEvent('timerFinished'));
-                return;
-            }
-            globalTimeLeft--;
-
-            // Update Dynamic Island secara Global (Pusat Kendali)
-            if (window.islandController) {
-                const m = Math.floor(globalTimeLeft / 60);
-                const s = globalTimeLeft % 60;
-                const timeStr = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-                
-                // Ini yang membuat Island tetap bergerak real-time
-                window.islandController.updateText(timeStr);
-                window.islandController.updateStatus(true, 'timer');
-            }
-
-            // Kirim sinyal ke halaman timer (jika sedang dibuka)
-            window.dispatchEvent(new CustomEvent('timerTick', { detail: globalTimeLeft }));
-        }, 1000);
-    },
-    stop() {
-        clearInterval(globalCountdown);
-        globalCountdown = null;
-    },
-    isActive: () => globalCountdown !== null,
-    getTimeLeft: () => globalTimeLeft
-};
-
 // =======================================
 
 import { audioController } from './controllers/audioController.js';
@@ -145,6 +104,9 @@ if (headerRight) {
   initSidebar();
   initSettingsModal();
   initProfileModal(); 
+
+  if (window.islandController) {
+      window.islandController.init();
   
   // 5. Jalankan Router & Layout Check
   initRouter();
