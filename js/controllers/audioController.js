@@ -83,38 +83,35 @@ export const audioController = {
         this.updateUI(); // Sinkronkan status saat halaman dibuka
     },
 
+    // Di dalam export const audioController = { ...
+
     updateUI() {
-    const playBtn = document.getElementById('mainPlayBtn');
-    if (!playBtn) return;
+        const playBtn = document.getElementById('mainPlayBtn');
+        if (!playBtn) return;
 
-    if (isPlaying) {
-    playBtn.textContent = 'Pause';
-    document.getElementById('music-wave')?.classList.remove('music-wave-hidden');
-    
-    // Sinkronisasi dengan Dynamic Island sebagai STATUS
-    const container = document.getElementById('dynamic-island-container');
-    const island = document.getElementById('dynamic-island');
+        if (isPlaying) {
+            playBtn.textContent = 'Pause';
+            document.getElementById('music-wave')?.classList.remove('music-wave-hidden');
+            
+            const container = document.getElementById('dynamic-island-container');
+            const island = document.getElementById('dynamic-island');
 
-    // HANYA update jika sedang TIDAK pamer judul (isLocked = false)
-    if (!islandController.isLocked && container && island) {
-        // 1. Pastikan container muncul (tidak scale 0)
-        container.classList.remove('island-hidden');
-        
-        // 2. Jika dia tidak sedang melebar, pastikan dia dalam mode icon
-        if (!island.classList.contains('expanded')) {
-            island.classList.add('icon-only');
-            // Pastikan teks sembunyi saat mode status icon
-            const textSpan = document.getElementById('island-text');
-            if (textSpan) textSpan.style.visibility = "hidden";
+            if (!islandController.isLocked && container && island) {
+                container.classList.remove('island-hidden');
+                
+                if (!island.classList.contains('expanded')) {
+                    island.classList.add('icon-only');
+                    const textSpan = document.getElementById('island-text');
+                    if (textSpan) textSpan.style.visibility = "hidden";
+                }
+            }
+        } else {
+            playBtn.textContent = 'Play';
+            document.getElementById('music-wave')?.classList.add('music-wave-hidden');
+            
+            if (!islandController.isLocked) {
+                islandController.hide();
+            }
         }
-    }
-} else {
-    playBtn.textContent = 'Play';
-    document.getElementById('music-wave')?.classList.add('music-wave-hidden');
-    
-    // Jika musik berhenti, Island harus hilang total (kecuali ada Lock dari Timer nanti)
-    if (!islandController.isLocked) {
-        islandController.hide();
-    }
-}
-};
+    } // Penutup fungsi tanpa tanda titik koma (;)
+}; // Penutup objek BARU menggunakan tanda titik koma (;)
