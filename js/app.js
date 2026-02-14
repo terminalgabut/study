@@ -23,6 +23,44 @@ window.addEventListener('unhandledrejection', e => {
   const reason = e.reason?.message || e.reason || 'Unknown Promise Rejection';
   window.__DEBUG__.error('[Async/Promise] Error:', reason);
 });
+
+let globalCountdown = null;
+let globalTimeLeft = 0;
+
+// Suntikkan window.timerGlobal di sini
+window.timerGlobal = {
+    start(minutes) {
+        if (globalCountdown) return;
+        globalTimeLeft = minutes * 60;
+        
+        globalCountdown = setInterval(() => {
+            if (globalTimeLeft <= 0) {
+                this.stop();
+                return;
+            }
+            globalTimeLeft--;
+
+            // Update Dynamic Island secara Global
+            if (window.islandController) {
+                const m = Math.floor(globalTimeLeft / 60);
+                const s = globalTimeLeft % 60;
+                const timeStr = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                window.islandController.updateText(timeStr);
+                window.islandController.updateStatus(true, 'timer');
+            }
+
+            // Kirim sinyal ke halaman timer jika sedang dibuka
+            window.dispatchEvent(new CustomEvent('timerTick', { detail: globalTimeLeft }));
+        }, 1000);
+    },
+    stop() {
+        clearInterval(globalCountdown);
+        globalCountdown = null;
+    },
+    isActive: () => globalCountdown !== null,
+    getTimeLeft: () => globalTimeLeft
+};
+
 // =======================================
 
 import { audioController } from './controllers/audioController.js';
