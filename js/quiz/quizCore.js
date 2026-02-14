@@ -215,7 +215,7 @@ export const quizCore = {
 
     // Feedback ke Island (Opsional tapi keren)
     if (window.islandController) {
-        window.islandController.announce("Lanjut Belajar 📖", "music");
+        window.islandController.announce("Lanjut Belajar 📖", "music", "timer");
     }
   }
 };
