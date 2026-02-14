@@ -2,7 +2,7 @@
 
 export const islandController = {
     timeout: null,
-    isLocked: false, // Kunci agar tidak tertimpa updateUI
+    isLocked: false,
 
     init() {
         const island = document.getElementById('dynamic-island');
@@ -11,7 +11,7 @@ export const islandController = {
         island.onclick = () => {
             if (island.classList.contains('icon-only')) {
                 const msg = document.getElementById('island-text').textContent;
-                this.show(msg, document.getElementById('icon-music').classList.contains('hidden') ? 'timer' : 'music');
+                this.show(msg);
             }
         };
     },
@@ -21,40 +21,49 @@ export const islandController = {
         const island = document.getElementById('dynamic-island');
         const textSpan = document.getElementById('island-text');
 
-        if (!container || !island) return;
+        if (!container || !island || !textSpan) return;
 
-        // Kunci status agar updateUI tidak bisa mengubah ke icon-only
+        // Kunci status & bersihkan timeout
         this.isLocked = true;
+        if (this.timeout) clearTimeout(this.timeout);
 
-        // 1. Setup Konten
-        if (textSpan) textSpan.textContent = message;
-        
+        // 1. Siapkan Konten & Icon (Lakukan saat masih hidden agar tidak flickr)
+        textSpan.textContent = message;
         const isMusic = type === 'music';
         document.getElementById('icon-music')?.classList.toggle('hidden', !isMusic);
         document.getElementById('icon-timer')?.classList.toggle('hidden', isMusic);
 
-        // 2. Tampilkan & Paksa Melebar
+        // 2. Munculkan Container
         container.classList.remove('island-hidden');
-        
-        // Gunakan requestAnimationFrame agar transisi CSS 'expanded' pasti terpicu
+
+        // 3. Teknik Double Frame agar transisi 'Melebar' pasti jalan
         requestAnimationFrame(() => {
-            island.classList.remove('icon-only');
-            island.classList.add('expanded');
+            // Pastikan properti display/opacity tidak terkunci CSS
+            textSpan.style.display = "inline-block"; 
+            
+            requestAnimationFrame(() => {
+                island.classList.remove('icon-only');
+                island.classList.add('expanded');
+            });
         });
 
-        // 3. Timer untuk melepas kunci dan menguncup
-        if (this.timeout) clearTimeout(this.timeout);
+        // 4. Timer kembali ke wujud icon (6 detik)
         this.timeout = setTimeout(() => {
-            this.isLocked = false; // Buka kunci
+            this.isLocked = false;
             island.classList.remove('expanded');
             island.classList.add('icon-only');
+            
+            // Opsional: sembunyikan teks setelah animasi menguncup selesai
+            setTimeout(() => {
+                if(island.classList.contains('icon-only')) {
+                    textSpan.style.display = "none";
+                }
+            }, 600);
         }, 6000);
     },
 
     hide() {
-        // Jangan sembunyikan jika sedang dikunci (lagi pamer judul)
         if (this.isLocked) return;
-        
         const container = document.getElementById('dynamic-island-container');
         if (container) container.classList.add('island-hidden');
     }
