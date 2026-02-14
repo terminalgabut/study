@@ -31,6 +31,7 @@ import { supabase } from './services/supabase.js'; // Pastikan diimport paling a
 import { initRouter } from './router/hashRouter.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initHeader } from './ui/header.js';
+import { island } from './island.js';
 import { initSettingsModal } from './ui/settingsModal.js';
 import { initProfileModal } from './ui/auth/profileModal.js';
 
@@ -60,6 +61,8 @@ window.__DEBUG__.log('App init() dipanggil');
     </div>
     <main id="content"></main>
   `;
+
+  island.init();
 
   if (!document.getElementById('youtube-player')) {
     const ytDiv = document.createElement('div');
@@ -102,11 +105,6 @@ if (headerRight) {
   initSidebar();
   initSettingsModal();
   initProfileModal(); 
-
-  // Panggil Island (Hanya via window karena sudah global module)
-  if (window.islandController) {
-      window.islandController.init();
-  }
   
   // 5. Jalankan Router & Layout Check
   initRouter();
