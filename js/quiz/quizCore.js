@@ -219,4 +219,5 @@ export const quizCore = {
     }
   }
 };
-};
+
+window.closeQuiz = () => quizCore.closeQuiz();
