@@ -187,5 +187,36 @@ export const quizCore = {
     quizState.totalQuestions, 
     nextChapter
   );
-}
+},
+
+  closeQuiz() {
+    const quizEl = document.getElementById('quizSection');
+    const materiContainer = document.getElementById('materiContainer');
+    const pageEl = document.querySelector('.konten-page');
+
+    // Hentikan timer kuis jika masih berjalan
+    if (quizTimer) quizTimer.stop();
+
+    // Sembunyikan Kuis (kebalikan dari logic di generator.js)
+    if (quizEl) {
+      quizEl.setAttribute('hidden', 'true');
+      quizEl.innerHTML = ''; 
+    }
+
+    // Tampilkan kembali Materi
+    if (materiContainer) {
+      materiContainer.style.display = 'block';
+    }
+
+    // Hapus class animasi transisi
+    if (pageEl) {
+      pageEl.classList.remove('show-quiz');
+    }
+
+    // Feedback ke Island (Opsional tapi keren)
+    if (window.islandController) {
+        window.islandController.announce("Lanjut Belajar 📖", "music");
+    }
+  }
+};
 };
