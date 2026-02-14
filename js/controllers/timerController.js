@@ -1,72 +1,134 @@
 // study/js/controllers/timerController.js
 
 export const timerController = {
+
     init() {
-        const startBtn = document.getElementById('startTimerBtn');
-        const stopBtn = document.getElementById('stopTimerBtn');
-        const resetBtn = document.getElementById('resetTimerBtn'); 
-        const input = document.getElementById('timerInput');
+        this.startBtn = document.getElementById('startTimerBtn');
+        this.stopBtn = document.getElementById('stopTimerBtn');
+        this.resetBtn = document.getElementById('resetTimerBtn');
+        this.input = document.getElementById('timerInput');
 
-        // 1. SINKRONISASI AWAL
-        // Mengecek apakah ada timer yang sudah berjalan di Island
-        const state = window.islandController.getTimerState();
-        if (state && state.isActive) {
-            this.render(state.timeLeft);
-            this.toggleButtons(true);
-        } else if (input) {
-            // Jika tidak ada timer aktif, tampilkan angka sesuai input
-            this.render((input.value || 25) * 60);
-        }
+        this.interval = null;
+        this.timeLeft = 0;
 
-        // 2. LISTEN KE DETIKAN ISLAND (Real-time update)
-        window.removeEventListener('timerTick', this._handleTick);
-        this._handleTick = (e) => {
-            if (e.detail && typeof e.detail.seconds !== 'undefined') {
-                this.render(e.detail.seconds);
-            }
-        };
-        window.addEventListener('timerTick', this._handleTick);
+        // initial render
+        const mins = this.input ? (this.input.value || 25) : 25;
+        this.render(mins * 60);
+        this.toggleButtons(false);
 
-        // 3. LISTEN KETIKA TIMER SELESAI
-        window.addEventListener('timerFinished', () => {
-            this.toggleButtons(false);
-            this.render(0);
-        });
+        /* =========================
+           BUTTON EVENTS
+        ========================== */
 
-        // 4. EVENT TOMBOL
-        if (startBtn) {
-            startBtn.onclick = () => {
-                const mins = input ? (input.value || 25) : 25;
-                window.islandController.startTimer(mins);
-                this.toggleButtons(true);
+        if (this.startBtn) {
+            this.startBtn.onclick = () => {
+                const mins = this.input ? (this.input.value || 25) : 25;
+                this.start(mins);
             };
         }
 
-        if (stopBtn) {
-            stopBtn.onclick = () => {
-                window.islandController.stopTimer();
-                this.toggleButtons(false);
+        if (this.stopBtn) {
+            this.stopBtn.onclick = () => {
+                this.stop();
             };
         }
 
-        if (resetBtn) {
-            resetBtn.onclick = () => {
-                // Berhentikan timer di background (Island)
-                window.islandController.stopTimer(); 
-                // Reset tampilan ke angka awal
-                const mins = input ? (input.value || 25) : 25;
-                this.render(mins * 60); 
-                this.toggleButtons(false); 
+        if (this.resetBtn) {
+            this.resetBtn.onclick = () => {
+                this.reset();
             };
         }
     },
 
+    /* =========================
+       TIMER ENGINE
+    ========================== */
+
+    start(minutes) {
+        if (this.interval) return; // prevent double start
+
+        this.timeLeft = minutes * 60;
+
+        this.toggleButtons(true);
+        this.render(this.timeLeft);
+
+        // kirim ke island
+        window.islandController.setStatus('timer', {
+            text: this.formatTime(this.timeLeft),
+            icon: 'timer',
+            priority: 10,
+            persistent: true
+        });
+
+        window.islandController.expand(true);
+
+        this.interval = setInterval(() => {
+            this.timeLeft--;
+
+            if (this.timeLeft <= 0) {
+                this.finish();
+                return;
+            }
+
+            this.render(this.timeLeft);
+
+            window.islandController.setStatus('timer', {
+                text: this.formatTime(this.timeLeft),
+                icon: 'timer',
+                priority: 10,
+                persistent: true
+            });
+
+        }, 1000);
+    },
+
+    stop() {
+        clearInterval(this.interval);
+        this.interval = null;
+
+        window.islandController.removeStatus('timer');
+        this.toggleButtons(false);
+    },
+
+    reset() {
+        this.stop();
+
+        const mins = this.input ? (this.input.value || 25) : 25;
+        this.render(mins * 60);
+    },
+
+    finish() {
+        clearInterval(this.interval);
+        this.interval = null;
+
+        window.islandController.setStatus('timer', {
+            text: "Selesai ☕",
+            icon: 'timer',
+            priority: 10,
+            persistent: false
+        });
+
+        window.islandController.expand(true);
+
+        setTimeout(() => {
+            window.islandController.removeStatus('timer');
+        }, 4000);
+
+        this.toggleButtons(false);
+        this.render(0);
+    },
+
+    /* =========================
+       UI
+    ========================== */
+
     render(seconds) {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
+
         const minEl = document.getElementById('minutes');
         const secEl = document.getElementById('seconds');
-        
+
         if (minEl && secEl) {
             minEl.textContent = String(m).padStart(2, '0');
             secEl.textContent = String(s).padStart(2, '0');
@@ -74,12 +136,15 @@ export const timerController = {
     },
 
     toggleButtons(isRunning) {
-        const startBtn = document.getElementById('startTimerBtn');
-        const stopBtn = document.getElementById('stopTimerBtn');
-        
-        if (startBtn && stopBtn) {
-            startBtn.classList.toggle('hidden', isRunning);
-            stopBtn.classList.toggle('hidden', !isRunning);
+        if (this.startBtn && this.stopBtn) {
+            this.startBtn.classList.toggle('hidden', isRunning);
+            this.stopBtn.classList.toggle('hidden', !isRunning);
         }
+    },
+
+    formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
 };
