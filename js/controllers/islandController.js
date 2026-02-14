@@ -23,42 +23,46 @@ export const islandController = {
 
         if (!container || !island || !textSpan) return;
 
-        // Kunci status & bersihkan timeout
+        // Kunci status agar tidak diganggu updateUI dari audioController
         this.isLocked = true;
         if (this.timeout) clearTimeout(this.timeout);
 
-        // 1. Siapkan Konten & Icon (Lakukan saat masih hidden agar tidak flickr)
+        // 1. Setup Konten & Icon
         textSpan.textContent = message;
+        
         const isMusic = type === 'music';
         document.getElementById('icon-music')?.classList.toggle('hidden', !isMusic);
         document.getElementById('icon-timer')?.classList.toggle('hidden', isMusic);
 
-        // 2. Munculkan Container
+        // 2. Tampilkan Container Utama (Pop Up Scale)
         container.classList.remove('island-hidden');
 
-        // 3. Teknik Double Frame agar transisi 'Melebar' pasti jalan
+        // 3. Eksekusi Animasi Melebar
         requestAnimationFrame(() => {
-            // Pastikan properti display/opacity tidak terkunci CSS
-            textSpan.style.display = "inline-block"; 
-            
+            // Paksa teks untuk siap ditampilkan
+            textSpan.style.display = "inline-block";
+            textSpan.style.opacity = "1";
+            textSpan.style.visibility = "visible";
+
             requestAnimationFrame(() => {
                 island.classList.remove('icon-only');
                 island.classList.add('expanded');
             });
         });
 
-        // 4. Timer kembali ke wujud icon (6 detik)
+        // 4. Set Timer untuk kembali ke mode icon (setelah 6 detik)
         this.timeout = setTimeout(() => {
-            this.isLocked = false;
+            this.isLocked = false; // Buka kunci status
+            
             island.classList.remove('expanded');
             island.classList.add('icon-only');
-            
-            // Opsional: sembunyikan teks setelah animasi menguncup selesai
+
+            // Opsional: Sembunyikan teks sepenuhnya setelah animasi menguncup selesai (0.5s)
             setTimeout(() => {
-                if(island.classList.contains('icon-only')) {
-                    textSpan.style.display = "none";
+                if (!island.classList.contains('expanded')) {
+                    textSpan.style.visibility = "hidden";
                 }
-            }, 600);
+            }, 500);
         }, 6000);
     },
 
