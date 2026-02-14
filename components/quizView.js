@@ -95,7 +95,7 @@ ${nextChapter ? `
   </a>
 ` : ''}
 
-<button onclick="history.back()" class="secondary-btn" style="width:100%; padding:15px; background:transparent; border:1px solid var(--border); color:var(--text-primary); border-radius:10px; cursor:pointer; font-weight:500; margin-top:8px;">
+<button onclick="closeQuiz()" class="btn-back-materi" style="width:100%; padding:15px; background:transparent; border:1px solid var(--border); color:var(--text-primary); border-radius:10px; cursor:pointer; font-weight:500; margin-top:8px;">
   Kembali ke Materi
 </button>
 
