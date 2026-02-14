@@ -73,7 +73,7 @@ export const audioController = {
                     player.loadVideoById(vid);
                     
                     // --- SYNC ISLAND (PENGUMUMAN) ---
-                    islandController.announce(title, 'music, timer');
+                    islandController.announce(title, 'music');
                     
                     // Update teks di halaman
                     document.getElementById('current-title').textContent = title;
