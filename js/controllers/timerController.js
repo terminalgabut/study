@@ -28,7 +28,7 @@ export const timerController = {
         this.updateDisplay();
         
         // Beritahu Dynamic Island (Mode Melebar)
-        islandController.show(`Fokus Dimulai: ${minutes} Menit`, 'timer');
+        islandController.announce(`Fokus Dimulai: ${minutes} Menit`, 'timer');
 
         document.getElementById('startTimerBtn').classList.add('hidden');
         document.getElementById('stopTimerBtn').classList.remove('hidden');
@@ -61,7 +61,7 @@ export const timerController = {
 
     finish() {
         this.stop();
-        islandController.show("Waktu Habis! Istirahat sejenak ☕", 'timer');
+        islandController.announce("Waktu Habis! Istirahat sejenak ☕", 'timer');
         alert("Sesi fokus selesai!");
     },
 
