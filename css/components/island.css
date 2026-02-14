@@ -97,11 +97,11 @@
 
 
 /* Hilangkan text saat icon-only */
-#dynamic-island.icon-only #island-text {
-  opacity: 0;
-  visibility: hidden;
-  width: 0;
-  margin: 0;
+#dynamic-island.expanded #island-text {
+  opacity: 1;
+  visibility: visible;
+  width: auto;
+  margin-left: 6px;
 }
 
 
