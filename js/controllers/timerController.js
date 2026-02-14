@@ -36,6 +36,7 @@ export const timerController = {
         countdown = setInterval(() => {
             timeLeft--;
             this.updateDisplay();
+            islandController.updateStatus(true, 'timer');
 
             if (timeLeft <= 0) {
                 this.finish();
