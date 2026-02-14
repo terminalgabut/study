@@ -5,19 +5,17 @@ let globalTimeLeft = 0;
 
 export const islandController = {
     init() {
-        console.log("🏝️ Island Service Initialized");
         this.island = document.getElementById('dynamic-island');
         this.container = document.getElementById('dynamic-island-container');
         this.textSpan = document.getElementById('island-text');
         
-        // Referensi Ikon SVG (Sesuai file ke-3)
+        // Referensi Ikon SVG sesuai file ke-3
         this.iconMusic = document.getElementById('icon-music');
         this.iconTimer = document.getElementById('icon-timer');
 
-        // 1. PERBAIKAN: Fitur Klik (Expand/Shrink)
+        // PERBAIKAN: Fitur Klik (Expand/Shrink manual)
         if (this.island) {
-            this.island.onclick = (e) => {
-                // Jangan toggle jika yang diklik adalah tombol stop di dalam island (jika nanti ada)
+            this.island.onclick = () => {
                 const isExpanded = this.island.classList.contains('expanded');
                 if (isExpanded) {
                     this.shrink();
@@ -29,23 +27,24 @@ export const islandController = {
         }
         
         if (globalCountdown) this.updateStatus(true);
-    }
+    },
 
     updateText(msg) {
         if (this.textSpan) this.textSpan.textContent = msg;
     },
 
     /**
-     * 2. PERBAIKAN: Logika Tukar Ikon SVG
+     * PERBAIKAN: Logika Tukar Ikon SVG
      */
     announce(message, type = 'music') {
         if (!this.island) return;
         this.updateText(message);
         
-        // Sembunyikan semua ikon dulu, lalu tampilkan yang sesuai
+        // Sembunyikan semua ikon dulu 
         this.iconMusic?.classList.add('hidden');
         this.iconTimer?.classList.add('hidden');
 
+        // Tampilkan ikon yang sesuai tipe
         if (type === 'timer') {
             this.iconTimer?.classList.remove('hidden');
         } else {
@@ -81,7 +80,6 @@ export const islandController = {
         }
     },
 
-    // 3. LOGIKA TIMER
     startTimer(minutes) {
         if (globalCountdown) clearInterval(globalCountdown);
         globalTimeLeft = minutes * 60;
@@ -92,19 +90,15 @@ export const islandController = {
 
         globalCountdown = setInterval(() => {
             globalTimeLeft--;
-
             if (globalTimeLeft <= 0) {
                 this.stopTimer();
                 this.announce("Selesai! ☕", 'timer');
                 window.dispatchEvent(new CustomEvent('timerFinished'));
                 return;
             }
-
-            const timeStr = this.formatTime(globalTimeLeft);
-            this.updateText(timeStr);
-   
+            this.updateText(this.formatTime(globalTimeLeft));
             window.dispatchEvent(new CustomEvent('timerTick', { 
-                detail: { seconds: globalTimeLeft, formatted: timeStr }
+                detail: { seconds: globalTimeLeft, formatted: this.formatTime(globalTimeLeft) }
             }));
         }, 1000);
     },
