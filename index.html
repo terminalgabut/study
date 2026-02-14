@@ -1,74 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
-  <script>
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-    (function () {
-      var script = document.createElement('script');
-      script.src = "//cdn.jsdelivr.net/npm/eruda";
-      document.body.appendChild(script);
-      script.onload = function () { eruda.init(); };
-    })();
-  }
-  </script>
   
-  <script>
-  console.log('[BOOT] HTML parsing started');
-
-  function showBootError(message) {
-    const fallback = `
-      <div style="
-        position:fixed;
-        inset:0;
-        background:#111;
-        color:#ff4d4f;
-        padding:20px;
-        font-family:monospace;
-        white-space:pre-wrap;
-        z-index:99999;">
-${message}
-      </div>
-    `;
-
-    if (document.body) {
-      document.body.innerHTML = fallback;
-    } else {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.body.innerHTML = fallback;
-      });
-    }
-  }
-
-  window.addEventListener('error', function (e) {
-    console.error('[GLOBAL ERROR]', e);
-    showBootError(
-      `GLOBAL ERROR:\n\n${e.message}\n\nFILE: ${e.filename}\nLINE: ${e.lineno}:${e.colno}`
-    );
-  });
-
-  window.addEventListener('unhandledrejection', function (e) {
-    console.error('[PROMISE ERROR]', e.reason);
-    showBootError(
-      `PROMISE ERROR:\n\n${e.reason}`
-    );
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    console.log('[BOOT] DOM ready');
-  });
-  </script>
+  <meta charset="UTF-8"> 
   
-  <meta charset="UTF-8">
-  <title>Study App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study App</title> 
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"> 
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
+  
 </head>
 <body>
 
