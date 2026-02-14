@@ -1,4 +1,6 @@
-/* Container Utama */
+/* study/css/components/island.css */
+
+/* 1. Container Utama - Fokus pada Pop-Up (Scale) */
 #dynamic-island-container {
   position: absolute;
   left: 50%;
@@ -6,10 +8,7 @@
   transform: translateX(-50%) scale(1);
   z-index: 9999;
   opacity: 1;
-  /* Transisi Pop-Up */
-  transition: 
-    opacity 0.3s ease, 
-    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .island-hidden {
@@ -18,68 +17,73 @@
   pointer-events: none;
 }
 
+/* 2. Badan Island - Fokus pada Morphing (Lebar) */
 #dynamic-island {
   background: var(--surface); 
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 20px; /* Default membulat */
   display: flex;
   align-items: center;
   justify-content: center;
   height: 36px;
-  padding: 0 var(--space-md);
   cursor: pointer;
   box-shadow: var(--shadow-sm); 
-  /* Transisi Morphing (Melebar/Menguncup) */
+  overflow: hidden;
+  white-space: nowrap;
+  /* Gunakan satu transisi all yang solid atau spesifik */
   transition: 
     width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    border-radius 0.5s ease;
-  overflow: hidden; /* Penting agar teks tidak keluar jalur saat menciut */
+    border-radius 0.5s ease,
+    background 0.3s ease;
 }
 
-.island-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-sm);
-  white-space: nowrap;
-}
-
+/* 3. State: Mode Melebar (Expanded) */
 #dynamic-island.expanded {
   width: auto; 
   min-width: 160px;
-  max-width: 400px; /* Batas aman supaya teks bisa memanjang */
+  max-width: 400px; 
   padding: 0 var(--space-md);
+  border-radius: var(--radius-lg); /* 14px */
 }
 
+/* 4. State: Mode Icon (Lingkaran) */
 #dynamic-island.icon-only {
   width: 40px;
   min-width: 40px;
-  max-width: 40px; /* Kunci di 40px saat jadi icon */
+  max-width: 40px; 
   padding: 0;
   border-radius: 20px;
 }
 
-/* Transisi Teks agar halus (Fade & Slide) */
+/* 5. Konten & Teks */
+.island-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 0 12px;
+}
+
 #island-text {
   font-size: 13px;
   font-weight: 500;
   color: var(--text);
   opacity: 1;
-  /* Tambahkan display block agar margin/width bekerja */
-  display: inline-block; 
+  visibility: visible;
   transition: opacity 0.3s ease;
+  display: inline-block;
 }
 
+/* Hilangkan teks hanya saat benar-benar icon-only */
 #dynamic-island.icon-only #island-text {
   opacity: 0;
-  /* Gunakan visibility agar teks benar-benar tidak makan tempat tapi tetap ada */
-  visibility: hidden; 
+  visibility: hidden;
   width: 0;
   margin: 0;
 }
 
+/* 6. Icons */
 .island-icon {
   stroke: var(--accent);
   width: 18px;
