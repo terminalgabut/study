@@ -21,7 +21,7 @@ export const islandController = {
      * FUNGSI SERVICE: Untuk Pengumuman (Ganti Lagu, Timer Habis, Notifikasi)
      * Akan melebar dan mengunci tampilan selama 6 detik.
      */
-    announce(message, type = 'music') {
+    announce(message, type = 'music, timer') {
         const container = document.getElementById('dynamic-island-container');
         const island = document.getElementById('dynamic-island');
         const textSpan = document.getElementById('island-text');
