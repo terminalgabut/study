@@ -1,7 +1,17 @@
 // root/app.js
 
-// 1. IMPORTS
+// root/js/app.js
+
+// 1. Tes apakah file ini terbaca
+console.log("1. app.js berhasil dimuat");
+
+// 2. Tes import island
 import { island } from './island.js';
+console.log("2. island.js berhasil di-import:", island);
+
+// ... sisa kode lainnya
+// 1. IMPORTS
+
 import { audioController } from './controllers/audioController.js';
 import { supabase } from './services/supabase.js'; 
 import { initRouter } from './router/hashRouter.js';
