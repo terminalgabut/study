@@ -1,9 +1,5 @@
 // study/js/controllers/timerController.js
-
 import { islandController } from './islandController.js';
-
-let countdown = null;
-let timeLeft = 0;
 
 export const timerController = {
     init() {
@@ -12,83 +8,67 @@ export const timerController = {
         const resetBtn = document.getElementById('resetTimerBtn');
         const input = document.getElementById('timerInput');
 
+        // 1. Dengar detikan dari app.js (Real-time Sync)
+        window.addEventListener('timerTick', (e) => {
+            this.updateDisplay(e.detail);
+        });
+
+        // 2. Dengar jika waktu habis
+        window.addEventListener('timerFinished', () => {
+            this.toggleButtons(false);
+            islandController.announce("Selesai! Istirahat ☕", 'timer');
+        });
+
+        // 3. Jika user kembali ke page ini dan timer sudah jalan, sinkronkan UI
+        if (window.timerGlobal.isActive()) {
+            this.updateDisplay(window.timerGlobal.getTimeLeft());
+            this.toggleButtons(true);
+        }
+
         if (startBtn) {
-            startBtn.onclick = () => this.start(input.value);
+            startBtn.onclick = () => {
+                const mins = input.value;
+                window.timerGlobal.start(mins);
+                this.toggleButtons(true);
+                
+                // Announce awal agar Island melebar
+                const timeStr = `${String(mins).padStart(2, '0')}:00`;
+                islandController.announce(timeStr, 'timer');
+            };
         }
+
         if (stopBtn) {
-            stopBtn.onclick = () => this.stop();
+            stopBtn.onclick = () => {
+                window.timerGlobal.stop();
+                this.toggleButtons(false);
+                islandController.updateStatus(false);
+            };
         }
+
         if (resetBtn) {
-            resetBtn.onclick = () => this.reset(input.value);
+            resetBtn.onclick = () => {
+                window.timerGlobal.stop();
+                this.updateDisplay(input.value * 60);
+                this.toggleButtons(false);
+            };
         }
     },
 
-    start(minutes) {
-        if (countdown) return;
+    updateDisplay(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        const minEl = document.getElementById('minutes');
+        const secEl = document.getElementById('seconds');
         
-        timeLeft = minutes * 60;
-        
-        // 1. Format waktu awal
-        const timeStr = this.getTimeString();
-        this.updateDisplay();
-        
-        // 2. Langsung tampilkan angka di Island (Mode Melebar otomatis oleh announce)
-        islandController.announce(timeStr, 'timer');
-
-        document.getElementById('startTimerBtn').classList.add('hidden');
-        document.getElementById('stopTimerBtn').classList.remove('hidden');
-
-        // 3. Jalankan interval
-        countdown = setInterval(() => {
-            timeLeft--;
-            
-            const currentTimeStr = this.getTimeString();
-            this.updateDisplay();
-            
-            // Update teks di dalam Island secara real-time (di balik layar)
-            islandController.updateText(currentTimeStr);
-            
-            // Jaga agar icon tetap mode timer (Bulat)
-            islandController.updateStatus(true, 'timer');
-
-            if (timeLeft <= 0) {
-                this.finish();
-            }
-        }, 1000);
+        // Safety check: Hanya update jika elemen ada di DOM (mencegah error saat di page lain)
+        if (minEl && secEl) {
+            minEl.textContent = String(m).padStart(2, '0');
+            secEl.textContent = String(s).padStart(2, '0');
+        }
     },
 
-    stop() {
-        clearInterval(countdown);
-        countdown = null;
-        document.getElementById('startTimerBtn').classList.remove('hidden');
-        document.getElementById('stopTimerBtn').classList.add('hidden');
-        
-        islandController.updateStatus(false); // Sembunyikan/Reset Island
-    },
-
-    reset(minutes) {
-        this.stop();
-        timeLeft = minutes * 60;
-        this.updateDisplay();
-    },
-
-    finish() {
-        this.stop();
-        // Melebar kembali untuk pengumuman selesai
-        islandController.announce("Selesai! Istirahat ☕", 'timer');
-    },
-
-    // Fungsi pembantu untuk mendapatkan format MM:SS
-    getTimeString() {
-        const m = Math.floor(timeLeft / 60);
-        const s = timeLeft % 60;
-        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    },
-
-    updateDisplay() {
-        const m = Math.floor(timeLeft / 60);
-        const s = timeLeft % 60;
-        document.getElementById('minutes').textContent = String(m).padStart(2, '0');
-        document.getElementById('seconds').textContent = String(s).padStart(2, '0');
+    toggleButtons(isRunning) {
+        document.getElementById('startTimerBtn')?.classList.toggle('hidden', isRunning);
+        document.getElementById('stopTimerBtn')?.classList.toggle('hidden', !isRunning);
     }
 };
