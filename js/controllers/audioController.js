@@ -88,21 +88,32 @@ export const audioController = {
     if (!playBtn) return;
 
     if (isPlaying) {
-        playBtn.textContent = 'Pause';
-        document.getElementById('music-wave')?.classList.remove('music-wave-hidden');
+    playBtn.textContent = 'Pause';
+    document.getElementById('music-wave')?.classList.remove('music-wave-hidden');
+    
+    // Sinkronisasi dengan Dynamic Island sebagai STATUS
+    const container = document.getElementById('dynamic-island-container');
+    const island = document.getElementById('dynamic-island');
+
+    // HANYA update jika sedang TIDAK pamer judul (isLocked = false)
+    if (!islandController.isLocked && container && island) {
+        // 1. Pastikan container muncul (tidak scale 0)
+        container.classList.remove('island-hidden');
         
-        // Cek apakah container tertutup, jika ya buka sebagai icon
-        const container = document.getElementById('dynamic-island-container');
-        // HANYA jalankan jika island sedang tidak "dikunci" oleh animasi judul
-        if (!islandController.isLocked && container && container.classList.contains('island-hidden')) {
-            container.classList.remove('island-hidden');
-            document.getElementById('dynamic-island').classList.add('icon-only');
+        // 2. Jika dia tidak sedang melebar, pastikan dia dalam mode icon
+        if (!island.classList.contains('expanded')) {
+            island.classList.add('icon-only');
+            // Pastikan teks sembunyi saat mode status icon
+            const textSpan = document.getElementById('island-text');
+            if (textSpan) textSpan.style.visibility = "hidden";
         }
-    } else {
-        playBtn.textContent = 'Play';
-        document.getElementById('music-wave')?.classList.add('music-wave-hidden');
-        
-        // Matikan island jika musik berhenti
+    }
+} else {
+    playBtn.textContent = 'Play';
+    document.getElementById('music-wave')?.classList.add('music-wave-hidden');
+    
+    // Jika musik berhenti, Island harus hilang total (kecuali ada Lock dari Timer nanti)
+    if (!islandController.isLocked) {
         islandController.hide();
     }
 }
