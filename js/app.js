@@ -1,83 +1,40 @@
-// Development Debugger (Eruda)
-if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-    const script = document.createElement('script');
-    script.src = "//cdn.jsdelivr.net/npm/eruda";
-    document.body.appendChild(script);
-    script.onload = () => eruda.init();
-}
+// root/app.js
 
-// ===== APP BOOT CHECK =====
-console.log('[APP] app.js file loaded');
+// 1. IMPORTS
+import { island } from './island.js';
+import { audioController } from './controllers/audioController.js';
+import { supabase } from './services/supabase.js'; 
+import { initRouter } from './router/hashRouter.js';
+import { initSidebar } from './ui/sidebar.js';
+import { initHeader } from './ui/header.js';
+import { initSettingsModal } from './ui/settingsModal.js';
+import { initProfileModal } from './ui/auth/profileModal.js';
 
-// Tandai bahwa app module sudah aktif
-window.__APP_LOADED__ = true;
+// Views
+import { headerView } from '../components/headerView.js';
+import { sidebarView } from '../components/sidebarView.js';
+import { modalsettingsView } from '../components/modal-settingsView.js';
+import { babModalView } from '../components/babModalView.js';
+import { durasiModalView } from '../components/durasiModalView.js';
+import { ulangModalView } from '../components/ulangModalView.js';
+import { akurasiModalView } from '../components/akurasiModalView.js';
 
-// ===== GLOBAL DEBUG (Versi Detail) =====
-const DEV =
-  location.hostname === 'localhost' ||
-  location.hostname === '127.0.0.1';
-
+// 2. GLOBAL DEBUG CONFIG
+const DEV = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 window.__DEBUG__ = {
   log: (...args) => DEV && console.log('[DEBUG]', ...args),
   warn: (...args) => DEV && console.warn('[WARN]', ...args),
   error: (...args) => console.error('[ERROR]', ...args),
 };
 
-// Tangkap error JS biasa
-window.addEventListener('error', e => {
-  const fileName = e.filename
-    ? e.filename.split('/').pop()
-    : 'unknown_file';
-
-  const location = `${fileName}:${e.lineno}:${e.colno}`;
-
-  window.__DEBUG__.error(
-    `[${location}] Global Error:`,
-    e.message
-  );
-});
-
-// Tangkap Promise error
-window.addEventListener('unhandledrejection', e => {
-  const reason =
-    e.reason?.message ||
-    e.reason ||
-    'Unknown Promise Rejection';
-
-  window.__DEBUG__.error('[Async/Promise] Error:', reason);
-});
-
-
-import { island } from './island.js';
-
-console.log('ISLAND IMPORT:', island);
-
-import { audioController } from './controllers/audioController.js';
-import { supabase } from './services/supabase.js'; // Pastikan diimport paling atas
-import { initRouter } from './router/hashRouter.js';
-import { initSidebar } from './ui/sidebar.js';
-import { initHeader } from './ui/header.js';
-
-import { initSettingsModal } from './ui/settingsModal.js';
-import { initProfileModal } from './ui/auth/profileModal.js';
-
-// views
-import { headerView } from '../components/headerView.js';
-import { sidebarView } from '../components/sidebarView.js';
-import { modalsettingsView } from '../components/modal-settingsView.js';
-import { modalprofilView } from '../components/modalprofilView.js';
-import { babModalView } from '../components/babModalView.js';
-import { durasiModalView } from '../components/durasiModalView.js';
-import { ulangModalView } from '../components/ulangModalView.js';
-import { akurasiModalView } from '../components/akurasiModalView.js';
-
+// 3. MAIN INIT FUNCTION
 function init() {
-window.__DEBUG__.log('App init() dipanggil');
+  window.__DEBUG__.log('App init() dipanggil');
 
   const app = document.getElementById('app');
   if (!app) return;
 
-  // 1. Render struktur dasar Aplikasi terlebih dahulu
+  // Render struktur dasar ke DOM
   app.innerHTML = `
     <div id="main-layout-wrapper">
       ${headerView}
@@ -88,62 +45,57 @@ window.__DEBUG__.log('App init() dipanggil');
     <main id="content"></main>
   `;
 
+  // INISIALISASI ISLAND (Harus segera setelah headerView di-render)
   island.init();
 
+  // Setup YouTube Hidden Player
   if (!document.getElementById('youtube-player')) {
     const ytDiv = document.createElement('div');
     ytDiv.id = 'youtube-player';
-    // Sembunyikan jauh di luar layar agar tidak merusak UI
     ytDiv.style.cssText = 'position:absolute; top:-9999px; left:-9999px; width:1px; height:1px;';
     document.body.appendChild(ytDiv);
   }
 
+  // Inisialisasi Modals Dasar
   babModalView.renderBase();
   durasiModalView.renderBase();
   ulangModalView.renderBase();
   akurasiModalView.renderBase();
 
-
-  // 2. Inject Modals
   const headerRight = document.querySelector('.header-right');
-if (headerRight) {
+  if (headerRight) {
     headerRight.insertAdjacentHTML('beforeend', modalsettingsView);    
-}
+  }
 
-  // 3. Listener Auth Global (Diletakkan setelah render dasar)
+  // Listener Auth
   supabase.auth.onAuthStateChange((event, session) => {
-  window.__DEBUG__.log('Auth Event:', event); // ← TAMBAHAN
-  console.log("Auth Event:", event);
-    
+    window.__DEBUG__.log('Auth Event:', event);
     if (event === 'SIGNED_OUT') {
       window.location.hash = '#login';
       const content = document.getElementById('content');
       if (content) content.innerHTML = ''; 
     }
-    
-    // Jika login berhasil, pastikan layout muncul kembali
     checkLayout();
   });
 
-  // 4. Inisialisasi Logika UI
+  // Inisialisasi Logika UI
   audioController.init();
   initHeader();
   initSidebar();
   initSettingsModal();
   initProfileModal(); 
   
-  // 5. Jalankan Router & Layout Check
+  // Jalankan Router
   initRouter();
   window.addEventListener('hashchange', checkLayout);
   checkLayout();
 } 
 
+// 4. LAYOUT MANAGER
 function checkLayout() {
   const hash = window.location.hash;
   const layoutWrapper = document.getElementById('main-layout-wrapper');
   const contentArea = document.getElementById('content');
-  
-  // Login, Register, dan Hash kosong dianggap halaman Auth
   const isAuthPage = hash === '#login' || hash === '#register' || hash === '' || hash === '#';
 
   if (layoutWrapper && contentArea) {
@@ -152,9 +104,10 @@ function checkLayout() {
       contentArea.style.cssText = 'margin: 0; padding: 0;';
     } else {
       layoutWrapper.style.display = 'block';
-      contentArea.style.cssText = ''; // Kembali ke CSS default
+      contentArea.style.cssText = ''; 
     }
   }
 }
 
+// 5. RUN
 init();
