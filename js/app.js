@@ -1,3 +1,9 @@
+// ===== APP BOOT CHECK =====
+console.log('[APP] app.js file loaded');
+
+// Tandai bahwa app module sudah aktif
+window.__APP_LOADED__ = true;
+
 // ===== GLOBAL DEBUG (Versi Detail) =====
 const DEV =
   location.hostname === 'localhost' ||
@@ -9,22 +15,29 @@ window.__DEBUG__ = {
   error: (...args) => console.error('[ERROR]', ...args),
 };
 
-// Tangkap error JS biasa dengan detail lokasi file
+// Tangkap error JS biasa
 window.addEventListener('error', e => {
-  // Mengambil nama file saja dari path lengkap (misal: 'durasiModalView.js')
-  const fileName = e.filename ? e.filename.split('/').pop() : 'unknown_file';
+  const fileName = e.filename
+    ? e.filename.split('/').pop()
+    : 'unknown_file';
+
   const location = `${fileName}:${e.lineno}:${e.colno}`;
-  
-  window.__DEBUG__.error(`[${location}] Global Error:`, e.message);
+
+  window.__DEBUG__.error(
+    `[${location}] Global Error:`,
+    e.message
+  );
 });
 
-// Tangkap error async / Promise
+// Tangkap Promise error
 window.addEventListener('unhandledrejection', e => {
-  const reason = e.reason?.message || e.reason || 'Unknown Promise Rejection';
+  const reason =
+    e.reason?.message ||
+    e.reason ||
+    'Unknown Promise Rejection';
+
   window.__DEBUG__.error('[Async/Promise] Error:', reason);
 });
-
-// =======================================
 
 import { audioController } from './controllers/audioController.js';
 import { supabase } from './services/supabase.js'; // Pastikan diimport paling atas
