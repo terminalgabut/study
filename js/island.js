@@ -165,9 +165,8 @@ export const island = {
     }
 }
 
-};  // ← tutup object dulu
+};
 
-// GLOBAL
 if (typeof window !== 'undefined') {
-    window.island = island;
+  window.island = island;
 }
