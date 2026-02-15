@@ -1,3 +1,5 @@
+// root/js/ui/sidebar.js
+
 import { navigate } from '../router/hashRouter.js';
 
 export function initSidebar() {
