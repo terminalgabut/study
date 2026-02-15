@@ -2,7 +2,10 @@
 
 // Module
 import { supabase } from './services/supabase.js'; 
+import { initRouter } from './router/hashRouter.js';
 
+// Views
+import { headerView } from '../components/headerView.js';
 
 console.log("app.js ✅");
 
@@ -17,7 +20,21 @@ window.__DEBUG__ = {
 // 3. MAIN INIT FUNCTION
 function init() {
    console.log("Init ✅");
-   document.getElementById('app').innerHTML = "<h1>2 Sistem Hidup!</h1>";
+   window.__DEBUG__.log('App init() dipanggil');
+
+  const app = document.getElementById('app');
+  if (!app) return;
+
+  // Render struktur dasar ke DOM
+  app.innerHTML = `
+    <div id="main-layout-wrapper">
+      ${headerView}
+      <div class="layout">
+        ${sidebarView}
+      </div>
+    </div>
+    <main id="content"></main>
+  `;
   
   supabase.auth.onAuthStateChange((event, session) => {
     window.__DEBUG__.log('Auth Event:', event);
@@ -27,7 +44,11 @@ function init() {
       if (content) content.innerHTML = ''; 
     }
     checkLayout();
-  });
+  }); 
+
+    // Inisialisasi Logika UI
+  // audioController.init();
+  initHeader();
   
 }
 
