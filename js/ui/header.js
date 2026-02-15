@@ -9,9 +9,9 @@ export function initHeader() {
   const overlay = document.querySelector('.sidebar-overlay');
 
   // --- 1. INJEKSI HTML (Penting agar ID modal ada di DOM) ---
-  if (headerRight && !document.getElementById('profileDropdown')) {
-    headerRight.insertAdjacentHTML('beforeend', profileModalView);
-  }
+  if (headerRight && !document.getElementById('profileDropdown')) //{
+   // headerRight.insertAdjacentHTML('beforeend', profileModalView);
+ // }
 
   // --- 2. INISIALISASI LOGIKA ---
   
