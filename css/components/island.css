@@ -4,7 +4,7 @@
 /* DYNAMIC ISLAND CSS       */
 /* ============================= */
 
-/* 1️⃣ Container Utama (Efek Pop-up) */
+/* 1️⃣ Container Utama - Mengatur posisi dan efek Pop-up Tengah */
 #dynamic-island-container {
   position: absolute;
   left: 50%;
@@ -12,52 +12,53 @@
   transform: translateX(-50%) scale(1);
   z-index: 9999;
   opacity: 1;
-  /* Transisi saat muncul/hilang dari layar */
+  /* Transisi Pop-up masuk/keluar */
   transition: 
-    opacity 0.3s ease, 
+    opacity 0.4s ease, 
     transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
+/* 2️⃣ State Hidden - Menyusut ke tengah (scale 0) sesuai alur mati timer */
 .island-hidden {
   opacity: 0 !important;
-  transform: translateX(-50%) scale(0.5) translateY(-20px) !important;
+  transform: translateX(-50%) scale(0) !important;
   pointer-events: none;
 }
 
-/* 2️⃣ Badan Island - Default: Mode Bulat (Icon Only) */
+/* 3️⃣ Badan Island - Default: Mode Bulat / Idle */
 #dynamic-island {
-  background: #000; /* Hitam pekat khas Island */
+  background: #000;
   color: #fff;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   height: 36px;
-  width: 40px; /* Ukuran awal bulat */
+  width: 42px; /* Ukuran bulat idle */
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   white-space: nowrap;
-  padding: 0 10px;
-
-  /* Transisi Melebar yang Smooth */
+  padding: 0; 
+  
+  /* Transisi Melebar yang Bouncy */
   transition: 
-    width 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28),
+    width 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28),
     padding 0.4s ease,
-    background 0.3s ease;
+    border-radius 0.4s ease;
 }
 
-/* 3️⃣ Mode Expanded (Melebar Otomatis/Klik) */
+/* 4️⃣ Mode Expanded - Menampilkan Info selama 5 detik */
 #dynamic-island.expanded {
   width: auto;
-  min-width: 150px; /* Minimal lebar saat ada teks */
-  max-width: 300px;
+  min-width: 170px;
+  max-width: 320px;
   padding: 0 16px;
-  border-radius: 18px;
+  border-radius: 14px; /* Sedikit lebih kotak saat melebar */
 }
 
-/* 4️⃣ Konten & Icon */
+/* 5️⃣ Konten & Icon */
 .island-content {
   display: flex;
   align-items: center;
@@ -69,35 +70,48 @@
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+  transition: transform 0.3s ease;
 }
 
-/* 5️⃣ Logic Teks (Kunci Animasi) */
+/* 6️⃣ Teks Info - Kunci transisi muncul/hilang */
 #island-text {
   font-size: 13px;
   font-weight: 500;
   color: #fff;
-  
-  /* Secara default (mode bulat) teks disembunyikan */
   width: 0;
   opacity: 0;
   overflow: hidden;
   margin-left: 0;
+  display: inline-block;
+  white-space: nowrap;
+  /* Transisi saat mengecil (cepat hilang) */
   transition: 
-    width 0.4s ease, 
+    width 0.3s ease, 
     opacity 0.2s ease,
-    margin-left 0.4s ease;
+    margin-left 0.3s ease;
 }
 
-/* Tampilkan teks hanya saat class .expanded aktif */
+/* Animasi Teks saat Melebar */
 #dynamic-island.expanded #island-text {
   width: auto;
   opacity: 1;
-  margin-left: 8px;
-  /* Delay sedikit agar lebar island jalan duluan baru teks muncul */
+  margin-left: 10px;
+  /* Delay 0.1s agar badan melebar dulu baru teks muncul */
   transition: 
-    width 0.4s ease, 
-    opacity 0.4s 0.1s ease,
-    margin-left 0.4s ease;
+    width 0.4s 0.1s ease, 
+    opacity 0.4s 0.2s ease,
+    margin-left 0.4s 0.1s ease;
+}
+
+/* 7️⃣ Efek Denyut (Pulse) saat Idle - Memberi nyawa pada bulatan */
+#dynamic-island:not(.expanded):not(.island-hidden) .island-icon {
+  animation: island-idle-pulse 2s infinite ease-in-out;
+}
+
+@keyframes island-idle-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* Utility */
