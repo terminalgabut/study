@@ -2,7 +2,7 @@
 
 // Module
 import { supabase } from './services/supabase.js'; 
-import { initRouter } from './router/hashRouter.js';
+// import { initRouter } from './router/hashRouter.js';
 
 // Views
 import { headerView } from '../components/headerView.js';
