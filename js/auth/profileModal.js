@@ -1,4 +1,6 @@
-import { supabase } from '../../services/supabase.js';
+// root/js/auth/profileModal.js
+
+import { supabase } from '../services/supabase.js';
 import { handleLogout } from './auth.js';
 
 // Buat fungsi terpisah untuk mengambil data agar bisa dipanggil berulang kali
