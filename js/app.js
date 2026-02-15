@@ -3,13 +3,13 @@
 // Module
 import { supabase } from './services/supabase.js'; 
 import { initHeader } from './ui/header.js'; 
-import { initSidebar } from './ui/sidebar.js'; 
+// import { initSidebar } from './ui/sidebar.js'; 
 
 // import { initRouter } from './router/hashRouter.js';
 
 // Views
 import { headerView } from '../components/headerView.js';
-import { sidebarView } from '../components/sidebarView.js';
+// import { sidebarView } from '../components/sidebarView.js';
 
 console.log("app.js ✅");
 
@@ -53,7 +53,7 @@ function init() {
     // Inisialisasi Logika UI
   // audioController.init();
   initHeader();
-  initSidebar();
+ // initSidebar();
 
 // Jalankan Router
   initRouter();
