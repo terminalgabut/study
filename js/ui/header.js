@@ -2,23 +2,29 @@
 
 //import { settingsModalView } from '../../components/settingsModalView.js';
 //import { islandController } from './island.js';
-import { profileModalView } from '../../components/profileModalView.js';
-import { initProfileModal } from '../auth/profileModal.js';
 
-export function initHeader() {
+export async function initHeader() {
   const headerRight = document.querySelector('.header-right');
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.querySelector('.sidebar');
   const overlay = document.querySelector('.sidebar-overlay');
 
+  // Lazy-load profile modal
   if (headerRight && !document.getElementById('profileDropdown')) {
-    headerRight.insertAdjacentHTML('beforeend', profileModalView);
+    try {
+      const { profileModalView } = await import('../../components/profileModalView.js');
+      headerRight.insertAdjacentHTML('beforeend', profileModalView);
+
+      const { initProfileModal } = await import('../auth/profileModal.js');
+      initProfileModal();
+    } catch (err) {
+      console.warn('Profile modal gagal dimuat:', err);
+    }
   }
 
-//  window.islandController = islandController;
-//  window.islandController.init();
-//  settingsModalView.renderBase();
-  initProfileModal();
+  //window.islandController = islandController;
+  //window.islandController.init();
+  //settingsModalView.renderBase();
 
   if (!menuBtn || !sidebar) return;
 
