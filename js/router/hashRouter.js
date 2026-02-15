@@ -14,8 +14,8 @@ import { historyView } from '../../pages/riwayatView.js';
 import { notesView } from '../../pages/notesView.js';
 import { notesDetailView } from '../../pages/notesDetailView.js';
 import { performaView } from '../../pages/performaView.js';
-//import { audioView } from '../../pages/audioView.js';
-//import { timerView } from '../../pages/timerView.js';
+import { audioView } from '../../pages/audioView.js';
+import { timerView } from '../../pages/timerView.js';
 
 // ===== LOGIC =====
 import { initLogin, initRegister } from '../ui/auth/auth.js';
@@ -32,8 +32,8 @@ import { initHistoryPage } from '../ui/riwayat.js';
 import { initNotesList } from '../ui/notes.js';
 import { initNoteDetail } from '../ui/noteDetails.js'; 
 import { performaController } from '../controllers/performaController.js';
-//import { audioController } from '../controllers/audioController.js';
-//import { timerController } from '../controllers/timerController.js';
+import { audioController } from '../controllers/audioController.js';
+import { timerController } from '../controllers/timerController.js';
 
 // js/router/hashRouter.js
 window.__DEBUG__?.log('hashRouter loaded');
@@ -168,18 +168,18 @@ window.__DEBUG__?.log('Route Guard', {
           performaController.init();
         break;
 
-       // case 'audio':
-          //window.__DEBUG__?.log('Route → audio');
-    //      content.innerHTML = audioView;
-       //   audioController.init(); 
-   //       audioController.bindEvents(); 
-     //   break;
+        case 'audio':
+          window.__DEBUG__?.log('Route → audio');
+          content.innerHTML = audioView;
+          audioController.init(); 
+          audioController.bindEvents(); 
+        break;
 
-        //case 'timer':
-         // window.__DEBUG__?.log('Route → timer');
-        //  content.innerHTML = timerView;
-     //     timerController.init();
-    //    break;
+        case 'timer':
+          window.__DEBUG__?.log('Route → timer');
+          content.innerHTML = timerView;
+          timerController.init();
+        break;
        
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
