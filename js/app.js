@@ -9,7 +9,7 @@ import { initHeader } from './ui/header.js';
 
 // Views
 import { headerView } from '../components/headerView.js';
-// import { sidebarView } from '../components/sidebarView.js';
+import { sidebarView } from '../components/sidebarView.js';
 
 console.log("app.js ✅");
 
