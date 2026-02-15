@@ -1,3 +1,5 @@
+// root/js/ui/setting modal.js
+
 export function initSettingsModal() {
   const btn = document.querySelector('.icon-btn[title="Settings"]');
   const modal = document.getElementById('settingsModal');
