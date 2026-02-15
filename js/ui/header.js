@@ -15,6 +15,8 @@ export function initHeader() {
   // Daftarkan elemen-elemen HTML island yang ada di headerView
   window.islandController.init();
 
+  initSettingsModal();
+
   if (!menuBtn || !sidebar) return;
 
   // --- 2. LOGIKA SIDEBAR ---
