@@ -6,10 +6,12 @@ import { initHeader } from './ui/header.js';
 import { initSidebar } from './ui/sidebar.js'; 
 import { audioController } from './controllers/audioController.js';
 import { initRouter } from './router/hashRouter.js';
+import { initSettingsModal } from './ui/settingsModal.js';
 
 // Views
 import { headerView } from '../components/headerView.js';
 import { sidebarView } from '../components/sidebarView.js';
+import { modalsettingsView } from '../components/modal-settingsView.js';
 
 console.log("app.js ✅");
 
