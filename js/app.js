@@ -4,8 +4,7 @@
 import { supabase } from './services/supabase.js'; 
 import { initHeader } from './ui/header.js'; 
 // import { initSidebar } from './ui/sidebar.js'; 
-
-// import { initRouter } from './router/hashRouter.js';
+import { initRouter } from './router/hashRouter.js';
 
 // Views
 import { headerView } from '../components/headerView.js';
