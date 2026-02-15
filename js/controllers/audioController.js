@@ -1,16 +1,17 @@
 // study/js/controllers/audioController.js
 
-import { islandController } from './islandController.js';
-
+// JANGAN IMPORT ISLAND LAGI - Kita pakai window.islandController
 let player = null;
 let isPlaying = false;
+let currentTitle = "Lofi Girl - Study"; // Default title
 
 export const audioController = {
-    // 1. Inisialisasi API & Player
+    // 1. Inisialisasi API & Player (Dipanggil sekali di app.js)
     init() {
         if (window.YT && window.YT.Player) {
             this.setupPlayer();
         } else {
+            // Jika API belum siap, tunggu panggilannya
             window.onYouTubeIframeAPIReady = () => this.setupPlayer();
         }
     },
@@ -18,10 +19,11 @@ export const audioController = {
     setupPlayer() {
         if (player) return; 
         
+        // Target: div #youtube-player yang kita buat di app.js
         player = new YT.Player('youtube-player', {
             height: '0',
             width: '0',
-            videoId: 'jfKfPfyJRdk',
+            videoId: 'jfKfPfyJRdk', // Default video
             playerVars: {
                 'autoplay': 0,
                 'controls': 0,
@@ -29,7 +31,7 @@ export const audioController = {
                 'showinfo': 0
             },
             events: {
-                'onReady': () => console.log('Audio Engine Ready'),
+                'onReady': () => console.log('Audio Engine Ready ✅'),
                 'onStateChange': (event) => {
                     // YT.PlayerState.PLAYING = 1, PAUSED = 2
                     isPlaying = (event.data === 1);
@@ -39,13 +41,12 @@ export const audioController = {
         });
     },
 
-    // 2. Event Listeners (Tombol & Kartu)
+    // 2. Bind Events (Dipanggil Router setiap halaman Audio dibuka)
     bindEvents() {
         const playBtn = document.getElementById('mainPlayBtn');
         const volSlider = document.getElementById('volumeRange');
         const cards = document.querySelectorAll('.music-card');
 
-        // Play / Pause Utama
         if (playBtn) {
             playBtn.onclick = () => {
                 if (!player || typeof player.playVideo !== 'function') return;
@@ -53,57 +54,61 @@ export const audioController = {
             };
         }
 
-        // Volume
         if (volSlider) {
             volSlider.oninput = (e) => {
-                if (player && player.setVolume) {
-                    player.setVolume(e.target.value);
-                }
+                player?.setVolume(e.target.value);
             };
         }
 
-        // Pilih Lagu dari Kartu
         cards.forEach(card => {
             card.onclick = () => {
                 const vid = card.getAttribute('data-vid');
                 const title = card.getAttribute('data-title');
                 
-                if (player && typeof player.loadVideoById === 'function') {
-                    // Load lagu baru
+                if (player?.loadVideoById) {
+                    currentTitle = title; // Update title global di file ini
                     player.loadVideoById(vid);
                     
-                    // --- SYNC ISLAND (PENGUMUMAN) ---
-                    islandController.announce(title, 'music');
+                    // Update teks di halaman (jika elemennya ada)
+                    const titleEl = document.getElementById('current-title');
+                    const statusEl = document.getElementById('track-status');
+                    if (titleEl) titleEl.textContent = title;
+                    if (statusEl) statusEl.textContent = "Sedang diputar...";
                     
-                    // Update teks di halaman
-                    document.getElementById('current-title').textContent = title;
-                    document.getElementById('track-status').textContent = "Sedang diputar...";
-                    
-                    // Set status dan update UI tombol
                     isPlaying = true;
                     this.updateUI();
-                } else {
-                    console.log("Player belum siap.");
                 }
             };
         });
 
+        // Pastikan UI halaman sinkron dengan state musik saat ini
         this.updateUI();
     },
 
-    // 3. Update Visual UI
-    // Di dalam audioController.js
-updateUI() {
-    if (isPlaying) {
-        // Kirim status ke Island secara global
-        window.islandController?.setStatus('music', { 
-            text: currentTitle || "Memutar Musik", 
-            icon: 'music',
-            priority: 5 
-        });
-    } else {
-        // Hapus status jika musik berhenti
-        window.islandController?.removeStatus('music');
+    // 3. Update Visual UI & Sync ke Island
+    updateUI() {
+        // --- A. Update Elemen di Halaman Audio (Jika sedang dibuka) ---
+        const playBtn = document.getElementById('mainPlayBtn');
+        const musicWave = document.getElementById('music-wave');
+        
+        if (playBtn) {
+            playBtn.textContent = isPlaying ? 'Pause' : 'Play';
+        }
+        if (musicWave) {
+            isPlaying ? musicWave.classList.remove('music-wave-hidden') 
+                      : musicWave.classList.add('music-wave-hidden');
+        }
+
+        // --- B. Update ke Dynamic Island (Global) ---
+        if (isPlaying) {
+            window.islandController?.setStatus('music', { 
+                text: currentTitle, 
+                icon: 'music',
+                priority: 5 // Prioritas lebih rendah dari Timer
+            });
+        } else {
+            // Jika musik pause, hapus dari island agar tidak menumpuk
+            window.islandController?.removeStatus('music');
+        }
     }
-}
 };
