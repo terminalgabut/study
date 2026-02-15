@@ -51,6 +51,12 @@ function init() {
   // audioController.init();
   initHeader();
   initSidebar();
+
+// Jalankan Router
+  initRouter();
+  window.addEventListener('hashchange', checkLayout);
+  checkLayout();
+  
 }
 
 // 4. LAYOUT MANAGER
