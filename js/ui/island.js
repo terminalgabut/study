@@ -11,17 +11,17 @@ export const islandController = {
         this.statuses = new Map();
         this.sortedKeys = [];
         this.autoShrinkTimeout = null;
+        this.isFirstShow = true; // Penanda untuk pop-up pertama kali
 
         if (!this.island) return;
 
-        // EVENT KLIK: Manual Expand
         this.island.onclick = (e) => {
             e.stopPropagation();
             if (this.island.classList.contains('expanded')) {
                 this.shrink();
             } else {
                 this.expand();
-                this.resetAutoShrink(5000); // Klik manual juga kecil lagi setelah 5 detik
+                this.resetAutoShrink(5000); 
             }
         };
 
@@ -29,28 +29,39 @@ export const islandController = {
     },
 
     setStatus(key, { text, icon, priority = 0 }) {
+        const isNewStatus = !this.statuses.has(key);
         this.statuses.set(key, { text, icon, priority });
         this.sortStatuses();
+        
+        // Update teks & icon tanpa animasi dulu
         this.render();
 
-        // LOGIKA BARU:
-        // 1. Muncul dalam mode bulat (shrink)
-        this.shrink(); 
-        
-        // 2. Jeda 0.5 detik (500ms) baru melebar
-        setTimeout(() => {
-            if (this.sortedKeys.length > 0) {
-                this.expand();
-                // 3. Tampilkan teks selama 5 detik, lalu balik jadi bulat (idle)
-                this.resetAutoShrink(5000);
-            }
-        }, 500);
+        // JALUR LOGIKA ANIMASI:
+        // Jika ini status baru atau container tadinya sembunyi
+        if (isNewStatus || this.container.classList.contains('island-hidden')) {
+            this.container.classList.remove('island-hidden'); // Muncul mode bulat (karena default CSS bulat)
+            
+            // Jeda 0.5 detik dalam mode bulat sesuai permintaan
+            setTimeout(() => {
+                this.expand(); // Transisi halus melebar
+                this.resetAutoShrink(5000); // Otomatis balik bulat setelah 5 detik
+            }, 500);
+        }
     },
 
     removeStatus(key) {
         this.statuses.delete(key);
         this.sortStatuses();
-        this.render();
+        
+        if (this.statuses.size === 0) {
+            // Animasi menyusut ke tengah sebelum hilang
+            this.shrink(); 
+            setTimeout(() => {
+                this.container?.classList.add('island-hidden');
+            }, 500); // Tunggu animasi shrink selesai baru sembunyi
+        } else {
+            this.render();
+        }
     },
 
     sortStatuses() {
@@ -75,16 +86,11 @@ export const islandController = {
     },
 
     render() {
-        if (this.sortedKeys.length === 0) {
-            this.container?.classList.add('island-hidden');
-            return;
-        }
-
-        this.container?.classList.remove('island-hidden');
+        if (this.sortedKeys.length === 0) return;
         
         const active = this.statuses.get(this.sortedKeys[0]);
         if (active) {
-            this.textSpan.textContent = active.text;
+            if (this.textSpan) this.textSpan.textContent = active.text;
             this.showIcon(active.icon);
         }
     },
