@@ -92,25 +92,18 @@ export const audioController = {
     },
 
     // 3. Update Visual UI
-    updateUI() {
-        const playBtn = document.getElementById('mainPlayBtn');
-        const musicWave = document.getElementById('music-wave');
-        if (!playBtn) return;
-
-        if (isPlaying) {
-            // Tampilan halaman
-            playBtn.textContent = 'Pause';
-            musicWave?.classList.remove('music-wave-hidden');
-            
-            // --- SYNC ISLAND (STATUS AKTIF) ---
-            islandController.updateStatus(true);
-        } else {
-            // Tampilan halaman
-            playBtn.textContent = 'Play';
-            musicWave?.classList.add('music-wave-hidden');
-            
-            // --- SYNC ISLAND (MATIKAN) ---
-            islandController.updateStatus(false);
-        }
+    // Di dalam audioController.js
+updateUI() {
+    if (isPlaying) {
+        // Kirim status ke Island secara global
+        window.islandController?.setStatus('music', { 
+            text: currentTitle || "Memutar Musik", 
+            icon: 'music',
+            priority: 5 
+        });
+    } else {
+        // Hapus status jika musik berhenti
+        window.islandController?.removeStatus('music');
     }
+}
 };
