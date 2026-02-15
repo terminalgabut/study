@@ -10,20 +10,18 @@ export const islandController = {
 
         this.statuses = new Map();
         this.sortedKeys = [];
-        this.currentIndex = 0;
         this.autoShrinkTimeout = null;
 
         if (!this.island) return;
 
-        // LOGIKA KLIK: Toggle Lebar/Kecil
+        // EVENT KLIK: Manual Expand
         this.island.onclick = (e) => {
             e.stopPropagation();
             if (this.island.classList.contains('expanded')) {
                 this.shrink();
             } else {
                 this.expand();
-                // Jika diklik manual, kita beri waktu 5 detik juga sebelum mengecil lagi
-                this.resetAutoShrink(5000);
+                this.resetAutoShrink(5000); // Klik manual juga kecil lagi setelah 5 detik
             }
         };
 
@@ -33,13 +31,20 @@ export const islandController = {
     setStatus(key, { text, icon, priority = 0 }) {
         this.statuses.set(key, { text, icon, priority });
         this.sortStatuses();
-        
-        // Update tampilan ke status terbaru/tertinggi
         this.render();
 
-        // EFEK POP-UP: Melebar otomatis saat ada update
-        this.expand();
-        this.resetAutoShrink(5000); // Otomatis kecil setelah 5 detik
+        // LOGIKA BARU:
+        // 1. Muncul dalam mode bulat (shrink)
+        this.shrink(); 
+        
+        // 2. Jeda 0.5 detik (500ms) baru melebar
+        setTimeout(() => {
+            if (this.sortedKeys.length > 0) {
+                this.expand();
+                // 3. Tampilkan teks selama 5 detik, lalu balik jadi bulat (idle)
+                this.resetAutoShrink(5000);
+            }
+        }, 500);
     },
 
     removeStatus(key) {
@@ -55,13 +60,11 @@ export const islandController = {
     },
 
     expand() {
-        if (!this.island) return;
-        this.island.classList.add('expanded');
+        this.island?.classList.add('expanded');
     },
 
     shrink() {
-        if (!this.island) return;
-        this.island.classList.remove('expanded');
+        this.island?.classList.remove('expanded');
     },
 
     resetAutoShrink(ms) {
@@ -79,7 +82,6 @@ export const islandController = {
 
         this.container?.classList.remove('island-hidden');
         
-        // Ambil status prioritas tertinggi (indeks 0)
         const active = this.statuses.get(this.sortedKeys[0]);
         if (active) {
             this.textSpan.textContent = active.text;
