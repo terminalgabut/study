@@ -6,6 +6,7 @@ import { supabase } from './services/supabase.js';
 
 // Views
 import { headerView } from '../components/headerView.js';
+import { sidebarView } from '../components/sidebarView.js';
 
 console.log("app.js ✅");
 
@@ -49,7 +50,7 @@ function init() {
     // Inisialisasi Logika UI
   // audioController.init();
   initHeader();
-  
+  initSidebar();
 }
 
 // 4. LAYOUT MANAGER
