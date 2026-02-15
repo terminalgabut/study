@@ -28,15 +28,11 @@ export const timerController = {
         }
 
         if (this.stopBtn) {
-            this.stopBtn.onclick = () => {
-                this.stop();
-            };
+            this.stopBtn.onclick = () => this.stop();
         }
 
         if (this.resetBtn) {
-            this.resetBtn.onclick = () => {
-                this.reset();
-            };
+            this.resetBtn.onclick = () => this.reset();
         }
     },
 
@@ -45,22 +41,22 @@ export const timerController = {
     ========================== */
 
     start(minutes) {
-        if (this.interval) return; // prevent double start
+        if (this.interval) return; 
 
         this.timeLeft = minutes * 60;
 
         this.toggleButtons(true);
         this.render(this.timeLeft);
 
-        // kirim ke island
-        window.islandController.setStatus('timer', {
+        // Kirim ke island secara global (Gunakan ?. agar aman)
+        window.islandController?.setStatus('timer', {
             text: this.formatTime(this.timeLeft),
             icon: 'timer',
-            priority: 10,
+            priority: 10, // Prioritas tinggi agar mengalahkan status musik
             persistent: true
         });
 
-        window.islandController.expand(true);
+        window.islandController?.expand(true);
 
         this.interval = setInterval(() => {
             this.timeLeft--;
@@ -72,7 +68,8 @@ export const timerController = {
 
             this.render(this.timeLeft);
 
-            window.islandController.setStatus('timer', {
+            // Update Island setiap detik
+            window.islandController?.setStatus('timer', {
                 text: this.formatTime(this.timeLeft),
                 icon: 'timer',
                 priority: 10,
@@ -86,13 +83,13 @@ export const timerController = {
         clearInterval(this.interval);
         this.interval = null;
 
-        window.islandController.removeStatus('timer');
+        // Hapus status timer dari island saat stop
+        window.islandController?.removeStatus('timer');
         this.toggleButtons(false);
     },
 
     reset() {
         this.stop();
-
         const mins = this.input ? (this.input.value || 25) : 25;
         this.render(mins * 60);
     },
@@ -101,17 +98,19 @@ export const timerController = {
         clearInterval(this.interval);
         this.interval = null;
 
-        window.islandController.setStatus('timer', {
+        // Notifikasi Selesai di Island
+        window.islandController?.setStatus('timer', {
             text: "Selesai ☕",
             icon: 'timer',
             priority: 10,
             persistent: false
         });
 
-        window.islandController.expand(true);
+        window.islandController?.expand(true);
 
+        // Hapus otomatis setelah 4 detik
         setTimeout(() => {
-            window.islandController.removeStatus('timer');
+            window.islandController?.removeStatus('timer');
         }, 4000);
 
         this.toggleButtons(false);
@@ -119,7 +118,7 @@ export const timerController = {
     },
 
     /* =========================
-       UI
+       UI RENDER
     ========================== */
 
     render(seconds) {
