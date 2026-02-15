@@ -3,7 +3,6 @@
 import { modalsettingsView } from '../../components/modalsettingsView.js';
 
 import { islandController } from './island.js';
-import { initSettingsModal } from './settingsModal.js';
 
 export function initHeader() {
   const menuBtn = document.getElementById('menuBtn');
