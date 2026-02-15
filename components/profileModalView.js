@@ -11,9 +11,9 @@ export const profileModalView = `
   </div>
   
   <div class="profile-actions">
-    <button class="dropdown-btn" onclick="window.location.hash='#profile'">
-      <span>Lihat Profil</span>
-    </button>
+    <button id="btnViewProfile" class="dropdown-btn">
+  <span>Lihat Profil</span>
+</button>
     <button id="btnLogoutAction" class="dropdown-btn">
       <span>Log Out</span>
     </button>
