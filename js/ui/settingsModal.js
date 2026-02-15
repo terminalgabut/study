@@ -1,20 +1,27 @@
 // root/js/ui/settingsModal.js
 
 export function initSettingsModal() {
-  const btn = document.querySelector('.icon-btn[title="Settings"]');
   const modal = document.getElementById('settingsModal');
-  if (!btn || !modal) return;
+  
+  if (!modal) return;
 
-  // toggle via tombol settings
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    modal.classList.toggle('show');
-  });
-
-  // klik luar → tutup
   document.addEventListener('click', (e) => {
-    if (!modal.contains(e.target) && !btn.contains(e.target)) {
+    const settingsBtn = e.target.closest('#settingsBtn');
+    if (settingsBtn) {
+      e.stopPropagation();
+      modal.classList.toggle('show');
+      console.log('Settings toggled');
+    } 
+    
+    else if (modal.classList.contains('show') && !modal.contains(e.target)) {
       modal.classList.remove('show');
     }
   });
+
+  const darkModeToggle = document.getElementById('darkMode');
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener('change', (e) => {
+      document.body.classList.toggle('dark-mode', e.target.checked);
+    });
+  }
 }
