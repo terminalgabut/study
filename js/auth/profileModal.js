@@ -1,4 +1,5 @@
 // root/js/auth/profileModal.js
+console.log("profileModal loaded");
 
 import { supabase } from '../services/supabase.js';
 import { handleLogout } from './auth.js';
