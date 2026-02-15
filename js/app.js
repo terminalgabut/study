@@ -1,17 +1,8 @@
-// root/app.js
-
 // root/js/app.js
 alert('TEST MODULE JALAN');
 // 1. Tes apakah file ini terbaca
 console.log("1. app.js berhasil dimuat");
-
-// 2. Tes import island
-import { island } from './island.js';
-console.log("2. island.js berhasil di-import:", island);
-
-// ... sisa kode lainnya
-// 1. IMPORTS
-
+// Modul
 import { audioController } from './controllers/audioController.js';
 import { supabase } from './services/supabase.js'; 
 import { initRouter } from './router/hashRouter.js';
@@ -54,9 +45,6 @@ function init() {
     </div>
     <main id="content"></main>
   `;
-
-  // INISIALISASI ISLAND (Harus segera setelah headerView di-render)
-  island.init();
 
   // Setup YouTube Hidden Player
   if (!document.getElementById('youtube-player')) {
