@@ -24,7 +24,8 @@ window.__DEBUG__ = {
 };
 
 // 3. MAIN INIT FUNCTION
-function init() {
+// function init() 
+async function init() {
    console.log("Init ✅");
    window.__DEBUG__.log('App init() dipanggil');
 
