@@ -3,15 +3,15 @@
 // Module
 import { supabase } from './services/supabase.js'; 
 import { initHeader } from './ui/header.js'; 
+import { initSettingsModal } from './ui/settingsModal.js'; 
 import { initSidebar } from './ui/sidebar.js'; 
-import { audioController } from './controllers/audioController.js';
-import { initRouter } from './router/hashRouter.js';
-import { initSettingsModal } from './ui/settingsModal.js';
+import { audioController } from './controllers/audioController.js'; 
+import { initRouter } from './router/hashRouter.js'; 
 
 // Views
-import { headerView } from '../components/headerView.js';
-import { sidebarView } from '../components/sidebarView.js';
-import { modalsettingsView } from '../components/modal-settingsView.js';
+import { headerView } from '../components/headerView.js'; 
+import { modalsettingsView } from '../components/modalsettingsView.js'; 
+import { sidebarView } from '../components/sidebarView.js'; 
 
 console.log("app.js ✅");
 
@@ -63,8 +63,9 @@ function init() {
     // Inisialisasi Logika UI
   audioController.init();
   initHeader();
+  initSettingsModal(); 
   initSidebar();
-  initSettingsModal();
+  
 
 // Jalankan Router
   initRouter();
