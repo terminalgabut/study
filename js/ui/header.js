@@ -1,6 +1,5 @@
 // root/js/ui/header.js
 import { settingsModalView } from '../../components/settingsModalView.js';
-import { profileModalView } from '../../components/profileModalView.js'; 
 import { initProfileModal } from '../auth/profileModal.js'; 
 import { islandController } from './island.js';
 
