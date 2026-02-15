@@ -30,4 +30,23 @@ function init() {
   });
   
 }
+
+// 4. LAYOUT MANAGER
+function checkLayout() {
+  const hash = window.location.hash;
+  const layoutWrapper = document.getElementById('main-layout-wrapper');
+  const contentArea = document.getElementById('content');
+  const isAuthPage = hash === '#login' || hash === '#register' || hash === '' || hash === '#';
+
+  if (layoutWrapper && contentArea) {
+    if (isAuthPage) {
+      layoutWrapper.style.display = 'none';
+      contentArea.style.cssText = 'margin: 0; padding: 0;';
+    } else {
+      layoutWrapper.style.display = 'block';
+      contentArea.style.cssText = ''; 
+    }
+  }
+}
+
 init();
