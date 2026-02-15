@@ -7,7 +7,7 @@ import { audioController } from './controllers/audioController.js';
 import { initRouter } from './router/hashRouter.js'; 
 
 // Views
-import { sidebarView, initHeader } from '../components/headerView.js'; 
+import { headerView, initHeader } from '../components/headerView.js'; 
 import { sidebarView } from '../components/sidebarView.js'; 
 
 console.log("app.js ✅");
