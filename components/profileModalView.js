@@ -1,4 +1,4 @@
-export const modalprofilView = `
+export const profileModalView = `
 <div class="profile-dropdown" id="profileDropdown">
   <div class="profile-info">
     <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar">
