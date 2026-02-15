@@ -1,4 +1,4 @@
-// root/js/ui/settingModal.js
+// root/js/ui/settingsModal.js
 
 export function initSettingsModal() {
   const btn = document.querySelector('.icon-btn[title="Settings"]');
