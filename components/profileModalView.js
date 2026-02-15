@@ -1,3 +1,5 @@
+// root/components/profileModalView.js
+
 export const profileModalView = `
 <div class="profile-dropdown" id="profileDropdown">
   <div class="profile-info">
