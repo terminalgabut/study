@@ -1,6 +1,5 @@
 // root/js/ui/header.js
 import { settingsModalView } from '../../components/settingsModalView.js';
-import { initProfileModal } from '../auth/profileModal.js'; 
 import { islandController } from './island.js';
 
 export function initHeader() {
@@ -22,9 +21,6 @@ export function initHeader() {
 
   // Setup Settings (Menggunakan pola render ke body)
   settingsModalView.renderBase(); 
-
-  // Setup Profile (Sekarang aman karena HTML sudah disuntik di langkah 1)
-  initProfileModal(); 
 
   // --- 3. LOGIKA UI LOCAL (Sidebar) ---
   if (!menuBtn || !sidebar) return;
