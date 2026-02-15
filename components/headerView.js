@@ -1,3 +1,7 @@
+// root/components/headerView.js
+
+import { profileModalView } from './profileModalView.js';
+
 export const headerView = `
 <header class="app-header">
   <div class="header-left">
