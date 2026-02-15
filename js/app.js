@@ -38,6 +38,14 @@ function init() {
     </div>
     <main id="content"></main>
   `;
+
+  // Setup YouTube Hidden Player
+  if (!document.getElementById('youtube-player')) {
+    const ytDiv = document.createElement('div');
+    ytDiv.id = 'youtube-player';
+    ytDiv.style.cssText = 'position:absolute; top:-9999px; left:-9999px; width:1px; height:1px;';
+    document.body.appendChild(ytDiv);
+  }
   
   supabase.auth.onAuthStateChange((event, session) => {
     window.__DEBUG__.log('Auth Event:', event);
