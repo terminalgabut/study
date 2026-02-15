@@ -9,6 +9,7 @@ import { initRouter } from './router/hashRouter.js';
 
 // Views
 import { headerView } from '../components/headerView.js'; 
+import { profileModalView } from '../../components/profileModalView.js'; 
 import { sidebarView } from '../components/sidebarView.js'; 
 
 console.log("app.js ✅");
