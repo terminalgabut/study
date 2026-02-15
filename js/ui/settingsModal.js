@@ -2,6 +2,7 @@
 
 export function initSettingsModal() {
   window.__DEBUG__?.log('initSettingsModal() - Initializing...');
+  console.log("modal setings ✅");
 
   const modal = document.getElementById('settingsModal');
   
