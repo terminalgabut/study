@@ -92,4 +92,4 @@ function checkLayout() {
   }
 }
 
-init();
+document.addEventListener("DOMContentLoaded", init);
