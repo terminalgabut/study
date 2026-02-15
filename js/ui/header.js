@@ -18,7 +18,7 @@ export async function initHeader() {
       const { initProfileModal } = await import('../auth/profileModal.js');
       initProfileModal();
     } catch (err) {
-      console.warn('Profile modal gagal dimuat:', err);
+  console.error('Profile modal gagal dimuat:', err);
     }
   }
 
