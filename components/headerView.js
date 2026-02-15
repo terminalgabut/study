@@ -1,5 +1,7 @@
 // root/components/headerView.js
 
+import { initHeader } from './ui/header.js'; 
+
 export const headerView = `
 <header class="app-header">
   <div class="header-left">
