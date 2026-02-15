@@ -64,6 +64,7 @@ function init() {
   audioController.init();
   initHeader();
   initSidebar();
+  initSettingsModal();
 
 // Jalankan Router
   initRouter();
