@@ -1,4 +1,4 @@
-// js/ui/auth/auth.js
+// js/auth/auth.js
 import { supabase } from '../../services/supabase.js';
 
 // Helper tetap sama, memastikan username jadi format email di database
