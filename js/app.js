@@ -16,6 +16,7 @@ window.__DEBUG__ = {
 
 // 3. MAIN INIT FUNCTION
 function init() {
-  
-
+   console.log("Init jalan tanpa import");
+   document.getElementById('app').innerHTML = "<h1>Sistem Hidup!</h1>";
+}
 init();
