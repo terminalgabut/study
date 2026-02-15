@@ -1,5 +1,7 @@
 // root/js/ui/header.js
 
+import { modalsettingsView } from '../../components/modalsettingsView.js';
+
 import { islandController } from './island.js';
 import { initSettingsModal } from './settingsModal.js';
 
