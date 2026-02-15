@@ -9,9 +9,9 @@ export function initHeader() {
   const sidebar = document.querySelector('.sidebar');
   const overlay = document.querySelector('.sidebar-overlay');
 
-  window.islandController = islandController;
-  window.islandController.init();
-  initSettingsModal();
+  window.islandController = islandController; 
+  window.islandController.init(); 
+  settingsModalView.renderBase(); 
 
   if (!menuBtn || !sidebar) return;
 
