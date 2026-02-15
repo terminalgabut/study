@@ -1,10 +1,10 @@
-/* study/css/components/island.css
+/* study/css/components/island.css */
 
 /* ============================= */
-/*      DYNAMIC ISLAND CSS       */
+/* DYNAMIC ISLAND CSS       */
 /* ============================= */
 
-/* 1️⃣ Container Utama (Pop Effect) */
+/* 1️⃣ Container Utama (Efek Pop-up) */
 #dynamic-island-container {
   position: absolute;
   left: 50%;
@@ -12,119 +12,93 @@
   transform: translateX(-50%) scale(1);
   z-index: 9999;
   opacity: 1;
-  transition:
-    opacity 0.3s ease,
-    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Transisi saat muncul/hilang dari layar */
+  transition: 
+    opacity 0.3s ease, 
+    transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
 .island-hidden {
   opacity: 0 !important;
-  transform: translateX(-50%) scale(0) !important;
+  transform: translateX(-50%) scale(0.5) translateY(-20px) !important;
   pointer-events: none;
 }
 
-
-/* 2️⃣ Badan Island */
+/* 2️⃣ Badan Island - Default: Mode Bulat (Icon Only) */
 #dynamic-island {
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
+  background: #000; /* Hitam pekat khas Island */
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
+  height: 36px;
+  width: 40px; /* Ukuran awal bulat */
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   overflow: hidden;
   white-space: nowrap;
+  padding: 0 10px;
 
-  transition:
-    width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    border-radius 0.4s ease,
-    background 0.3s ease,
-    padding 0.4s ease;
+  /* Transisi Melebar yang Smooth */
+  transition: 
+    width 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28),
+    padding 0.4s ease,
+    background 0.3s ease;
 }
 
-
-/* 3️⃣ Mode Expanded (Melebar) */
+/* 3️⃣ Mode Expanded (Melebar Otomatis/Klik) */
 #dynamic-island.expanded {
   width: auto;
-  min-width: 160px;
-  max-width: 400px;
+  min-width: 150px; /* Minimal lebar saat ada teks */
+  max-width: 300px;
   padding: 0 16px;
-  border-radius: 14px;
+  border-radius: 18px;
 }
 
-
-/* 4️⃣ Mode Icon Only (Lingkaran) */
-#dynamic-island.icon-only {
-  width: 40px;
-  min-width: 40px;
-  max-width: 40px;
-  padding: 0;
-  border-radius: 20px;
-}
-
-
-/* 5️⃣ Konten Dalam Island */
+/* 4️⃣ Konten & Icon */
 .island-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: gap 0.3s ease, padding 0.3s ease;
 }
 
-
-/* Saat icon-only, rapikan isi */
-#dynamic-island.icon-only .island-content {
-  gap: 0;
-}
-
-
-/* 6️⃣ Text */
-#island-text {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.3s ease;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-
-/* Hilangkan text saat icon-only */
-#dynamic-island.expanded #island-text {
-  opacity: 1;
-  visibility: visible;
-  width: auto;
-  margin-left: 6px;
-}
-
-
-/* Pastikan text muncul saat expanded */
-#dynamic-island.expanded #island-text {
-  opacity: 1;
-  visibility: visible;
-  width: auto;
-  margin-left: 4px;
-}
-
-
-/* 7️⃣ Icon */
 .island-icon {
-  stroke: var(--accent);
+  stroke: var(--accent, #00d2ff);
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
 }
 
-
-/* Hidden icon */
-.island-icon.hidden {
-  display: none !important;
+/* 5️⃣ Logic Teks (Kunci Animasi) */
+#island-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  
+  /* Secara default (mode bulat) teks disembunyikan */
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-left: 0;
+  transition: 
+    width 0.4s ease, 
+    opacity 0.2s ease,
+    margin-left 0.4s ease;
 }
+
+/* Tampilkan teks hanya saat class .expanded aktif */
+#dynamic-island.expanded #island-text {
+  width: auto;
+  opacity: 1;
+  margin-left: 8px;
+  /* Delay sedikit agar lebar island jalan duluan baru teks muncul */
+  transition: 
+    width 0.4s ease, 
+    opacity 0.4s 0.1s ease,
+    margin-left 0.4s ease;
+}
+
+/* Utility */
+.hidden { display: none !important; }
