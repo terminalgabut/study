@@ -1,6 +1,8 @@
 // js/auth/auth.js
 import { supabase } from '../services/supabase.js';
 
+console.log("auth ✅");
+
 // Helper tetap sama, memastikan username jadi format email di database
 const formatEmail = (username) => `${username.toLowerCase().trim()}@study.gabut`;
 
