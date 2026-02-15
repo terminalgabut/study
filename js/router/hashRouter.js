@@ -133,6 +133,13 @@ window.__DEBUG__?.log('Route Guard', {
           initDailyTarget();
           initRekomendasi();
         break;
+
+        case 'audio':
+          window.__DEBUG__?.log('Route → audio');
+          content.innerHTML = audioView;
+          audioController.init(); 
+          audioController.bindEvents(); 
+        break;
           
         case 'materi':
           window.__DEBUG__?.log('Route → materi');
