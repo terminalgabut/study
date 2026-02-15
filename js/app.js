@@ -3,14 +3,12 @@
 // Module
 import { supabase } from './services/supabase.js'; 
 import { initHeader } from './ui/header.js'; 
-import { initSettingsModal } from './ui/settingsModal.js'; 
 import { initSidebar } from './ui/sidebar.js'; 
 import { audioController } from './controllers/audioController.js'; 
 import { initRouter } from './router/hashRouter.js'; 
 
 // Views
 import { headerView } from '../components/headerView.js'; 
-import { modalsettingsView } from '../components/modalsettingsView.js'; 
 import { sidebarView } from '../components/sidebarView.js'; 
 
 console.log("app.js ✅");
