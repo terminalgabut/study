@@ -63,6 +63,7 @@ function init() {
     // Inisialisasi Logika UI
   audioController.init();
   initHeader();
+  initProfileModal();
   initSidebar();
   
 
