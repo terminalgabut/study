@@ -1,8 +1,6 @@
 // root/js/app.js
-alert('TEST MODULE JALAN');
-// 1. Tes apakah file ini terbaca
-console.log("1. app.js berhasil dimuat");
-// Modul
+
+// Module
 import { audioController } from './controllers/audioController.js';
 import { supabase } from './services/supabase.js'; 
 import { initRouter } from './router/hashRouter.js';
@@ -19,6 +17,9 @@ import { babModalView } from '../components/babModalView.js';
 import { durasiModalView } from '../components/durasiModalView.js';
 import { ulangModalView } from '../components/ulangModalView.js';
 import { akurasiModalView } from '../components/akurasiModalView.js';
+
+alert('TEST MODULE JALAN');
+console.log("app.js ✅");
 
 // 2. GLOBAL DEBUG CONFIG
 const DEV = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
