@@ -1,7 +1,7 @@
 // root/js/auth/profileModal.js
 
-import { supabase } from '../services/supabase.js';
-import { handleLogout } from './auth.js';
+// import { supabase } from '../services/supabase.js';
+// import { handleLogout } from './auth.js';
 
 let isInitialized = false;
 
