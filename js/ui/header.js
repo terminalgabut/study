@@ -19,7 +19,8 @@ export async function initHeader() {
       initProfileModal();
     } catch (err) {
   console.error('Profile modal gagal dimuat:', err);
-    }
+  console.error('Stack:', err?.stack);
+}
   }
 
   //window.islandController = islandController;
