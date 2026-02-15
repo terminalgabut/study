@@ -1,7 +1,7 @@
 // root/app.js
 
 // root/js/app.js
-
+alert('TEST MODULE JALAN');
 // 1. Tes apakah file ini terbaca
 console.log("1. app.js berhasil dimuat");
 
