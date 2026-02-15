@@ -22,18 +22,9 @@
 </head>
 <body>
 
-  <div id="app"></div>
+  <div id="app"></div> 
 
-  <script>
-  fetch('js/app.js')
-    .then(response => {
-        if(response.ok) alert('File app.js DITEMUKAN di server!');
-        else alert('File app.js TIDAK ADA (404). Cek folder kamu!');
-    })
-    .catch(err => alert('Error koneksi: ' + err));
-</script>
-
-<script type="module" src="js/app.js?v=test1"></script> 
+  <script type="module" src="js/app.js?v=test1"></script> 
 
 </body>
 </html>
