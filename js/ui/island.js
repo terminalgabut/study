@@ -38,7 +38,7 @@ export const islandController = {
         };
 
         this.render();
-        console.log("Island Engine Initialized ✅");
+        console.log("Island ✅");
     },
 
     /* =========================
