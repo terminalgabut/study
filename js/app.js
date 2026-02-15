@@ -4,6 +4,7 @@
 import { supabase } from './services/supabase.js'; 
 import { initHeader } from './ui/header.js'; 
 import { initSidebar } from './ui/sidebar.js'; 
+import { audioController } from './controllers/audioController.js';
 import { initRouter } from './router/hashRouter.js';
 
 // Views
@@ -58,7 +59,7 @@ function init() {
   }); 
 
     // Inisialisasi Logika UI
-  // audioController.init();
+  audioController.init();
   initHeader();
   initSidebar();
 
