@@ -14,15 +14,19 @@ export async function fetchProfileData() {
   const avatarEl = document.getElementById('userAvatar');
   const profileBtn = document.getElementById('profileHeaderBtn');
 
+  console.log("ELEMS:", nameEl, userEl, avatarEl);
+
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    console.log("USER:", user);
 
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('id', user?.id)
       .single();
+
+    console.log("PROFILE:", profile, error);
 
     if (!profile) return;
 
