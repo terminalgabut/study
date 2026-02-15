@@ -10,7 +10,7 @@ export function initHeader() {
 
   // --- 1. INJEKSI HTML (Penting agar ID modal ada di DOM) ---
   if (headerRight && !document.getElementById('profileDropdown')) {
-    headerRight.insertAdjacentHTML('beforeend', profileModalView);
+    //headerRight.insertAdjacentHTML('beforeend', profileModalView);
  }
 
   // --- 2. INISIALISASI LOGIKA ---
