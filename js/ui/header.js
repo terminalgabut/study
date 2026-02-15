@@ -15,9 +15,9 @@ export function initHeader() {
     headerRight.insertAdjacentHTML('beforeend', profileModalView);
   }
 
-  window.islandController = islandController;
-  window.islandController.init();
-  settingsModalView.renderBase();
+//  window.islandController = islandController;
+//  window.islandController.init();
+//  settingsModalView.renderBase();
   initProfileModal();
 
   if (!menuBtn || !sidebar) return;
