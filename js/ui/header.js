@@ -1,3 +1,5 @@
+// root/js/ui/header.js
+
 export function initHeader() {
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.querySelector('.sidebar');
