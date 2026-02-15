@@ -4,7 +4,6 @@ import { supabase } from '../services/supabase.js';
 import { handleLogout } from './auth.js';
 
 let isInitialized = false;
-let authListenerAdded = false;
 
 /* ===============================
    FETCH PROFILE DATA
@@ -48,7 +47,7 @@ export async function fetchProfileData() {
    INIT MODAL (SPA SAFE)
 ================================= */
 export function initProfileModal() {
-  if (isInitialized) return; // ⛔ cegah double init
+  if (isInitialized) return;
   isInitialized = true;
 
   const profileBtn = document.getElementById('profileHeaderBtn');
@@ -60,13 +59,52 @@ export function initProfileModal() {
   const btnDelete = dropdown.querySelector('#btnDeleteAccount');
   const btnViewProfile = dropdown.querySelector('#btnViewProfile');
 
-  /* ===============================
-     TOGGLE DROPDOWN
-  ================================= */
+  // TOGGLE DROPDOWN
   profileBtn.addEventListener('click', (e) => {
     e.stopPropagation();
 
     const isOpen = dropdown.style.display === 'block';
     dropdown.style.display = isOpen ? 'none' : 'block';
 
-    if (!is
+    if (!isOpen) {
+      fetchProfileData();
+    }
+  });
+
+  // CLOSE WHEN CLICK OUTSIDE
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target) && e.target !== profileBtn) {
+      dropdown.style.display = 'none';
+    }
+  });
+
+  // VIEW PROFILE
+  if (btnViewProfile) {
+    btnViewProfile.addEventListener('click', () => {
+      dropdown.style.display = 'none';
+      window.location.hash = '#profile';
+    });
+  }
+
+  // LOGOUT
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      if (confirm('Keluar dari aplikasi?')) {
+        await handleLogout();
+      }
+    });
+  }
+
+  // DELETE ACCOUNT
+  if (btnDelete) {
+    btnDelete.addEventListener('click', async () => {
+      if (confirm('Hapus akun secara permanen?')) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from('profiles').delete().eq('id', user.id);
+          await handleLogout();
+        }
+      }
+    });
+  }
+}
