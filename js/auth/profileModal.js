@@ -14,29 +14,32 @@ export async function fetchProfileData() {
   const avatarEl = document.getElementById('userAvatar');
   const profileBtn = document.getElementById('profileHeaderBtn');
 
-  console.log("ELEMS:", nameEl, userEl, avatarEl);
-
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    console.log("USER:", user);
+    if (!user) return;
 
-    const { data: profile, error } = await supabase
-      .from('profiles')
+    // TANPA filter manual (sudah otomatis di supabase.js)
+    const { data: profile } = await supabase
+      .from('profile')
       .select('*')
-      .eq('id', user?.id)
       .single();
 
-    console.log("PROFILE:", profile, error);
+    const displayName =
+      profile?.full_name ||
+      user.user_metadata?.full_name ||
+      user.email?.split('@')[0] ||
+      'User';
 
-    if (!profile) return;
-
-    if (nameEl) nameEl.innerText = profile.full_name || 'User';
-    if (userEl) userEl.innerText = `@${profile.username}`;
+    const username =
+      profile?.username ||
+      displayName.toLowerCase().replace(/\s+/g, '');
 
     const imgUrl =
-      profile.avatar_url ||
-      `https://ui-avatars.com/api/?name=${profile.username}&background=random`;
+      profile?.avatar_url ||
+      `https://ui-avatars.com/api/?name=${username}&background=random`;
 
+    if (nameEl) nameEl.innerText = displayName;
+    if (userEl) userEl.innerText = `@${username}`;
     if (avatarEl) avatarEl.src = imgUrl;
 
     const headerImg = profileBtn?.querySelector('img');
@@ -105,7 +108,7 @@ export function initProfileModal() {
       if (confirm('Hapus akun secara permanen?')) {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          await supabase.from('profiles').delete().eq('id', user.id);
+          await supabase.from('profile').delete();
           await handleLogout();
         }
       }
