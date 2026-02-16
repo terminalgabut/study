@@ -13,7 +13,6 @@ import { sidebarView } from '../components/sidebarView.js';
 
 console.log("app.js ✅");
 
-// 2. GLOBAL DEBUG CONFIG
 const DEV = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 window.__DEBUG__ = {
   log: (...args) => DEV && console.log('[DEBUG]', ...args),
@@ -21,8 +20,6 @@ window.__DEBUG__ = {
   error: (...args) => console.error('[ERROR]', ...args),
 };
 
-// 3. MAIN INIT FUNCTION
-// function init() 
 async function init() {
    console.log("Init ✅");
    window.__DEBUG__.log('App init() dipanggil');
@@ -30,7 +27,6 @@ async function init() {
   const app = document.getElementById('app');
   if (!app) return;
 
-  // Render struktur dasar ke DOM
   app.innerHTML = `
     <div id="main-layout-wrapper">
       ${headerView}
@@ -41,7 +37,6 @@ async function init() {
     <main id="content"></main>
   `;
 
-  // Setup YouTube Hidden Player
   if (!document.getElementById('youtube-player')) {
     const ytDiv = document.createElement('div');
     ytDiv.id = 'youtube-player';
@@ -59,20 +54,14 @@ async function init() {
     checkLayout();
   }); 
 
-    // Inisialisasi Logika UI
   audioController.init();
   await initHeader();
   initSidebar();
-  
-
-// Jalankan Router
   initRouter();
   window.addEventListener('hashchange', checkLayout);
   checkLayout();
-  
 }
 
-// 4. LAYOUT MANAGER
 function checkLayout() {
   const hash = window.location.hash;
   const layoutWrapper = document.getElementById('main-layout-wrapper');
