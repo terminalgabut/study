@@ -1,7 +1,7 @@
 // root/js/ui/header.js
 
-//import { settingsModalView } from '../../components/settingsModalView.js';
-//import { islandController } from './island.js';
+import { settingsModalView } from '../../components/settingsModalView.js';
+import { islandController } from './island.js';
 
 export async function initHeader() {
   const headerRight = document.querySelector('.header-right');
@@ -23,9 +23,9 @@ export async function initHeader() {
 }
   }
 
-  //window.islandController = islandController;
-  //window.islandController.init();
-  //settingsModalView.renderBase();
+  window.islandController = islandController;
+  window.islandController.init();
+  settingsModalView.renderBase();
 
   if (!menuBtn || !sidebar) return;
 
