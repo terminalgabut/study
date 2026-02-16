@@ -5,22 +5,26 @@ export const materiView = `
     <p class="desc">Pilih materi untuk melihat daftar bab dan pembahasan</p>
   </div>
 
-  <div class="hero">
-    <!-- item materi -->
-    <a href="#/materi/bahasa" class="home-card">
+  <div class="home-card hero">
+    <a href="#/materi/bahasa" class="materi">
       <h3>Struktur dasar Bahasa Indonesia</h3>
       <p class="small">Pengenalan pondasi dasar Bahasa Indonesia.</p>
     </a>
+  </div>
 
+  <div class="home-card hero">
     <a href="#/materi/fallacy" class="home-card">
       <h3>Logika Fallacy</h3>
       <p class="small">Pengenalan konsep kesalahan berpikir.</p>
     </a>
+  </div>
 
+  <div class="home-card hero">
     <a href="#/materi/filsafat" class="home-card">
       <h3>Filsafat dalam praktik</h3>
       <p class="small">Pengenalan konsep cara berpikir Filsafat.</p>
     </a>
   </div>
+  
 </section>
 `;
