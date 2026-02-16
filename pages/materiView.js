@@ -5,14 +5,14 @@ export const materiView = `
     <p class="desc">Pilih materi untuk melihat daftar bab dan pembahasan</p>
   </div>
 
-  <div class="home">
+  <div class="hero">
     <!-- item materi -->
-    <a href="#/materi/bahasa" class="home-card hero">
+    <a href="#/materi/bahasa" class="home-card">
       <h3>Struktur dasar Bahasa Indonesia</h3>
       <p class="small">Pengenalan pondasi dasar Bahasa Indonesia.</p>
     </a>
 
-    <a href="/#materi/fallacy" class="home-card hero">
+    <a href="#/materi/fallacy" class="home-card">
       <h3>Logika Fallacy</h3>
       <p class="small">Pengenalan konsep kesalahan berpikir.</p>
     </a>
