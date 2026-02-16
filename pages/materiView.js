@@ -6,7 +6,7 @@ export const materiView = `
   </div>
 
   <div class="home-card hero">
-    <a href="#/materi/bahasa" class="materi">
+    <a href="#/materi/bahasa" class="home-card">
       <h3>Struktur dasar Bahasa Indonesia</h3>
       <p class="small">Pengenalan pondasi dasar Bahasa Indonesia.</p>
     </a>
