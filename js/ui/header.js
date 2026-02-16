@@ -23,7 +23,11 @@ export async function initHeader() {
   }
 
   window.islandController = islandController;
+
+if (!window.islandController.__initialized) {
   window.islandController.init();
+  window.islandController.__initialized = true;
+}
   settingsModalView.renderBase();
 
   if (!menuBtn || !sidebar) return;
