@@ -14,17 +14,18 @@ export async function handleRoute() {
   let hash = rawHash.replace(/^#\/?/, '');
   
   // 2. Auth Guard
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
+const isLoggedIn = !!user;
   const isAuthPage = hash === 'login' || hash === 'register';
 
-  if (!session && !isAuthPage) {
-    location.hash = '#login';
-    return;
-  }
-  if (session && isAuthPage) {
-    location.hash = '#home';
-    return;
-  }
+  if (!isLoggedIn && !isAuthPage) {
+  location.hash = '#login';
+  return;
+}
+if (isLoggedIn && isAuthPage) {
+  location.hash = '#home';
+  return;
+}
 
   // Transisi halus
   content.classList.add('fade-out');
