@@ -1,6 +1,7 @@
 // root/js/auth/profileModal.js
 
 import { supabase } from '../services/supabase.js';
+import { getProfile } from '../services/profileService.js';
 import { handleLogout } from './auth.js';
 
 let isInitialized = false;
@@ -18,11 +19,13 @@ export async function fetchProfileData() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // TANPA filter manual (sudah otomatis di supabase.js)
-    const { data: profile } = await supabase
-      .from('profile')
-      .select('*')
-      .single();
+    // Ambil profil dari service
+    let profile = null;
+    try {
+      profile = await getProfile(user.id);
+    } catch (e) {
+      console.warn("Profil belum ada, pakai fallback.");
+    }
 
     const displayName =
       profile?.full_name ||
