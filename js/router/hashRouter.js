@@ -74,7 +74,7 @@ if (isLoggedIn && isAuthPage) {
         case 'login':
           const [{ loginView }, { initLogin }] = await Promise.all([
             import('../../pages/loginView.js'),
-            import('../ui/auth/auth.js')
+            import('../auth/auth.js')
           ]);
           content.innerHTML = loginView;
           initLogin();
@@ -83,7 +83,7 @@ if (isLoggedIn && isAuthPage) {
         case 'register':
           const [{ registerView }, { initRegister }] = await Promise.all([
             import('../../pages/registerView.js'),
-            import('../ui/auth/auth.js')
+            import('../auth/auth.js')
           ]);
           content.innerHTML = registerView;
           initRegister();
