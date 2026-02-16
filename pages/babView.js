@@ -8,7 +8,7 @@ export const babView = `
     </p>
   </div>
 
-  <div id="babList" class="home-grid"> << menampilkan list catatan 
+  <div id="babList" class="home"> << menampilkan list catatan 
     <!-- daftar bab diisi dinamis -->
   </div>
 </section>
