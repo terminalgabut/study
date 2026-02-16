@@ -9,7 +9,6 @@ export async function initHeader() {
   const sidebar = document.querySelector('.sidebar');
   const overlay = document.querySelector('.sidebar-overlay');
 
-  // Lazy-load profile modal
   if (headerRight && !document.getElementById('profileDropdown')) {
     try {
       const { profileModalView } = await import('../../components/profileModalView.js');
