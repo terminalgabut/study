@@ -45,15 +45,13 @@ export function initRegister() {
       if (authData.user) {
         // Simpan username asli ke tabel profiles
         const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            { 
-              id: authData.user.id, 
-              username: username, 
-              full_name: username,
-              xp: 0 
-            }
-          ]);
+          .from('profile')
+.insert({
+  id: authData.user.id,
+  username: username,
+  full_name: username,
+  xp: 0
+});
 
         if (profileError) console.warn("Profil gagal dibuat:", profileError.message);
         
