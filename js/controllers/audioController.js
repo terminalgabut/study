@@ -31,13 +31,15 @@ export const audioController = {
                 'showinfo': 0
             },
             events: {
-                'onReady': () => console.log('Audio Engine Ready ✅'),
-                'onStateChange': (event) => {
-                    // YT.PlayerState.PLAYING = 1, PAUSED = 2
-                    isPlaying = (event.data === 1);
-                    this.updateUI();
-                }
-            }
+    'onReady': () => console.log('Audio Engine Ready ✅'),
+    'onStateChange': (event) => {
+        isPlaying = (
+            event.data === YT.PlayerState.PLAYING ||
+            event.data === YT.PlayerState.BUFFERING
+        );
+        this.updateUI();
+    }
+}
         });
     },
 
