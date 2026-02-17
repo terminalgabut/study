@@ -3,7 +3,7 @@
 import { supabase } from '../services/supabase.js';
 import { getProfile, updateProfile } from '../services/profileService.js';
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
-import { compressImage } from '../utils/imageCompressor.js';
+import { compressImage } from '../lib/imageCompressor.js';
 import { avatarModalView } from '../../components/avatarModalView.js';
 
 export const profileController = {
