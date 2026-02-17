@@ -6,14 +6,13 @@ import requests
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from api.index import app
 
-# Konfigurasi Logging
+from cognitive import router as cognitive_router
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 
 app = FastAPI()
 
-from app.routes.cognitive import router as cognitive_router
 app.include_router(cognitive_router)
 
 app.add_middleware(
@@ -24,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- CONFIGURATION ---
 BASE_SYSTEM_PROMPT = "Kamu adalah AI Mentalist profesional yang ahli dalam menyusun soal test iQ kritis gunakan 5 dimension di aturan wajib. Kamu HARUS mematuhi struktur JSON yang diminta."
 
 def call_openrouter_api(messages: list):
@@ -41,15 +39,13 @@ def call_openrouter_api(messages: list):
             "X-Title": "Study AI"
         },
         json={
-            "model": "openai/gpt-oss-120b:nitro", 
+            "model": "openai/gpt-oss-120b:nitro",
             "messages": messages,
             "temperature": 0.2,
             "top_p": 0.8,
-            "reasoning": {
-            "effort": "high"
-            }
+            "reasoning": {"effort": "high"}
         },
-        timeout=60# Disesuaikan sedikit lebih lama karena teks penjelasan menambah beban kerja
+        timeout=60
     )
     response.raise_for_status()
     data = response.json()
@@ -67,10 +63,7 @@ def validate_quiz_structure(data: dict):
     dimension_count = {}
 
     for q in questions:
-        required_fields = [
-            "dimension", "question", "options",
-            "correct_answer", "explanation"
-        ]
+        required_fields = ["dimension", "question", "options", "correct_answer", "explanation"]
 
         for field in required_fields:
             if field not in q:
@@ -85,7 +78,6 @@ def validate_quiz_structure(data: dict):
         dim = q["dimension"]
         dimension_count[dim] = dimension_count.get(dim, 0) + 1
 
-    # Harus 2 per dimension
     for dim, count in dimension_count.items():
         if count != 2:
             raise ValueError(f"Distribusi dimension salah: {dim} = {count}")
@@ -186,7 +178,4 @@ VALIDATION STEP (Internal, jangan ditampilkan):
 
     except Exception as e:
         logging.error(f"VALIDATION ERROR: {str(e)}")
-        return JSONResponse(
-            {"error": f"AI JSON invalid: {str(e)}"},
-            status_code=500
-        )
+        return JSONResponse({"error": f"AI JSON invalid: {str(e)}"}, status_code=500)
