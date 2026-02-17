@@ -2,6 +2,7 @@
 
 // Module
 import { supabase } from './services/supabase.js'; 
+import { getProfile } from './services/profileService.js'; 
 import { initHeader } from './ui/header.js'; 
 import { initSidebar } from './ui/sidebar.js'; 
 import { audioController } from './controllers/audioController.js'; 
@@ -55,7 +56,8 @@ async function init() {
   }); 
 
   audioController.init();
-  await initHeader();
+  await initHeader(); 
+  await greetUserOnLoad(); 
   initSidebar();
   initRouter();
   window.addEventListener('hashchange', checkLayout);
@@ -76,6 +78,35 @@ function checkLayout() {
       layoutWrapper.style.display = 'block';
       contentArea.style.cssText = ''; 
     }
+  }
+}
+
+async function greetUserOnLoad() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const profile = await getProfile(user.id);
+
+    const name =
+      profile?.full_name ||
+      profile?.username ||
+      user.email?.split('@')[0] ||
+      'User';
+
+    window.islandController?.setStatus('greeting', {
+      text: `Halo, ${name} 👋`,
+      icon: 'robot',
+      priority: -10
+    });
+
+    // hilangkan setelah beberapa detik
+    setTimeout(() => {
+      window.islandController?.removeStatus('greeting');
+    }, 6000);
+
+  } catch (err) {
+    console.warn('Greeting gagal:', err);
   }
 }
 
