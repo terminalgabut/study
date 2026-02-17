@@ -5,7 +5,6 @@ import { getProfile, updateProfile } from '../services/profileService.js';
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
-import { renderProfileRadar } from '../lib/chartsProfile.js';
 
 export const profileController = {
 
@@ -109,20 +108,29 @@ export const profileController = {
       `
     };
 
-    const render = (tab) => {
-      content.innerHTML = views[tab] || views.homeProfile;
-    };
+    const render = async (tab) => {
+    content.innerHTML = views[tab] || views.homeProfile;
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        render(tab.dataset.tab);
-      });
+    // 🔥 TARUH DI SINI
+    if (tab === 'statistikProfile') {
+      const { getProfileRadarStats } = await import('../services/profileService.js');
+      const { renderProfileRadar } = await import('../lib/chartsProfile.js');
+
+      const stats = await getProfileRadarStats(this.user.id);
+      renderProfileRadar('profileRadar', stats);
+    }
+  };
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      render(tab.dataset.tab);
     });
+  });
 
-    render('homeProfile');
-  },
+  render('homeProfile');
+},
 
   /* =========================
    * AVATAR MODAL HANDLER
