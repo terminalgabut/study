@@ -19,9 +19,27 @@ export const profileView = `
     <!-- Info Profil -->
     <div class="home-card">
       <h3>🪪 Informasi Akun</h3>
-      <p>Email: <strong id="profileEmail">Memuat...</strong></p>
-      <p>Username: <strong id="profileUsername">Memuat...</strong></p>
-      <p>Full Name: <strong id="profileFullName">Memuat...</strong></p>
+
+      <div class="profile-info">
+        <!-- Foto Profil -->
+        <div class="profile-avatar">
+          <img 
+            id="profileAvatar"
+            src="https://via.placeholder.com/120"
+            alt="Foto Profil"
+          />
+          <button class="secondary-btn small" id="changeAvatarBtn">
+            Ganti Foto
+          </button>
+        </div>
+
+        <!-- Detail Akun -->
+        <div class="profile-details">
+          <p>Email: <strong id="profileEmail">Memuat...</strong></p>
+          <p>Username: <strong id="profileUsername">Memuat...</strong></p>
+          <p>Full Name: <strong id="profileFullName">Memuat...</strong></p>
+        </div>
+      </div>
     </div>
 
     <!-- Bio -->
