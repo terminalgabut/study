@@ -174,6 +174,7 @@ if (isLoggedIn && isAuthPage) {
          content.innerHTML = profileView;
          profileController.init();
          break;
+       }
 
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
