@@ -5,6 +5,8 @@ const log = (...args) =>
 
 export const avatarModalView = {
   _isListenerAttached: false,
+  _onUpload: null,
+  _onRemove: null,
 
   renderBase() {
     if (document.getElementById("avatar-modal-overlay")) return;
@@ -19,11 +21,20 @@ export const avatarModalView = {
 
           <div class="modal-stat-scroll-area">
             <div class="avatar-modal-body">
+
               <div class="avatar-preview">
-                <div class="avatar-placeholder">
+                <div class="avatar-placeholder" id="avatarPreview">
                   👤
                 </div>
               </div>
+
+              <!-- hidden file input -->
+              <input
+                type="file"
+                id="avatarFileInput"
+                accept="image/*"
+                hidden
+              />
 
               <button class="primary-btn" id="uploadAvatarBtn">
                 Upload Foto
@@ -32,6 +43,7 @@ export const avatarModalView = {
               <button class="secondary-btn" id="removeAvatarBtn">
                 Hapus Foto
               </button>
+
             </div>
           </div>
         </div>
@@ -42,9 +54,19 @@ export const avatarModalView = {
     this.setupEventListeners();
   },
 
-  show() {
+  show(payload = {}) {
     log("Membuka avatar modal...");
     this.renderBase();
+
+    // simpan callback dari controller
+    this._onUpload = payload.onUpload || null;
+    this._onRemove = payload.onRemove || null;
+
+    // preview avatar lama (kalau ada)
+    if (payload.profile?.avatar_url) {
+      const preview = document.getElementById("avatarPreview");
+      preview.innerHTML = `<img src="${payload.profile.avatar_url}" />`;
+    }
 
     const overlay = document.getElementById("avatar-modal-overlay");
     overlay.classList.add("active");
@@ -65,11 +87,40 @@ export const avatarModalView = {
     const overlay = document.getElementById("avatar-modal-overlay");
     const closeBtn = document.getElementById("close-avatar-modal");
 
+    const uploadBtn = document.getElementById("uploadAvatarBtn");
+    const removeBtn = document.getElementById("removeAvatarBtn");
+    const fileInput = document.getElementById("avatarFileInput");
+    const preview = document.getElementById("avatarPreview");
+
     const hide = () => this.hide();
 
+    // close
     closeBtn.onclick = hide;
     overlay.onclick = (e) => {
       if (e.target === overlay) hide();
+    };
+
+    // klik upload → buka file picker
+    uploadBtn.onclick = () => {
+      fileInput.click();
+    };
+
+    // file dipilih
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      // preview langsung
+      const url = URL.createObjectURL(file);
+      preview.innerHTML = `<img src="${url}" />`;
+
+      // kirim ke controller
+      this._onUpload?.(file);
+    };
+
+    // hapus avatar
+    removeBtn.onclick = () => {
+      this._onRemove?.();
     };
 
     this._isListenerAttached = true;
