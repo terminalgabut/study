@@ -108,7 +108,6 @@ async def quiz_generate(request: Request):
             return JSONResponse({"error": "Materi tidak boleh kosong"}, status_code=400)
 
         logging.info(f"Generating quiz with explanations for: {category}")
-        category = body.get("category", "Umum")
 
         prompt_quiz = f"""
 Buatkan 10 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks materi berikut:
@@ -162,36 +161,31 @@ VALIDATION STEP (Internal, jangan ditampilkan):
             {"role": "user", "content": prompt_quiz}
         ]
 
-        # Panggil AI
         ai_reply = call_openrouter_api(messages).strip()
 
-        # Pembersihan JSON
-try:
-    cleaned_content = re.sub(r"```json|```", "", ai_reply, flags=re.IGNORECASE).strip()
-    parsed = json.loads(cleaned_content)
+        cleaned_content = re.sub(r"```json|```", "", ai_reply, flags=re.IGNORECASE).strip()
+        parsed = json.loads(cleaned_content)
 
-    # VALIDATION GUARD
-    validate_quiz_structure(parsed)
+        validate_quiz_structure(parsed)
 
-    questions = parsed["questions"]
+        questions = parsed["questions"]
 
-    for i, q in enumerate(questions, start=1):
-        q["id"] = f"q{i}"
-        q["category"] = category
+        for i, q in enumerate(questions, start=1):
+            q["id"] = f"q{i}"
+            q["category"] = category
 
-    return {
-        "quiz": {
-            "slug": slug,
-            "order": order,
-            "questions": questions
-        },
-        "status": "success"
-    }
+        return {
+            "quiz": {
+                "slug": slug,
+                "order": order,
+                "questions": questions
+            },
+            "status": "success"
+        }
 
-except Exception as e:
-    logging.error(f"VALIDATION ERROR: {str(e)}")
-    logging.error(f"RAW AI RESPONSE: {ai_reply}")
-    return JSONResponse(
-        {"error": f"AI JSON invalid: {str(e)}"},
-        status_code=500
-    )
+    except Exception as e:
+        logging.error(f"VALIDATION ERROR: {str(e)}")
+        return JSONResponse(
+            {"error": f"AI JSON invalid: {str(e)}"},
+            status_code=500
+        )
