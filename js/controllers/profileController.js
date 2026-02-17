@@ -4,7 +4,8 @@ import { supabase } from '../services/supabase.js';
 import { getProfile, updateProfile } from '../services/profileService.js';
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
-import { avatarModalView } from '../../components/avatarModalView.js';
+import { avatarModalView } from '../../components/avatarModalView.js'; 
+import { renderProfileRadar } from '../lib/chartsProfile.js';
 
 export const profileController = {
 
@@ -95,6 +96,7 @@ export const profileController = {
         <div class="home-card">
           <h3>Statistik</h3>
           <p>Statistik progres belajar kamu.</p>
+          <canvas id="profileRadar"></canvas>
         </div>
       `,
       settingProfile: `
