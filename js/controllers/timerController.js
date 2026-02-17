@@ -7,19 +7,31 @@ export const timerController = {
     isRunning: false,
 
     init() {
-        this.cacheDom();
-        this.resetState();
-        this.bindEvents();
-    },
+    this.cacheDom();
+
+    if (this.timeLeft == null) {
+        const mins = this.getInputMinutes();
+        this.timeLeft = mins * 60;
+    }
+
+    if (this.isRunning == null) {
+        this.isRunning = false;
+    }
+
+    this.render(this.timeLeft);
+    this.toggleButtons(this.isRunning);
+
+    this.bindEvents();
+},
 
     cacheDom() {
-        this.startBtn = document.getElementById('startTimerBtn');
-        this.stopBtn = document.getElementById('stopTimerBtn');
-        this.resetBtn = document.getElementById('resetTimerBtn');
-        this.input = document.getElementById('timerInput');
-        this.minEl = document.getElementById('minutes');
-        this.secEl = document.getElementById('seconds');
-    },
+    this.startBtn = document.getElementById('startTimerBtn');
+    this.stopBtn = document.getElementById('stopTimerBtn');
+    this.resetBtn = document.getElementById('resetTimerBtn');
+    this.input = document.getElementById('timerInput');
+    this.minEl = document.getElementById('minutes');
+    this.secEl = document.getElementById('seconds');
+},
 
     resetState() {
         this.clearTimer();
