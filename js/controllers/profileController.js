@@ -2,7 +2,7 @@
 
 import { supabase } from '../services/supabase.js';
 import { getProfile, updateProfile } from '../services/profileService.js'; 
-import { avatarModalView } from "../../components/avatarModalView.js"; 
+import { avatarModalView } from '../../components/avatarModalView.js';
 
 export const profileController = {
 
@@ -19,6 +19,7 @@ export const profileController = {
     this.bioEl = document.getElementById('profileBio');
     this.xpEl = document.getElementById('profileXP');
 
+    this.avatarEl = document.getElementById('profileAvatar');
     this.editBtn = document.getElementById('editProfileBtn');
   },
 
@@ -38,16 +39,30 @@ export const profileController = {
     if (this.fullNameEl) this.fullNameEl.textContent = profile.full_name || '-';
     if (this.bioEl) this.bioEl.textContent = profile.bio || 'Belum ada bio.';
     if (this.xpEl) this.xpEl.textContent = profile.xp ?? 0;
+
+    // avatar (kalau ada)
+    if (this.avatarEl && profile.avatar_url) {
+      this.avatarEl.src = profile.avatar_url;
+    }
   },
 
   bindEvents() {
+    // edit profile
     this.editBtn?.addEventListener('click', () => {
       this.openEditModal();
+    });
+
+    // avatar click → modal
+    this.avatarEl?.addEventListener('click', () => {
+      avatarModalView.show({
+        user: this.user,
+        profile: this.profile
+      });
     });
   },
 
   openEditModal() {
-    // placeholder, nanti bisa jadi komponen modal terpisah
+    // placeholder
     alert('Modal edit profil akan dibuat di sini');
   }
 };
