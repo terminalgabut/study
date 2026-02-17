@@ -12,6 +12,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(me
 
 app = FastAPI()
 
+from app.routes.cognitive import router as cognitive_router
+app.include_router(cognitive_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
