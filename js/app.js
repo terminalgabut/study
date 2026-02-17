@@ -100,7 +100,7 @@ async function greetUserOnLoad() {
       'User';
 
     window.islandController?.setStatus('greeting', {
-      text: `👋 Halo, Selamat datang kembali, ${name} , Sudah siap untuk tantangan hari ini?`,
+      text: `Wellcome ${name} `,
       icon: 'robot',
       priority: -10
     });
