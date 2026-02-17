@@ -1,7 +1,7 @@
 // services/quizClient.js
 
 export async function generateQuiz({ materi, slug, category }) { // Ubah 'content' jadi 'materi'
-  const QUIZ_API_URL = 'https://study-nine-black.vercel.app/quiz';
+  const QUIZ_API_URL = 'https://studygabut.vercel.app/quiz';
   
   const res = await fetch(QUIZ_API_URL, {
     method: 'POST',
