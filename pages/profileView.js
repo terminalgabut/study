@@ -1,62 +1,46 @@
+// root/pages/profileView.js
+
 export const profileView = `
 <section class="home">
+
+  <!-- Hero -->
   <div class="home-card hero">
     <h1>👤 Profil Saya</h1>
     <p class="subtitle">
       Kelola informasi akun dan progres belajarmu
     </p>
-    <p class="desc">
-      Update profil agar pengalaman belajar terasa lebih personal.
-    </p>
   </div>
 
-  <!-- Header Profil -->
-<div class="home-card">
-  <div class="profile-info">
-    
-    <div class="profile-avatar">
-      <img 
-        src="/assets/default-avatar.png" 
-        alt="Foto Profil" 
-        id="profileAvatar"
-      />
-    </div>
-
-    <div class="profile-details">
-      <p><strong id="profileFullName">Unknown</strong></p>
-      <p>uid: <strong id="profileUid">Memuat...</strong></p>
-    </div>
-
-  </div>
-</div>
-
-  <div class="home-grid">
-
-    <!-- Bio -->
-    <div class="home-card">
-      <h3>📝 Bio</h3>
-      <p id="profileBio" class="desc">
-        Memuat bio...
-      </p>
-    </div>
-
-    <!-- XP -->
-    <div class="home-card">
-      <h3>⭐ XP & Progres</h3>
-      <p>Total XP: <strong id="profileXP">0</strong></p>
-      <div class="xp-bar">
-        <div class="xp-fill" id="xpFill" style="width:0%"></div>
+  <!-- Header Profil (TETAP) -->
+  <div class="home-card">
+    <div class="profile-info">
+      
+      <div class="profile-avatar">
+        <img 
+          src="/assets/default-avatar.png" 
+          alt="Foto Profil" 
+          id="profileAvatar"
+        />
       </div>
-    </div>
 
-    <!-- Edit Button -->
-    <div class="home-card">
-      <h3>⚙️ Pengaturan</h3>
-      <button class="primary-btn" id="editProfileBtn">
-        Edit Profil
-      </button>
-    </div>
+      <div class="profile-details">
+        <p><strong id="profileFullName">Unknown</strong></p>
+        <p>uid: <strong id="profileUid">Memuat...</strong></p>
+      </div>
 
+    </div>
   </div>
+
+  <!-- NAVIGASI INTERNAL PROFILE -->
+  <div class="home-card profile-nav">
+    <button class="profile-tab active" data-tab="home">Home</button>
+    <button class="profile-tab" data-tab="materi">Materiku</button>
+    <button class="profile-tab" data-tab="statistik">Statistik</button>
+    <button class="profile-tab" data-tab="setting">Setting</button>
+  </div>
+
+  <!-- AREA DINAMIS -->
+  <div id="profileDynamicContent"></div>
+
 </section>
 `;
