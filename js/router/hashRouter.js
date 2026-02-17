@@ -166,9 +166,10 @@ if (isLoggedIn && isAuthPage) {
           performaController.init();
           break;
 
-        case 'profile':
-          content.innerHTML = `<div class="home-card"><h2>Profil</h2><p>Selamat datang di profil!</p></div>`;
-          break;
+       case 'profile':
+         const { profileView } = await import('../../pages/profileView.js');
+         content.innerHTML = profileView;
+         break;
 
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
