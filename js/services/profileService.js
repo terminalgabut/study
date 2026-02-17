@@ -73,11 +73,11 @@ export async function getProfileRadarStats(userId) {
 
   // 5 dimensi utama (default kosong)
   const grouped = {
-    pemahaman_bacaan: [],
-    kosakata_semantik: [],
-    penalaran_verbal: [],
-    analogi: [],
-    memori_kerja: []
+    reading: [],
+    vocabulary: [],
+    reasoning: [],
+    analogy: [],
+    memory: []
   };
 
   data.forEach(row => {
