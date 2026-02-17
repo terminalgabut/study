@@ -60,6 +60,11 @@ async function init() {
   await greetUserOnLoad(); 
   initSidebar();
   initRouter();
+  
+setTimeout(() => {
+  greetUserOnLoad();
+}, 100);
+
   window.addEventListener('hashchange', checkLayout);
   checkLayout();
 }
@@ -95,7 +100,7 @@ async function greetUserOnLoad() {
       'User';
 
     window.islandController?.setStatus('greeting', {
-      text: `Halo, ${name} 👋`,
+      text: `👋 Halo, Selamat datang kembali, ${name} , Sudah siap untuk tantangan hari ini?`,
       icon: 'robot',
       priority: -10
     });
