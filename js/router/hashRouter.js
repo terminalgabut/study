@@ -166,9 +166,13 @@ if (isLoggedIn && isAuthPage) {
           performaController.init();
           break;
 
-       case 'profile':
-         const { profileView } = await import('../../pages/profileView.js');
+       case 'profile': {
+         const [{ profileView }, { profileController }] = await Promise.all([
+           import('../../pages/profileView.js'),
+           import('../controllers/profileController.js')
+         ]);
          content.innerHTML = profileView;
+         profileController.init();
          break;
 
         default:
