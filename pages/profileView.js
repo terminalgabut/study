@@ -1,46 +1,33 @@
-// root/pages/profileView.js
-
 export const profileView = `
 <section class="home">
   <div class="home-card hero">
     <h1>👤 Profil Saya</h1>
-
     <p class="subtitle">
       Kelola informasi akun dan progres belajarmu
     </p>
-
     <p class="desc">
       Update profil agar pengalaman belajar terasa lebih personal.
     </p>
   </div>
 
-  <div class="home-grid">
-
-    <!-- Info Profil -->
-    <div class="home-card">
-      <h3>🪪 Informasi Akun</h3>
-
-      <div class="profile-info">
-        <!-- Foto Profil -->
-        <div class="profile-avatar">
-          <img 
-            id="profileAvatar"
-            src="https://via.placeholder.com/120"
-            alt="Foto Profil"
-          />
-          <button class="secondary-btn small" id="changeAvatarBtn">
-            Ganti Foto
-          </button>
-        </div>
-
-        <!-- Detail Akun -->
-        <div class="profile-details">
-          <p>Email: <strong id="profileEmail">Memuat...</strong></p>
-          <p>Username: <strong id="profileUsername">Memuat...</strong></p>
-          <p>Full Name: <strong id="profileFullName">Memuat...</strong></p>
-        </div>
-      </div>
+  <!-- Header Profil -->
+  <div class="home-card profile-header">
+    <div class="profile-avatar">
+      <img 
+        src="/assets/default-avatar.png" 
+        alt="Foto Profil" 
+        id="profileAvatar"
+      />
     </div>
+
+    <div class="profile-info">
+      <p>Email: <strong id="profileEmail">Memuat...</strong></p>
+      <p>Username: <strong id="profileUsername">Memuat...</strong></p>
+      <p>Full Name: <strong id="profileFullName">Memuat...</strong></p>
+    </div>
+  </div>
+
+  <div class="home-grid">
 
     <!-- Bio -->
     <div class="home-card">
