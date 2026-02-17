@@ -59,15 +59,39 @@ class IslandView {
     }
 
     getIcon(type) {
-        const icons = {
-            music: '🎵',
-            timer: '⏱',
-            robot: '🤖',
-            fire: '🔥',
-            bell: '🔔'
-        };
-        return icons[type] || '';
-    }
+    const icons = {
+        music: `
+                <svg class="island-icon" xmlns="http://www.w3.org/2000/svg"
+                width="18" height="18" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+                </svg>`,
+
+        timer: `
+               <svg class="island-icon" xmlns="http://www.w3.org/2000/svg"
+               width="18" height="18" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <circle cx="12" cy="12" r="10"></circle>
+               <polyline points="12 6 12 12 16 14"></polyline>
+               </svg>`,
+
+        robot: `
+               <svg class="island-icon" xmlns="http://www.w3.org/2000/svg"
+               width="18" height="18" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+               <circle cx="12" cy="5" r="2"></circle>
+               <path d="M12 7v4"></path>
+               </svg>`
+    };
+
+    return icons[type] || '';
+}
 
     show() {
         if (!this.container) return;
