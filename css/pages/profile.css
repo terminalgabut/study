@@ -45,3 +45,23 @@
   padding: 6px 10px;
   font-size: 0.8rem;
 }
+
+.profile-nav {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.profile-tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #f3f3f3;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.profile-tab.active {
+  background: #111;
+  color: #fff;
+}
