@@ -54,14 +54,17 @@ class IslandView {
     render(status) {
     if (!status) return;
 
-    if (this.textEl) {
+    if (this.textEl && this.textEl.textContent !== status.text) {
         this.textEl.textContent = status.text;
     }
 
     if (this.iconEl) {
-        this.iconEl.innerHTML = this.getIcon(status.icon);
+        const newIcon = this.getIcon(status.icon);
+        if (this.iconEl.innerHTML !== newIcon) {
+            this.iconEl.innerHTML = newIcon;
+        }
     }
- }
+    }
 
     getIcon(type) {
     const icons = {
