@@ -34,9 +34,9 @@ export const profileView = `
   <!-- NAVIGASI INTERNAL PROFILE -->
   <div class="home-card profile-nav">
     <button class="profile-tab active" data-tab="homeProfile">Home</button>
-    <button class="profile-tab" data-tab="materi">Materiku</button>
-    <button class="profile-tab" data-tab="statistik">Statistik</button>
-    <button class="profile-tab" data-tab="setting">Setting</button>
+    <button class="profile-tab" data-tab="materiProfile">Materiku</button>
+    <button class="profile-tab" data-tab="statistikProfile">Statistik</button>
+    <button class="profile-tab" data-tab="settingProfile">Setting</button>
   </div>
 
   <!-- AREA DINAMIS -->
