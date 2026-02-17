@@ -23,8 +23,7 @@ export const profileView = `
     </div>
 
     <div class="profile-details">
-      <p>Email: <strong id="profileEmail">Memuat...</strong></p>
-      <p>Username: <strong id="profileUsername">Memuat...</strong></p>
+      <p><strong id="profileFullName">Unknown</strong></p>
       <p>Full Name: <strong id="profileFullName">Memuat...</strong></p>
     </div>
 
