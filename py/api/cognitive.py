@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from sqlalchemy import text
-from app.database import SessionLocal
-from app.services.cognitive_service import compute_cognitive_profile
+from api.database import SessionLocal
+from api.cognitive_service import compute_cognitive_profile
 
 router = APIRouter(prefix="/cognitive", tags=["Cognitive"])
 
