@@ -1,4 +1,4 @@
-// study/js/controllers/timerController.js
+// root/js/controllers/timerController.js
 
 export const timerController = {
 
@@ -10,53 +10,40 @@ export const timerController = {
 
         this.interval = null;
         this.timeLeft = 0;
+        this.isRunning = false;
 
-        // initial render
-        const mins = this.input ? (this.input.value || 25) : 25;
-        this.render(mins * 60);
+        const mins = this.getInputMinutes();
+        this.timeLeft = mins * 60;
+
+        this.render(this.timeLeft);
         this.toggleButtons(false);
 
-        /* =========================
-           BUTTON EVENTS
-        ========================== */
-
-        if (this.startBtn) {
-            this.startBtn.onclick = () => {
-                const mins = this.input ? (this.input.value || 25) : 25;
-                this.start(mins);
-            };
-        }
-
-        if (this.stopBtn) {
-            this.stopBtn.onclick = () => this.stop();
-        }
-
-        if (this.resetBtn) {
-            this.resetBtn.onclick = () => this.reset();
-        }
+        this.bindEvents();
     },
 
-    /* =========================
-       TIMER ENGINE
-    ========================== */
+    bindEvents() {
+        this.startBtn?.addEventListener('click', () => this.start());
+        this.stopBtn?.addEventListener('click', () => this.stop());
+        this.resetBtn?.addEventListener('click', () => this.reset());
+    },
 
-    start(minutes) {
-        if (this.interval) return; 
+    getInputMinutes() {
+        const val = parseInt(this.input?.value);
+        return isNaN(val) || val <= 0 ? 25 : val;
+    },
 
-        this.timeLeft = minutes * 60;
+    start() {
+        if (this.isRunning) return;
 
+        // kalau belum pernah start / sudah reset
+        if (this.timeLeft <= 0) {
+            this.timeLeft = this.getInputMinutes() * 60;
+        }
+
+        this.isRunning = true;
         this.toggleButtons(true);
-        this.render(this.timeLeft);
 
-        // Kirim ke island secara global (Gunakan ?. agar aman)
-        window.islandController?.setStatus('timer', {
-            text: this.formatTime(this.timeLeft),
-            icon: 'timer',
-            priority: 10, // Prioritas tinggi agar mengalahkan status musik
-            persistent: true
-        });
-
-        window.islandController?.expand(true);
+        this.updateIsland();
 
         this.interval = setInterval(() => {
             this.timeLeft--;
@@ -67,14 +54,7 @@ export const timerController = {
             }
 
             this.render(this.timeLeft);
-
-            // Update Island setiap detik
-            window.islandController?.setStatus('timer', {
-                text: this.formatTime(this.timeLeft),
-                icon: 'timer',
-                priority: 10,
-                persistent: true
-            });
+            this.updateIsland();
 
         }, 1000);
     },
@@ -82,23 +62,23 @@ export const timerController = {
     stop() {
         clearInterval(this.interval);
         this.interval = null;
+        this.isRunning = false;
 
-        // Hapus status timer dari island saat stop
         window.islandController?.removeStatus('timer');
         this.toggleButtons(false);
     },
 
     reset() {
         this.stop();
-        const mins = this.input ? (this.input.value || 25) : 25;
-        this.render(mins * 60);
+        this.timeLeft = this.getInputMinutes() * 60;
+        this.render(this.timeLeft);
     },
 
     finish() {
         clearInterval(this.interval);
         this.interval = null;
+        this.isRunning = false;
 
-        // Notifikasi Selesai di Island
         window.islandController?.setStatus('timer', {
             text: "Selesai ☕",
             icon: 'timer',
@@ -108,7 +88,6 @@ export const timerController = {
 
         window.islandController?.expand(true);
 
-        // Hapus otomatis setelah 4 detik
         setTimeout(() => {
             window.islandController?.removeStatus('timer');
         }, 4000);
@@ -117,9 +96,17 @@ export const timerController = {
         this.render(0);
     },
 
-    /* =========================
-       UI RENDER
-    ========================== */
+    updateIsland() {
+        window.islandController?.setStatus('timer', {
+            text: this.formatTime(this.timeLeft),
+            icon: 'timer',
+            priority: 10,
+            persistent: true
+        });
+
+        window.islandController?.expand(true);
+        this.render(this.timeLeft);
+    },
 
     render(seconds) {
         const m = Math.floor(seconds / 60);
@@ -135,10 +122,8 @@ export const timerController = {
     },
 
     toggleButtons(isRunning) {
-        if (this.startBtn && this.stopBtn) {
-            this.startBtn.classList.toggle('hidden', isRunning);
-            this.stopBtn.classList.toggle('hidden', !isRunning);
-        }
+        this.startBtn?.classList.toggle('hidden', isRunning);
+        this.stopBtn?.classList.toggle('hidden', !isRunning);
     },
 
     formatTime(seconds) {
