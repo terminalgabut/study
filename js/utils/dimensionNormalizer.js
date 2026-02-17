@@ -11,7 +11,7 @@ export function normalizeDimension(input) {
     text.includes('pemahaman bacaan') ||
     text.includes('reading comprehension')
   ) {
-    return 'pemahaman_bacaan';
+    return 'reading';
   }
 
   // ===== KOSAKATA & SEMANTIK =====
@@ -21,7 +21,7 @@ export function normalizeDimension(input) {
     text.includes('vocabulary') ||
     text.includes('semantics')
   ) {
-    return 'kosakata_semantik';
+    return 'vocabulary';
   }
 
   // ===== PENALARAN VERBAL =====
@@ -30,7 +30,7 @@ export function normalizeDimension(input) {
     text.includes('penalaran verbal') ||
     text.includes('verbal reasoning')
   ) {
-    return 'penalaran_verbal';
+    return 'reasoning';
   }
 
   // ===== ANALOGI =====
@@ -38,7 +38,7 @@ export function normalizeDimension(input) {
     text.includes('analogi') ||
     text.includes('analogy')
   ) {
-    return 'analogi';
+    return 'analogy';
   }
 
   // ===== MEMORI KERJA =====
@@ -47,7 +47,7 @@ export function normalizeDimension(input) {
     text.includes('memori kerja') ||
     text.includes('working memory')
   ) {
-    return 'memori_kerja';
+    return 'memory';
   }
 
   return null;
