@@ -46,22 +46,44 @@
   font-size: 0.8rem;
 }
 
+/* =========================
+   PROFILE INTERNAL NAV
+========================= */
+
 .profile-nav {
   display: flex;
-  gap: 10px;
-  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
 }
 
 .profile-tab {
   flex: 1;
-  padding: 10px;
-  border: none;
-  background: #f3f3f3;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.profile-tab:hover {
+  background: var(--accent-soft);
+  color: var(--text);
 }
 
 .profile-tab.active {
-  background: #111;
-  color: #fff;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Area dinamis */
+#profileDynamicContent {
+  margin-top: var(--space-md);
+  display: grid;
+  gap: var(--space-md);
 }
