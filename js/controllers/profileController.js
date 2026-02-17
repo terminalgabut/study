@@ -12,6 +12,9 @@ export const profileController = {
     this.cacheDom();
     await this.loadProfile();
     this.bindEvents();
+
+    // ✅ TAMBAHAN: init tab internal profile
+    this.initProfileTabs();
   },
 
   /* =========================
@@ -42,14 +45,12 @@ export const profileController = {
 
     this.profile = profile;
 
-    // render data
     this.emailEl && (this.emailEl.textContent = user.email);
     this.usernameEl && (this.usernameEl.textContent = profile.username || '-');
     this.fullNameEl && (this.fullNameEl.textContent = profile.full_name || '-');
     this.bioEl && (this.bioEl.textContent = profile.bio || 'Belum ada bio.');
     this.xpEl && (this.xpEl.textContent = profile.xp ?? 0);
 
-    // avatar
     if (this.avatarEl) {
       this.avatarEl.src =
         profile.avatar_url || '/img/avatar-default.png';
@@ -60,15 +61,65 @@ export const profileController = {
    * EVENTS
    * ========================= */
   bindEvents() {
-    // edit profile
     this.editBtn?.addEventListener('click', () => {
       this.openEditModal();
     });
 
-    // avatar → modal
     this.avatarEl?.addEventListener('click', () => {
       this.openAvatarModal();
     });
+  },
+
+  /* =========================
+   * INTERNAL PROFILE TABS
+   * ========================= */
+  initProfileTabs() {
+    const tabs = document.querySelectorAll('.profile-tab');
+    const content = document.getElementById('profileDynamicContent');
+    if (!tabs.length || !content) return;
+
+    const views = {
+      homeProfile: `
+        <div class="home-card">
+          <h3>Overview</h3>
+          <p>Selamat datang di halaman profil kamu.</p>
+        </div>
+      `,
+      materiProfile: `
+        <div class="home-card">
+          <h3>Materiku</h3>
+          <p>Daftar materi yang sudah kamu pelajari.</p>
+        </div>
+      `,
+      statistikProfile: `
+        <div class="home-card">
+          <h3>Statistik</h3>
+          <p>Statistik progres belajar kamu.</p>
+        </div>
+      `,
+      settingProfile: `
+        <div class="home-card">
+          <h3>Pengaturan</h3>
+          <button class="primary-btn" id="editProfileBtnInternal">
+            Edit Profil
+          </button>
+        </div>
+      `
+    };
+
+    const render = (tab) => {
+      content.innerHTML = views[tab] || views.homeProfile;
+    };
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        render(tab.dataset.tab);
+      });
+    });
+
+    render('homeProfile');
   },
 
   /* =========================
@@ -81,7 +132,6 @@ export const profileController = {
 
       onUpload: async (file) => {
         try {
-          // compress image
           const compressed = await compressImage(file, {
             maxWidth: 512,
             maxHeight: 512,
@@ -93,7 +143,6 @@ export const profileController = {
             compressed
           );
 
-          // update local state + UI
           this.profile.avatar_url = avatarUrl;
           if (this.avatarEl) this.avatarEl.src = avatarUrl;
 
@@ -123,10 +172,9 @@ export const profileController = {
   },
 
   /* =========================
-   * EDIT PROFILE (PLACEHOLDER)
+   * EDIT PROFILE
    * ========================= */
   openEditModal() {
-    // nanti ganti dengan editProfileModalView
     alert('Modal edit profil akan dibuat di sini');
   }
 };
