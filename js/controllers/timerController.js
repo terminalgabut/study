@@ -2,23 +2,33 @@
 
 export const timerController = {
 
+    interval: null,
+    timeLeft: 0,
+    isRunning: false,
+
     init() {
+        this.cacheDom();
+        this.resetState();
+        this.bindEvents();
+    },
+
+    cacheDom() {
         this.startBtn = document.getElementById('startTimerBtn');
         this.stopBtn = document.getElementById('stopTimerBtn');
         this.resetBtn = document.getElementById('resetTimerBtn');
         this.input = document.getElementById('timerInput');
+        this.minEl = document.getElementById('minutes');
+        this.secEl = document.getElementById('seconds');
+    },
 
-        this.interval = null;
-        this.timeLeft = 0;
-        this.isRunning = false;
+    resetState() {
+        this.clearTimer();
 
         const mins = this.getInputMinutes();
         this.timeLeft = mins * 60;
 
-        this.render(this.timeLeft);
+        this.render();
         this.toggleButtons(false);
-
-        this.bindEvents();
     },
 
     bindEvents() {
@@ -28,24 +38,23 @@ export const timerController = {
     },
 
     getInputMinutes() {
-        const val = parseInt(this.input?.value);
+        const val = parseInt(this.input?.value, 10);
         return isNaN(val) || val <= 0 ? 25 : val;
     },
 
     start() {
         if (this.isRunning) return;
 
-        // kalau belum pernah start / sudah reset
         if (this.timeLeft <= 0) {
             this.timeLeft = this.getInputMinutes() * 60;
         }
 
         this.isRunning = true;
         this.toggleButtons(true);
-
         this.updateIsland();
 
         this.interval = setInterval(() => {
+
             this.timeLeft--;
 
             if (this.timeLeft <= 0) {
@@ -53,31 +62,30 @@ export const timerController = {
                 return;
             }
 
-            this.render(this.timeLeft);
+            this.render();
             this.updateIsland();
 
         }, 1000);
     },
 
     stop() {
-        clearInterval(this.interval);
-        this.interval = null;
+        this.clearTimer();
         this.isRunning = false;
-
-        window.islandController?.removeStatus('timer');
         this.toggleButtons(false);
+        window.islandController?.removeStatus('timer');
     },
 
     reset() {
         this.stop();
         this.timeLeft = this.getInputMinutes() * 60;
-        this.render(this.timeLeft);
+        this.render();
     },
 
     finish() {
-        clearInterval(this.interval);
-        this.interval = null;
+        this.clearTimer();
         this.isRunning = false;
+
+        this.render();
 
         window.islandController?.setStatus('timer', {
             text: "Selesai ☕",
@@ -93,7 +101,28 @@ export const timerController = {
         }, 4000);
 
         this.toggleButtons(false);
-        this.render(0);
+    },
+
+    clearTimer() {
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
+    },
+
+    render() {
+        const m = Math.floor(this.timeLeft / 60);
+        const s = this.timeLeft % 60;
+
+        if (this.minEl && this.secEl) {
+            this.minEl.textContent = String(m).padStart(2, '0');
+            this.secEl.textContent = String(s).padStart(2, '0');
+        }
+    },
+
+    toggleButtons(isRunning) {
+        this.startBtn?.classList.toggle('hidden', isRunning);
+        this.stopBtn?.classList.toggle('hidden', !isRunning);
     },
 
     updateIsland() {
@@ -105,25 +134,6 @@ export const timerController = {
         });
 
         window.islandController?.expand(true);
-        this.render(this.timeLeft);
-    },
-
-    render(seconds) {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-
-        const minEl = document.getElementById('minutes');
-        const secEl = document.getElementById('seconds');
-
-        if (minEl && secEl) {
-            minEl.textContent = String(m).padStart(2, '0');
-            secEl.textContent = String(s).padStart(2, '0');
-        }
-    },
-
-    toggleButtons(isRunning) {
-        this.startBtn?.classList.toggle('hidden', isRunning);
-        this.stopBtn?.classList.toggle('hidden', !isRunning);
     },
 
     formatTime(seconds) {
