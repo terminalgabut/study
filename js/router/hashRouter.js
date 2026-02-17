@@ -166,7 +166,7 @@ if (isLoggedIn && isAuthPage) {
           performaController.init();
           break;
 
-       case 'profile': {
+       case 'profile': 
          const [{ profileView }, { profileController }] = await Promise.all([
            import('../../pages/profileView.js'),
            import('../controllers/profileController.js')
@@ -174,7 +174,6 @@ if (isLoggedIn && isAuthPage) {
          content.innerHTML = profileView;
          profileController.init();
          break;
-       }
 
         default:
           content.innerHTML = '<div class="home-card"><h2>Halaman tidak ditemukan</h2></div>';
