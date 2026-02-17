@@ -11,7 +11,9 @@ export const profileView = `
   </div>
 
   <!-- Header Profil -->
-  <div class="home-card profile-header">
+<div class="home-card">
+  <div class="profile-info">
+    
     <div class="profile-avatar">
       <img 
         src="/assets/default-avatar.png" 
@@ -20,12 +22,14 @@ export const profileView = `
       />
     </div>
 
-    <div class="profile-info">
+    <div class="profile-details">
       <p>Email: <strong id="profileEmail">Memuat...</strong></p>
       <p>Username: <strong id="profileUsername">Memuat...</strong></p>
       <p>Full Name: <strong id="profileFullName">Memuat...</strong></p>
     </div>
+
   </div>
+</div>
 
   <div class="home-grid">
 
