@@ -42,14 +42,52 @@ def call_openrouter_api(messages: list):
         json={
             "model": "openai/gpt-oss-120b:nitro", 
             "messages": messages,
-            "temperature": 0.35
-            "top_p": 0.9,
+            "temperature": 0.2,
+            "top_p": 0.8,
+            "reasoning": {
+            "effort": "high"
+            }
         },
-        timeout=25 # Disesuaikan sedikit lebih lama karena teks penjelasan menambah beban kerja
+        timeout=60# Disesuaikan sedikit lebih lama karena teks penjelasan menambah beban kerja
     )
     response.raise_for_status()
     data = response.json()
     return data["choices"][0]["message"]["content"]
+
+def validate_quiz_structure(data: dict):
+    if "questions" not in data:
+        raise ValueError("Missing 'questions' field")
+
+    questions = data["questions"]
+
+    if len(questions) != 10:
+        raise ValueError("Jumlah soal tidak 10")
+
+    dimension_count = {}
+
+    for q in questions:
+        required_fields = [
+            "dimension", "question", "options",
+            "correct_answer", "explanation"
+        ]
+
+        for field in required_fields:
+            if field not in q:
+                raise ValueError(f"Field '{field}' tidak ada di soal")
+
+        if not isinstance(q["options"], list) or len(q["options"]) != 4:
+            raise ValueError("Options harus 4 pilihan")
+
+        if q["correct_answer"] not in q["options"]:
+            raise ValueError("Correct answer tidak cocok dengan options")
+
+        dim = q["dimension"]
+        dimension_count[dim] = dimension_count.get(dim, 0) + 1
+
+    # Harus 2 per dimension
+    for dim, count in dimension_count.items():
+        if count != 2:
+            raise ValueError(f"Distribusi dimension salah: {dim} = {count}")
 
 # --- ROUTES ---
 
@@ -62,7 +100,7 @@ async def quiz_generate(request: Request):
     try:
         body = await request.json()
         materi = body.get("materi", "").strip()
-        # category = body.get("category", "Umum")
+        category = body.get("category", "Umum")
         slug = body.get("slug", "default")
         order = body.get("order", 1)
 
@@ -70,6 +108,7 @@ async def quiz_generate(request: Request):
             return JSONResponse({"error": "Materi tidak boleh kosong"}, status_code=400)
 
         logging.info(f"Generating quiz with explanations for: {category}")
+        category = body.get("category", "Umum")
 
         prompt_quiz = f"""
 Buatkan 10 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks materi berikut:
@@ -127,36 +166,32 @@ VALIDATION STEP (Internal, jangan ditampilkan):
         ai_reply = call_openrouter_api(messages).strip()
 
         # Pembersihan JSON
-        try:
-            cleaned_content = re.sub(r"```json|```", "", ai_reply, flags=re.IGNORECASE).strip()
-            parsed = json.loads(cleaned_content)
-            
-            questions = parsed.get("questions", [])
+try:
+    cleaned_content = re.sub(r"```json|```", "", ai_reply, flags=re.IGNORECASE).strip()
+    parsed = json.loads(cleaned_content)
 
-            # Post-processing
-            for i, q in enumerate(questions, start=1):
-                q["id"] = f"q{i}"
-                if "answer" in q and "correct_answer" not in q:
-                    q["correct_answer"] = q.pop("answer")
-                q["category"] = category
-                # Pastikan explanation ada, jika tidak ada beri teks default
-                if "explanation" not in q:
-                    q["explanation"] = "Pahami kembali materi di atas untuk memperdalam konsep ini."
+    # VALIDATION GUARD
+    validate_quiz_structure(parsed)
 
-            return {
-                "quiz": {
-                    #"category": category,
-                    "slug": slug,
-                    "order": order,
-                    "questions": questions
-                },
-                "status": "success"
-            }
+    questions = parsed["questions"]
 
-        except json.JSONDecodeError:
-            logging.error(f"AI gagal kirim JSON valid. Raw: {ai_reply}")
-            return JSONResponse({"error": "AI tidak menghasilkan JSON valid", "raw": ai_reply}, status_code=500)
+    for i, q in enumerate(questions, start=1):
+        q["id"] = f"q{i}"
+        q["category"] = category
 
-    except Exception as e:
-        logging.error(f"General Error: {str(e)}")
-        return JSONResponse({"error": str(e)}, status_code=500)
+    return {
+        "quiz": {
+            "slug": slug,
+            "order": order,
+            "questions": questions
+        },
+        "status": "success"
+    }
+
+except Exception as e:
+    logging.error(f"VALIDATION ERROR: {str(e)}")
+    logging.error(f"RAW AI RESPONSE: {ai_reply}")
+    return JSONResponse(
+        {"error": f"AI JSON invalid: {str(e)}"},
+        status_code=500
+    )
