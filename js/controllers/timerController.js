@@ -126,15 +126,13 @@ export const timerController = {
     },
 
     updateIsland() {
-        window.islandController?.setStatus('timer', {
-            text: this.formatTime(this.timeLeft),
-            icon: 'timer',
-            priority: 10,
-            persistent: true
-        });
-
-        window.islandController?.expand(true);
-    },
+    window.islandController?.setStatus('timer', {
+        text: this.formatTime(this.timeLeft),
+        icon: 'timer',
+        priority: 10,
+        persistent: true
+    });
+}, 
 
     formatTime(seconds) {
         const m = Math.floor(seconds / 60);
