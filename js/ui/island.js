@@ -52,11 +52,16 @@ class IslandView {
     }
 
     render(status) {
-        if (!status) return;
+    if (!status) return;
 
-        if (this.textEl) this.textEl.textContent = status.text;
-        if (this.iconEl) this.iconEl.textContent = this.getIcon(status.icon);
+    if (this.textEl) {
+        this.textEl.textContent = status.text;
     }
+
+    if (this.iconEl) {
+        this.iconEl.innerHTML = this.getIcon(status.icon);
+    }
+ }
 
     getIcon(type) {
     const icons = {
