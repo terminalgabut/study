@@ -24,7 +24,7 @@ export const profileView = `
 
     <div class="profile-details">
       <p><strong id="profileFullName">Unknown</strong></p>
-      <p>Full Name: <strong id="profileFullName">Memuat...</strong></p>
+      <p>uid: <strong id="profileUid">Memuat...</strong></p>
     </div>
 
   </div>
