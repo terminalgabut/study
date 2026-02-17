@@ -1,0 +1,30 @@
+.profile-info {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary-color, #4f46e5);
+}
+
+.profile-details p {
+  margin: 6px 0;
+}
+
+.secondary-btn.small {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
