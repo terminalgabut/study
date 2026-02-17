@@ -3,8 +3,9 @@
 export const timerController = {
 
     interval: null,
-    timeLeft: 0,
-    isRunning: false,
+    timeLeft: null,
+    isRunning: null,
+    isBound: false,
 
     init() {
     this.cacheDom();
@@ -18,10 +19,13 @@ export const timerController = {
         this.isRunning = false;
     }
 
-    this.render(this.timeLeft);
+    this.render();
     this.toggleButtons(this.isRunning);
 
-    this.bindEvents();
+    if (!this.isBound) {
+        this.bindEvents();
+        this.isBound = true;
+    }
 },
 
     cacheDom() {
