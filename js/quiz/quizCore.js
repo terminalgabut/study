@@ -180,35 +180,6 @@ export const quizCore = {
     console.error("Gagal memuat bab berikutnya:", err.message);
   }
 
-  // 🔥 HITUNG & LOAD PROFILE
-try {
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (user) {
-    await fetch(`/cognitive/compute-profile/${user.id}`, {
-      method: "POST"
-    });
-
-    const res = await fetch(`/cognitive/profile/${user.id}`);
-    const data = await res.json();
-
-    if (data.status === "success") {
-      const stats = [
-        data.profile["Pemahaman Bacaan"],
-        data.profile["Kosakata & Semantik"],
-        data.profile["Penalaran Verbal"],
-        data.profile["Hubungan Analogi"],
-        data.profile["Memori Kerja Verbal"]
-      ];
-
-      // simpan sementara ke window agar bisa dipakai view
-      window.latestCognitiveStats = stats;
-    }
-  }
-} catch (err) {
-  console.error("Gagal compute profile:", err);
-}
-
 // 3. Render Result
 this.container.innerHTML = quizView.finalResult(
   rate,
@@ -216,11 +187,6 @@ this.container.innerHTML = quizView.finalResult(
   quizState.totalQuestions,
   nextChapter
 );
-
-// 4. Setelah render, panggil radar (kalau ada canvas)
-if (window.latestCognitiveStats) {
-  renderProfileRadar("profileRadar", window.latestCognitiveStats);
-}
 },
 
   closeQuiz() {
