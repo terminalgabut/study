@@ -14,47 +14,47 @@ def compute_profile(user_id: str):
         scores, cognitive_index, total_attempts = compute_cognitive_profile(db, user_id)
 
         db.execute(text("""
-            INSERT INTO user_cognitive_profile (
-                user_id,
-                verbal_score,
-                logical_score,
-                memory_score,
-                spatial_score,
-                attention_score,
-                cognitive_index,
-                total_attempts,
-                last_computed_at
-            )
-            VALUES (
-                :user_id,
-                :v1,
-                :v2,
-                :v3,
-                :v4,
-                :v5,
-                :cognitive_index,
-                :total_attempts,
-                now()
-            )
-            ON CONFLICT (user_id) DO UPDATE SET
-                verbal_score = EXCLUDED.verbal_score,
-                logical_score = EXCLUDED.logical_score,
-                memory_score = EXCLUDED.memory_score,
-                spatial_score = EXCLUDED.spatial_score,
-                attention_score = EXCLUDED.attention_score,
-                cognitive_index = EXCLUDED.cognitive_index,
-                total_attempts = EXCLUDED.total_attempts,
-                last_computed_at = now();
-        """), {
-            "user_id": user_id,
-            "v1": scores["Pemahaman Bacaan"],
-            "v2": scores["Kosakata & Semantik"],
-            "v3": scores["Penalaran Verbal"],
-            "v4": scores["Hubungan Analogi"],
-            "v5": scores["Memori Kerja Verbal"],
-            "cognitive_index": cognitive_index,
-            "total_attempts": total_attempts
-        })
+    INSERT INTO user_cognitive_profile (
+        user_id,
+        reading_score,
+        vocabulary_score,
+        reasoning_score,
+        analogy_score,
+        memory_score,
+        cognitive_index,
+        total_attempts,
+        last_computed_at
+    )
+    VALUES (
+        :user_id,
+        :reading,
+        :vocabulary,
+        :reasoning,
+        :analogy,
+        :memory,
+        :cognitive_index,
+        :total_attempts,
+        now()
+    )
+    ON CONFLICT (user_id) DO UPDATE SET
+        reading_score = EXCLUDED.reading_score,
+        vocabulary_score = EXCLUDED.vocabulary_score,
+        reasoning_score = EXCLUDED.reasoning_score,
+        analogy_score = EXCLUDED.analogy_score,
+        memory_score = EXCLUDED.memory_score,
+        cognitive_index = EXCLUDED.cognitive_index,
+        total_attempts = EXCLUDED.total_attempts,
+        last_computed_at = now();
+"""), {
+    "user_id": user_id,
+    "reading": scores.get("reading", 0),
+    "vocabulary": scores.get("vocabulary", 0),
+    "reasoning": scores.get("reasoning", 0),
+    "analogy": scores.get("analogy", 0),
+    "memory": scores.get("memory", 0),
+    "cognitive_index": cognitive_index,
+    "total_attempts": total_attempts
+})
 
         db.commit()
 
