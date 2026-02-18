@@ -12,9 +12,6 @@ from api.cognitive import router as cognitive_router
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 
 app = FastAPI()
-
-app.include_router(cognitive_router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,6 +19,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(cognitive_router)
 
 BASE_SYSTEM_PROMPT = "Kamu adalah AI Mentalist profesional yang ahli dalam menyusun soal test iQ kritis gunakan 5 dimension di aturan wajib. Kamu HARUS mematuhi struktur JSON yang diminta."
 
