@@ -151,6 +151,9 @@ export const quizCore = {
 
   async finish() {
   quizTimer.stop();
+    // 🔥 INJECT DI SINI
+  await this.computeProfile();
+    
   const rate = quizState.getScoreRate();
   let nextChapter = null;
 
@@ -192,6 +195,15 @@ this.container.innerHTML = quizView.finalResult(
   quizState.totalQuestions,
   nextChapter
 );
+},
+
+  async computeProfile() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await fetch(`${API_BASE_URL}/cognitive/compute-profile/${user.id}`, {
+    method: "POST"
+  });
 },
 
   closeQuiz() {
