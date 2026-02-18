@@ -135,6 +135,15 @@ def assign_neuro_type(scores, stability_index):
 
 # ------------------- MAIN PIPELINE -------------------
 def compute_cognitive_profile(db, user_id: str):
+    """
+    Compute full cognitive profile for a user:
+    - Scores per dimension
+    - Cognitive index
+    - Stability metrics
+    - IQ estimate
+    - Neuro profiling
+    """
+
     result = db.execute(text("""
         SELECT 
             dimension,
@@ -161,17 +170,15 @@ def compute_cognitive_profile(db, user_id: str):
         per_dim[row.dimension].append(row)
         total_attempts += 1
 
+    # ===== Per-dimension filtering & scoring =====
     for dim, attempts in per_dim.items():
-        durations = [
-            float(a.duration_seconds)
-            for a in attempts
-            if MIN_TIME <= float(a.duration_seconds) <= MAX_TIME
-        ]
+        durations = [float(a.duration_seconds) for a in attempts if MIN_TIME <= float(a.duration_seconds) <= MAX_TIME]
         if not durations:
             continue
+
         low, high = iqr_bounds(durations)
 
-        for a in attempts:
+        for idx, a in enumerate(attempts):
             t = float(a.duration_seconds)
             if t < MIN_TIME or t > MAX_TIME:
                 continue
@@ -182,25 +189,32 @@ def compute_cognitive_profile(db, user_id: str):
             valid_counts[dim] += 1
             all_valid_attempts.append((a.is_correct, t))
 
-            # Weighted correct
+            # ===== Weighting jawaban =====
+            weight = 1.0
             if t < 5:
-                weight = 0.7
+                weight = 0.5
             elif t > 60:
                 weight = 0.75
-            else:
-                weight = 1.0
+
+            # penalize streaks yang terlalu tinggi
+            if idx >= 3:
+                last_three = [x[0] for x in all_valid_attempts[-3:]]
+                if sum(last_three) == 3:  # 3 jawaban benar cepat berturut-turut
+                    weight *= 0.8
+
             if a.is_correct:
                 weighted_correct[dim] += weight
 
+    # ===== Per-dimension accuracy =====
     for dim in DIMENSIONS:
         total = valid_counts[dim]
         if total == 0:
             continue
-        accuracy = weighted_correct[dim] / total
-        scores[dim] = round(accuracy * 100, 2)
+        scores[dim] = round(weighted_correct[dim] / total * 100, 2)
 
     cognitive_index = round(sum(scores.values()) / len(DIMENSIONS), 2)
 
+    # ===== Stability metrics =====
     (
         stability_index,
         accuracy_stability,
@@ -211,22 +225,40 @@ def compute_cognitive_profile(db, user_id: str):
         speed_variance
     ) = compute_stability_metrics(all_valid_attempts)
 
+    # ===== IQ engine =====
     iq_profile = compute_iq_profile(scores, stability_index, valid_attempts)
 
-    neuro_type = assign_neuro_type(scores, stability_index)
+    # adjust IQ jika terlalu banyak jawaban cepat benar
+    if len(all_valid_attempts) >= 5:
+        fast_correct_ratio = sum(1 for a in all_valid_attempts if a[0] and a[1] < 5) / len(all_valid_attempts)
+        if fast_correct_ratio > 0.5:
+            iq_profile["iq_estimated"] *= 0.6
+            iq_profile["iq_confidence"] *= 0.5
+
+    # ===== Neuro Profiling Engine =====
+    neuro_type = "Balanced"
+    avg_scores = sum(scores.values()) / len(DIMENSIONS)
+    if cognitive_index > 70 and stability_index > 70:
+        neuro_type = "Analytical"
+    elif cognitive_index > 50 and scores.get("analogy", 0) > 60:
+        neuro_type = "Creative"
+
     fatigue_sensitivity = round(fatigue_drop, 2)
-    consistency_signature = {dim: round(weighted_correct[dim]/valid_counts[dim]*100,2) if valid_counts[dim]>0 else 0 for dim in DIMENSIONS}
+
+    # konsistensi signature
+    consistency_signature = {dim: scores.get(dim, 0) for dim in DIMENSIONS}
+
     neuro_fingerprint = {
         "scores": scores,
-        "stability_index": stability_index,
-        "accuracy_stability": accuracy_stability,
-        "speed_stability": speed_stability,
-        "endurance_index": endurance_index,
-        "error_consistency": error_consistency,
-        "fatigue_drop": fatigue_drop,
-        "speed_variance": speed_variance,
         "iq_profile": iq_profile,
         "neuro_type": neuro_type,
+        "fatigue_drop": fatigue_drop,
+        "speed_variance": speed_variance,
+        "endurance_index": endurance_index,
+        "speed_stability": speed_stability,
+        "stability_index": stability_index,
+        "error_consistency": error_consistency,
+        "accuracy_stability": accuracy_stability,
         "fatigue_sensitivity": fatigue_sensitivity,
         "consistency_signature": consistency_signature
     }
