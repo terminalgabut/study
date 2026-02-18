@@ -3,11 +3,11 @@ from sqlalchemy import text
 MAX_TIME = 60
 
 DIMENSIONS = [
-    "Pemahaman Bacaan",
-    "Kosakata & Semantik",
-    "Penalaran Verbal",
-    "Hubungan Analogi",
-    "Memori Kerja Verbal"
+    "reading",
+    "vocabulary",
+    "reasoning",
+    "analogy",
+    "memory
 ]
 
 
