@@ -21,7 +21,8 @@ def compute_profile(user_id: str):
         endurance_index,
         error_consistency,
         fatigue_drop,
-        speed_variance
+        speed_variance,
+        iq_profile
         = compute_cognitive_profile(db, user_id)
 
         db.execute(text("""
@@ -42,7 +43,11 @@ def compute_profile(user_id: str):
     error_consistency,
     fatigue_drop,
     speed_variance,
-    last_computed_at
+    now(),
+    last_computed_at,
+    iq_estimated,
+    iq_confidence,
+    iq_class
 )
 VALUES (
     :user_id,
@@ -61,7 +66,9 @@ VALUES (
     :error_consistency,
     :fatigue_drop,
     :speed_variance,
-    now()
+    :iq_estimated,
+    :iq_confidence,
+    :iq_class
 )
 ON CONFLICT (user_id) DO UPDATE SET
     reading_score = EXCLUDED.reading_score,
@@ -79,6 +86,9 @@ ON CONFLICT (user_id) DO UPDATE SET
     error_consistency = EXCLUDED.error_consistency,
     fatigue_drop = EXCLUDED.fatigue_drop,
     speed_variance = EXCLUDED.speed_variance,
+    iq_estimated = EXCLUDED.iq_estimated,
+    iq_confidence = EXCLUDED.iq_confidence,
+    iq_class = EXCLUDED.iq_class,
     last_computed_at = now();
 """), {
     "user_id": user_id,
@@ -96,16 +106,21 @@ ON CONFLICT (user_id) DO UPDATE SET
     "endurance_index": endurance_index,
     "error_consistency": error_consistency,
     "fatigue_drop": fatigue_drop,
-    "speed_variance": speed_variance
+    "speed_variance": speed_variance,
+    "iq_estimated": iq_profile["iq_estimated"],
+    "iq_confidence": iq_profile["iq_confidence"],
+    "iq_class": iq_profile["iq_class"]
 })
 
         db.commit()
 
         return {
-            "status": "computed",
-            "scores": scores,
-            "cognitive_index": cognitive_index
-        }
+    "status": "computed",
+    "scores": scores,
+    "cognitive_index": cognitive_index,
+    "stability_index": stability_index,
+    "iq_profile": iq_profile
+}
 
     finally:
         db.close()
