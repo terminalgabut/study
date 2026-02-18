@@ -31,13 +31,13 @@ def compute_cognitive_profile(db, user_id: str):
 
     for row in rows:
         dim = row.dimension
-        total = row.total
+        total = row.total or 0
         correct = row.correct or 0
         avg_time = row.avg_time or MAX_TIME
 
-        accuracy = correct / total if total > 0 else 0
-        speed_score = 1 - (avg_time / MAX_TIME)
-        speed_score = max(0, min(speed_score, 1))
+        accuracy = float(correct) / float(total) if total > 0 else 0.0
+        speed_score = 1.0 - (float(avg_time) / float(MAX_TIME))
+        speed_score = max(0.0, min(speed_score, 1.0))
 
         final_score = (accuracy * 0.7) + (speed_score * 0.3)
         final_score_scaled = round(final_score * 100, 2)
