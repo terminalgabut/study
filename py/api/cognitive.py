@@ -56,7 +56,8 @@ def compute_profile(user_id: str):
     "analogy": scores.get("analogy", 0),
     "memory": scores.get("memory", 0),
     "cognitive_index": cognitive_index,
-    "total_attempts": total_attempts
+    "total_attempts": total_attempts,
+    "valid_attempts": valid_attempts
 })
 
         db.commit()
