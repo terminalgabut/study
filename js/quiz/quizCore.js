@@ -201,9 +201,9 @@ this.container.innerHTML = quizView.finalResult(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
 
-  await fetch(`${API_BASE_URL}/cognitive/compute-profile/${user.id}`, {
-    method: "POST"
-  });
+  await fetch(`https://studygabut.vercel.app/cognitive/compute-profile/${user.id}`, {
+  method: "POST"
+});
 },
 
   closeQuiz() {
