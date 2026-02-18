@@ -143,7 +143,7 @@ def compute_cognitive_profile(db, user_id: str):
         FROM study_attempts
         WHERE user_id = :user_id
           AND duration_seconds IS NOT NULL
-        ORDER BY created_at ASC
+        ORDER BY submitted_at ASC
     """), {"user_id": user_id})
 
     rows = result.fetchall()
