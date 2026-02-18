@@ -8,11 +8,11 @@ export function renderProfileRadar(canvasId, data) {
 
   // ===== CONFIG =====
   const labelsMap = {
-    pemahaman_bacaan: "Reading",
-    kosakata_semantik: "Vocabulary",
-    penalaran_verbal: "Verbal",
-    analogi: "Analogy",
-    memori_kerja: "Memory"
+    reading: "Reading",
+    vocabulary: "Vocabulary",
+    reasoning: "Reasoning",
+    analogy: "Analogy",
+    memory: "Memory"
   };
 
   const values = data.map(d => d.value);
