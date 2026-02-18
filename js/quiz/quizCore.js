@@ -1,8 +1,11 @@
 // root/js/quiz/quizCore.js
+
+import { normalizeDimension } from '../utils/dimensionNormalizer.js';
+import { supabase } from '../services/supabase.js';
 import { quizView } from '../../components/quizView.js';
 import { quizState } from './quizState.js';
 import { quizTimer } from './quizTimer.js';
-import { supabase } from '../services/supabase.js';
+
 
 export const quizCore = {
   container: null,
@@ -97,11 +100,13 @@ export const quizCore = {
       nextBtn.onclick = () => this.handleNext();
     }
 
+    // Normalisasi dimension sebelum masuk DB
+    const normalizedDimension = normalizeDimension(q.dimension) || "reading";
     // Simpan ke Supabase
     await this.saveAttempt({
       session_id: this.slug,
       question_id: String(q.id || quizState.currentStep), // Gunakan ID asli jika ada
-      dimension: q.dimension || "Umum",
+      dimension: normalizedDimension,
       category: this.categoryPath,
       title: this.babTitle, // MEMASUKKAN JUDUL BAB KE TABEL study_attempts
       user_answer: selectedValue || "TIMEOUT",
