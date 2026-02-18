@@ -7,7 +7,7 @@ DIMENSIONS = [
     "vocabulary",
     "reasoning",
     "analogy",
-    "memory
+    "memory"
 ]
 
 
