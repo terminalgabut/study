@@ -23,6 +23,7 @@ def compute_profile(user_id: str):
         memory_score,
         cognitive_index,
         total_attempts,
+        valid_attempts,
         last_computed_at
     )
     VALUES (
@@ -34,17 +35,19 @@ def compute_profile(user_id: str):
         :memory,
         :cognitive_index,
         :total_attempts,
+        :valid_attempts,
         now()
     )
     ON CONFLICT (user_id) DO UPDATE SET
-        reading_score = EXCLUDED.reading_score,
-        vocabulary_score = EXCLUDED.vocabulary_score,
-        reasoning_score = EXCLUDED.reasoning_score,
-        analogy_score = EXCLUDED.analogy_score,
-        memory_score = EXCLUDED.memory_score,
-        cognitive_index = EXCLUDED.cognitive_index,
-        total_attempts = EXCLUDED.total_attempts,
-        last_computed_at = now();
+    reading_score = EXCLUDED.reading_score,
+    vocabulary_score = EXCLUDED.vocabulary_score,
+    reasoning_score = EXCLUDED.reasoning_score,
+    analogy_score = EXCLUDED.analogy_score,
+    memory_score = EXCLUDED.memory_score,
+    cognitive_index = EXCLUDED.cognitive_index,
+    total_attempts = EXCLUDED.total_attempts,
+    valid_attempts = EXCLUDED.valid_attempts,
+    last_computed_at = now();
 """), {
     "user_id": user_id,
     "reading": scores.get("reading", 0),
