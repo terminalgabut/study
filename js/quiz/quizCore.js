@@ -152,7 +152,7 @@ export const quizCore = {
   async finish() {
   quizTimer.stop();
     // 🔥 INJECT DI SINI
-  await this.computeProfile();
+  this.computeProfile();
     
   const rate = quizState.getScoreRate();
   let nextChapter = null;
@@ -201,7 +201,7 @@ this.container.innerHTML = quizView.finalResult(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
 
-  await fetch(`https://studygabut.vercel.app/cognitive/compute-profile/${user.id}`, {
+  fetch(`https://studygabut.vercel.app/cognitive/compute-profile/${user.id}`, {
   method: "POST"
 });
 },
