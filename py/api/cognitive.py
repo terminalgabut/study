@@ -11,8 +11,8 @@ def compute_profile(user_id: str):
 
     db = SessionLocal()
     try:
-        scores, cognitive_index, total_attempts = compute_cognitive_profile(db, user_id)
-
+        scores, cognitive_index, total_attempts, valid_attempts = compute_cognitive_profile(db, user_id)
+        
         db.execute(text("""
     INSERT INTO user_cognitive_profile (
         user_id,
