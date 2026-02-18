@@ -3,7 +3,7 @@ import statistics
 import math
 
 MIN_TIME = 2.5
-MAX_TIME = 90.0
+MAX_TIME = 60.0
 IQR_MULTIPLIER = 1.5
 
 DIMENSIONS = [
@@ -185,6 +185,12 @@ def compute_cognitive_profile(db, user_id: str):
         speed_variance
     ) = compute_stability_metrics(all_valid_attempts)
 
+    iq_profile = compute_iq_profile(
+        scores,
+        stability_index,
+        valid_attempts
+    )
+
     return (
         scores,
         cognitive_index,
@@ -196,5 +202,6 @@ def compute_cognitive_profile(db, user_id: str):
         endurance_index,
         error_consistency,
         fatigue_drop,
-        speed_variance
+        speed_variance,
+        iq_profile
     )
