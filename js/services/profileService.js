@@ -54,31 +54,40 @@ export async function upsertProfile(profile) {
 }
 
 /* =====================================================
-   📈 COGNITIVE HISTORY (FOR TREND ENGINE)
+   📈 COGNITIVE SESSIONS (FOR TREND ENGINE)
    ===================================================== */
 
-export async function getCognitiveHistory(userId) {
+export async function getCognitiveHistory(userId, limit = 8) {
   const { data, error } = await supabase
-    .from('user_cognitive_history') // tabel baru
+    .from('user_cognitive_sessions')
     .select(`
+      session_at,
       iq_estimated,
       iq_confidence,
-      memory_score,
-      reading_score,
-      reasoning_score,
-      analogy_score,
-      vocabulary_score,
-      created_at
+      iq_class,
+      scores
     `)
     .eq('user_id', userId)
-    .order('created_at', { ascending: true });
+    .order('session_at', { ascending: true })
+    .limit(limit);
 
   if (error) {
     console.error('getCognitiveHistory error:', error);
     return [];
   }
 
-  return data || [];
+  // normalize ke format trendEngine
+  return (data || []).map(row => ({
+    date: row.session_at,
+    iq_estimated: Number(row.iq_estimated) || 0,
+    iq_confidence: Number(row.iq_confidence) || 0,
+
+    memory_score: Number(row.scores?.memory) || 0,
+    reading_score: Number(row.scores?.reading) || 0,
+    reasoning_score: Number(row.scores?.reasoning) || 0,
+    analogy_score: Number(row.scores?.analogy) || 0,
+    vocabulary_score: Number(row.scores?.vocabulary) || 0
+  }));
 }
 
 /* =====================================================
