@@ -8,26 +8,49 @@ export function renderIQTrendPreview(canvasId, iqTrend = []) {
 
   const ctx = canvas.getContext('2d');
 
-  // Destroy existing instance (per canvas)
+  // Destroy existing chart instance
   if (chartInstances[canvasId]) {
     chartInstances[canvasId].destroy();
   }
 
-  // Calculate dynamic Y range for stability
   const min = Math.min(...iqTrend);
   const max = Math.max(...iqTrend);
+
+  const first = iqTrend[0];
+  const last = iqTrend[iqTrend.length - 1];
+
+  const isUptrend = last >= first;
+
+  // Dynamic crypto color
+  const lineColor = isUptrend ? '#22c55e' : '#ef4444';
+
+  // Gradient fill
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  gradient.addColorStop(
+    0,
+    isUptrend
+      ? 'rgba(34,197,94,0.35)'
+      : 'rgba(239,68,68,0.35)'
+  );
+  gradient.addColorStop(
+    1,
+    isUptrend
+      ? 'rgba(34,197,94,0.02)'
+      : 'rgba(239,68,68,0.02)'
+  );
 
   chartInstances[canvasId] = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: iqTrend.map((_, i) => `S${i + 1}`),
+      labels: iqTrend.map((_, i) => `D${i + 1}`),
       datasets: [
         {
+          label: 'IQ Trend (7 Hari Terakhir)',
           data: iqTrend,
-          borderColor: '#38bdf8',
-          backgroundColor: 'rgba(56, 189, 248, 0.15)',
+          borderColor: lineColor,
+          backgroundColor: gradient,
           fill: true,
-          tension: 0.4,
+          tension: 0.45,       // smooth curve
           pointRadius: 0,
           borderWidth: 2
         }
@@ -40,20 +63,35 @@ export function renderIQTrendPreview(canvasId, iqTrend = []) {
         intersect: false,
         mode: 'index'
       },
+      animation: {
+        duration: 800,
+        easing: 'easeOutQuart'
+      },
       plugins: {
         legend: {
           display: false
         },
         tooltip: {
-          backgroundColor: '#020617',
+          backgroundColor: '#0f172a',
           titleColor: '#e5e7eb',
-          bodyColor: '#93c5fd',
-          displayColors: false
+          bodyColor: lineColor,
+          displayColors: false,
+          padding: 10,
+          borderColor: '#1e293b',
+          borderWidth: 1,
+          callbacks: {
+            label: function(context) {
+              return `IQ: ${context.parsed.y}`;
+            }
+          }
         }
       },
       scales: {
         x: {
-          display: false
+          display: false,
+          grid: {
+            color: 'rgba(255,255,255,0.03)'
+          }
         },
         y: {
           suggestedMin: min - 5,
