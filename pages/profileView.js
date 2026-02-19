@@ -39,7 +39,9 @@ export const profileView = `
           <span id="iqTrendDelta"></span>
         </div>
 
-        <canvas id="iqTrendPreview"></canvas>
+        <div class="chart-wrapper">
+          <canvas id="iqTrendPreview"></canvas>
+        </div>
 
         <div class="strength-summary">
           <p>
