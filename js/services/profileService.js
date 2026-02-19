@@ -1,7 +1,6 @@
 // js/services/profileService.js
 
 import { supabase } from './supabase.js';
-import { normalizeDimension } from '../utils/dimensionNormalizer.js';
 
 /* =====================================================
    👤 PROFILE BASIC
