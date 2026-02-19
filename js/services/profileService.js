@@ -1,10 +1,12 @@
 // js/services/profileService.js
+
 import { supabase } from './supabase.js';
 import { normalizeDimension } from '../utils/dimensionNormalizer.js';
 
-/**
- * Ambil profil berdasarkan userId
- */
+/* =====================================================
+   👤 PROFILE BASIC
+   ===================================================== */
+
 export async function getProfile(userId) {
   const { data, error } = await supabase
     .from('profile')
@@ -20,9 +22,6 @@ export async function getProfile(userId) {
   return data;
 }
 
-/**
- * Update sebagian field profil
- */
 export async function updateProfile(userId, payload) {
   const { data, error } = await supabase
     .from('profile')
@@ -39,9 +38,6 @@ export async function updateProfile(userId, payload) {
   return data;
 }
 
-/**
- * Upsert (insert jika belum ada, update jika sudah ada)
- */
 export async function upsertProfile(profile) {
   const { data, error } = await supabase
     .from('profile')
@@ -60,6 +56,7 @@ export async function upsertProfile(profile) {
 /* =====================================================
    📊 RADAR STATS PROFILE
    ===================================================== */
+
 export async function getProfileRadarStats(userId) {
   const { data, error } = await supabase
     .from('user_cognitive_profile')
@@ -87,4 +84,45 @@ export async function getProfileRadarStats(userId) {
     { dimension: 'analogy', value: Number(data.analogy_score) || 0 },
     { dimension: 'vocabulary', value: Number(data.vocabulary_score) || 0 }
   ];
+}
+
+/* =====================================================
+   🧠 COGNITIVE SUMMARY (IQ + Stability)
+   ===================================================== */
+
+export async function getCognitiveSummary(userId) {
+  const { data, error } = await supabase
+    .from('user_cognitive_profile')
+    .select(`
+      stability_index,
+      accuracy_stability,
+      speed_stability,
+      endurance_index,
+      error_consistency,
+      iq_estimated,
+      iq_class,
+      iq_confidence,
+      neuro_type
+    `)
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error('getCognitiveSummary error:', error);
+    return null;
+  }
+
+  if (!data) return null;
+
+  return {
+    stability_index: Number(data.stability_index) || 0,
+    accuracy_stability: Number(data.accuracy_stability) || 0,
+    speed_stability: Number(data.speed_stability) || 0,
+    endurance_index: Number(data.endurance_index) || 0,
+    error_consistency: Number(data.error_consistency) || 0,
+    iq_estimated: Number(data.iq_estimated) || 0,
+    iq_class: data.iq_class || "Unknown",
+    iq_confidence: Number(data.iq_confidence) || 0,
+    neuro_type: data.neuro_type || "Unknown"
+  };
 }
