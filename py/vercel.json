@@ -1,7 +1,8 @@
 {
-  "functions": {
-    "py/index.py": {
-      "runtime": "python3.11"
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/py/index.py"
     }
-  }
+  ]
 }
