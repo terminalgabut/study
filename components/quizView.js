@@ -1,7 +1,6 @@
 // root/components/quizView.js
 
-export const quizView = {
-  // Placeholder saat memuat kuis [cite: 6]
+export const quizView = { 
   loading() {
     return `
       <div class="quiz-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px;">
@@ -20,11 +19,27 @@ export const quizView = {
             box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.3);
           }
         </style>
+        <script>
+        (function() {
+          let timeLeft = 60;
+          const countdownEl = document.getElementById("countdownText");
+
+          if (!countdownEl) return;
+
+          const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+              clearInterval(timer);
+            }
+          }, 1000);
+        })();
+       </script>
       </div>
     `;
   },
 
-  // Bingkai utama kuis: Header (Timer & Skor) serta Progress Bar [cite: 13, 14]
   mainFrame() {
     return `
       <div class="quiz-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -40,7 +55,6 @@ export const quizView = {
     `;
   },
 
-  // Kartu Soal: Mengikuti struktur detail Soal, Badge Dimension, dan Radio Buttons [cite: 17, 18, 19]
   questionCard(q, currentStep, total) {
     return `
       <div class="quiz-item active">
@@ -75,9 +89,6 @@ export const quizView = {
       </div>
     `;
   },
-
-  // Hasil Akhir: Mengadopsi tampilan persentase besar dan tombol "Kembali ke Materi" [cite: 37, 38]
-  // root/components/quizView.js (Bagian finalResult)
 
 finalResult(rate, correctCount, total, nextChapter) {
   return `
