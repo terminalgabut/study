@@ -77,16 +77,16 @@ export async function getCognitiveHistory(userId, limit = 8) {
 
   // normalize ke format trendEngine
   return (data || []).map(row => ({
-    date: row.session_at,
-    iq_estimated: Number(row.iq_estimated) || 0,
-    iq_confidence: Number(row.iq_confidence) || 0,
+  date: row.session_at,
+  iq_estimated: Number(row.iq_estimated) || 0,
+  iq_confidence: Number(row.iq_confidence) || 0,
 
-    memory_score: Number(row.scores?.memory) || 0,
-    reading_score: Number(row.scores?.reading) || 0,
-    reasoning_score: Number(row.scores?.reasoning) || 0,
-    analogy_score: Number(row.scores?.analogy) || 0,
-    vocabulary_score: Number(row.scores?.vocabulary) || 0
-  }));
+  memory: Number(row.scores?.memory) || 0,
+  reading: Number(row.scores?.reading) || 0,
+  reasoning: Number(row.scores?.reasoning) || 0,
+  analogy: Number(row.scores?.analogy) || 0,
+  vocabulary: Number(row.scores?.vocabulary) || 0
+}));
 }
 
 /* =====================================================
