@@ -40,7 +40,7 @@ def call_openrouter_api(messages: list):
             "X-Title": "Study AI"
         },
         json={
-            "model": "openai/gpt-oss-120b",
+            "model": "openai/gpt-oss-120b:nitro",
             "messages": messages,
             "temperature": 0.2,
             "top_p": 0.8,
