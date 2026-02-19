@@ -1,4 +1,4 @@
-// js/controllers/profileController.js
+// root/js/controllers/profileController.js
 
 import { supabase } from '../services/supabase.js';
 import { getProfile, updateProfile } from '../services/profileService.js';
