@@ -187,12 +187,15 @@
 ========================================= */
 
 @media (max-width: 768px) {
-  .profile-info {
+  .profile-top-section {
     flex-direction: column;
+  }
+
+  .profile-avatar-block {
     align-items: flex-start;
   }
 
-  #profileDynamicContent canvas {
-    max-width: 100%;
+  #iqTrendPreview {
+    height: 180px;
   }
 }
