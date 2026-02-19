@@ -62,8 +62,10 @@
 ========================================= */
 
 .profile-analytics-preview {
-  flex: 1 1 auto;
-  min-width: 280px;
+  flex: 1 1 0%;
+  width: 100%;
+  min-width: 0; /* penting untuk fix flex shrink bug */
+
   background: linear-gradient(
     180deg,
     rgba(255,255,255,0.02),
@@ -82,6 +84,7 @@
   gap: var(--space-md);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Soft glow top edge */
