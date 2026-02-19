@@ -6,6 +6,23 @@ import { quizView } from '../../components/quizView.js';
 import { quizState } from './quizState.js';
 import { quizTimer } from './quizTimer.js';
 
+function startLoadingCountdown() {
+  let timeLeft = 60;
+  const countdownEl = document.getElementById("countdownText");
+
+  if (!countdownEl) return;
+
+  const timer = setInterval(() => {
+    timeLeft--;
+    countdownEl.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+    }
+  }, 1000)
+    ;
+}
+
 // shuffle 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
