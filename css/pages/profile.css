@@ -1,4 +1,4 @@
-/* root/css/pages/profile.css
+/* root/css/pages/profile.css */
 
 /* =========================================
    PROFILE TOP SECTION (Avatar + Analytics)
@@ -11,7 +11,10 @@
   flex-wrap: wrap;
 }
 
-/* Avatar Block */
+/* =========================================
+   AVATAR BLOCK
+========================================= */
+
 .profile-avatar-block {
   flex: 0 0 220px;
   display: flex;
@@ -19,7 +22,6 @@
   gap: var(--space-sm);
 }
 
-/* Avatar image */
 .profile-avatar img {
   width: 120px;
   height: 120px;
@@ -27,9 +29,18 @@
   object-fit: cover;
   border: 3px solid var(--accent);
   background: var(--surface);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease;
 }
 
-/* Details */
+.profile-avatar img:hover {
+  transform: scale(1.04);
+}
+
+/* =========================================
+   PROFILE DETAILS
+========================================= */
+
 .profile-details {
   display: flex;
   flex-direction: column;
@@ -47,23 +58,47 @@
 }
 
 /* =========================================
-   ANALYTICS PREVIEW CARD
+   ANALYTICS PREVIEW CARD (Crypto Style)
 ========================================= */
 
 .profile-analytics-preview {
   flex: 1 1 auto;
   min-width: 280px;
-  background: var(--card);
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.02),
+    rgba(255,255,255,0.01)
+  );
+  backdrop-filter: blur(6px);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.03);
 
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-
   position: relative;
+  overflow: hidden;
+}
+
+/* Soft glow top edge */
+.profile-analytics-preview::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    transparent
+  );
+  opacity: 0.6;
 }
 
 /* Trend header */
@@ -72,37 +107,47 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-/* Chart */
-/* Chart wrapper pattern (lebih stabil) */
+/* Chart wrapper */
 .profile-analytics-preview canvas {
   width: 100% !important;
   height: 220px !important;
   display: block;
 }
 
-/* Strength summary */
+/* =========================================
+   STRENGTH SUMMARY
+========================================= */
+
 .strength-summary {
   margin-top: var(--space-md);
   display: grid;
   gap: var(--space-xs);
+  font-size: 0.9rem;
 }
 
 .strength-summary strong {
   color: var(--accent);
 }
 
+/* Trend Colors */
+
 .trend-up {
   color: #22c55e;
+  font-weight: 600;
 }
 
 .trend-down {
   color: #ef4444;
+  font-weight: 600;
 }
 
 .trend-stable {
   color: #64748b;
+  font-weight: 500;
 }
 
 /* =========================================
@@ -150,7 +195,6 @@
   gap: var(--space-md);
 }
 
-/* Card style konsisten */
 #profileDynamicContent .home-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -182,7 +226,11 @@
   margin-top: var(--space-lg);
   padding: var(--space-md);
   border-radius: var(--radius-md);
-  background: var(--accent-soft);
+  background: linear-gradient(
+    180deg,
+    rgba(56,189,248,0.08),
+    rgba(56,189,248,0.03)
+  );
   border: 1px solid var(--border);
   display: grid;
   gap: var(--space-xs);
@@ -208,6 +256,7 @@
 ========================================= */
 
 @media (max-width: 768px) {
+
   .profile-top-section {
     flex-direction: column;
   }
