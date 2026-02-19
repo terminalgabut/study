@@ -35,7 +35,7 @@ export const profileView = `
       <div class="profile-analytics-preview">
 
         <div class="trend-header">
-          <strong>IQ Trend</strong>
+          <strong>Conitive Poin Trend</strong>
           <span id="iqTrendDelta"></span>
         </div>
 
