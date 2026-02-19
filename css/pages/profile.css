@@ -87,3 +87,76 @@
   display: grid;
   gap: var(--space-md);
 }
+
+/* =========================================
+   PROFILE DYNAMIC CONTENT – CARD STYLE
+========================================= */
+
+#profileDynamicContent .home-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* =========================================
+   CANVAS WRAPPER
+========================================= */
+
+#profileDynamicContent canvas {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Jarak antar chart */
+#profileDynamicContent canvas + canvas {
+  margin-top: var(--space-lg);
+}
+
+/* =========================================
+   IQ SUMMARY CARD
+========================================= */
+
+.iq-summary-card {
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 6px;
+}
+
+.iq-summary-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.iq-summary-card strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Nilai IQ lebih besar */
+#iqValue {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  #profileDynamicContent canvas {
+    max-width: 100%;
+  }
+
+  .iq-summary-card {
+    font-size: 0.9rem;
+  }
+}
