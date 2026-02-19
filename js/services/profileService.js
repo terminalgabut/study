@@ -62,44 +62,29 @@ export async function upsertProfile(profile) {
    ===================================================== */
 export async function getProfileRadarStats(userId) {
   const { data, error } = await supabase
-    .from('study_attempts')
-    .select('dimension, score')
-    .eq('user_id', userId);
+    .from('user_cognitive_profile')
+    .select(`
+      memory_score,
+      reading_score,
+      reasoning_score,
+      analogy_score,
+      vocabulary_score
+    `)
+    .eq('user_id', userId)
+    .maybeSingle();
 
   if (error) {
     console.error('getProfileRadarStats error:', error);
     return null;
   }
 
-  // 5 dimensi utama (default kosong)
-  const grouped = {
-    reading: [],
-    vocabulary: [],
-    reasoning: [],
-    analogy: [],
-    memory: []
-  };
+  if (!data) return null;
 
-  data.forEach(row => {
-    const key = normalizeDimension(row.dimension);
-    if (key && grouped[key]) {
-      grouped[key].push(row.score ?? 0);
-    }
-  });
-
-  // hitung rata-rata
-  const result = Object.keys(grouped).map(key => {
-    const arr = grouped[key];
-    const avg =
-      arr.length > 0
-        ? arr.reduce((a, b) => a + b, 0) / arr.length
-        : 0;
-
-    return {
-      dimension: key,
-      value: Math.round(avg)
-    };
-  });
-
-  return result;
+  return [
+    { dimension: 'memory', value: Number(data.memory_score) || 0 },
+    { dimension: 'reading', value: Number(data.reading_score) || 0 },
+    { dimension: 'reasoning', value: Number(data.reasoning_score) || 0 },
+    { dimension: 'analogy', value: Number(data.analogy_score) || 0 },
+    { dimension: 'vocabulary', value: Number(data.vocabulary_score) || 0 }
+  ];
 }
