@@ -152,13 +152,13 @@ export const quizCore = {
 
     // Normalisasi dimension sebelum masuk DB
     const normalizedDimension = normalizeDimension(q.dimension) || "reading";
-    // Simpan ke Supabase
+    
     await this.saveAttempt({
       session_id: this.slug,
-      question_id: String(q.id || quizState.currentStep), // Gunakan ID asli jika ada
+      question_id: String(q.id || quizState.currentStep), 
       dimension: normalizedDimension,
       category: this.categoryPath,
-      title: this.babTitle, // MEMASUKKAN JUDUL BAB KE TABEL study_attempts
+      title: this.babTitle, 
       user_answer: selectedValue || "TIMEOUT",
       correct_answer: q.correct_answer,
       is_correct: isCorrect,
@@ -201,7 +201,6 @@ export const quizCore = {
 
   async finish() {
   quizTimer.stop();
-    // 🔥 INJECT DI SINI
   this.computeProfile();
     
   const rate = quizState.getScoreRate();
@@ -216,13 +215,12 @@ export const quizCore = {
       .single();
 
     if (currentData) {
-      // 2. Cari materi berikutnya yang satu kategori dan m_order-nya lebih besar
       const { data: nextData } = await supabase
         .from('materials')
         .select('slug, title')
-        .eq('category', currentData.category) // Pengunci kategori
-        .gt('m_order', currentData.m_order)    // Cari urutan setelahnya
-        .order('m_order', { ascending: true }) // Pastikan urut dari yang terkecil
+        .eq('category', currentData.category) 
+        .gt('m_order', currentData.m_order)   
+        .order('m_order', { ascending: true }) 
         .limit(1)
         .maybeSingle();
 
@@ -280,7 +278,7 @@ this.container.innerHTML = quizView.finalResult(
       pageEl.classList.remove('show-quiz');
     }
 
-    // Feedback ke Island (Opsional tapi keren)
+    // Feedback Island
     if (window.islandController) {
         window.islandController.announce("Lanjut Belajar 📖", "music", "timer");
     }
