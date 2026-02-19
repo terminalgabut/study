@@ -29,14 +29,15 @@ BASE_SYSTEM_PROMPT = "Kamu adalah AI Mentalist profesional yang ahli dalam menyu
 
 def generate_quiz(messages, mode="qa"):
     client = OpenAI(
-        api_key=os.getenv("ATLASCLOUD_API_KEY"),
-        base_url="https://api.atlascloud.ai/v1"
-    )
+    api_key=os.getenv("ATLASCLOUD_API_KEY"),
+    base_url="https://api.atlascloud.ai/v1",
+    timeout=60
+)
 
     MODE_SETTINGS = {
         "qa": {
             "temperature": 0.2,
-            "max_tokens": 3000
+            "max_tokens": 5000
         },
         "creative": {
             "temperature": 0.9,
@@ -47,12 +48,13 @@ def generate_quiz(messages, mode="qa"):
     settings = MODE_SETTINGS.get(mode, MODE_SETTINGS["qa"])
 
     response = client.chat.completions.create(
-        model="openai/gpt-oss-120b",
-        messages=messages,
-        temperature=settings["temperature"],
-        max_tokens=settings["max_tokens"],
-        top_p=0.8
-    )
+    model="openai/gpt-oss-120b",
+    messages=messages,
+    temperature=settings["temperature"],
+    max_tokens=settings["max_tokens"],
+    top_p=0.8,
+    response_format={"type": "json_object"}
+)
 
     return response.choices[0].message.content 
 
@@ -159,7 +161,7 @@ VALIDATION STEP (Internal, jangan ditampilkan):
             {"role": "user", "content": prompt_quiz}
         ]
 
-        ai_reply = call_openrouter_api(messages).strip()
+        ai_reply = generate_quiz(messages, mode="qa").strip()
 
         cleaned_content = re.sub(r"```json|```", "", ai_reply, flags=re.IGNORECASE).strip()
         parsed = json.loads(cleaned_content)
