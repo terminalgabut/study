@@ -1,4 +1,4 @@
-// js/lib/profileInsights.js
+// root/js/lib/profileInsights.js
 /* =========================================
    IQ INTERPRETATION
 ========================================= */
