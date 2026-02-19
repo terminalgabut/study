@@ -64,36 +64,100 @@ export const profileController = {
   },
 
   /* =========================
-   * IQ TREND PREVIEW (HEADER)
-   * ========================= */
-  async loadIQTrendPreview() {
+ * IQ TREND PREVIEW (HEADER)
+ * ========================= */
+async loadIQTrendPreview() {
   if (!this.user) return;
 
-  const sessions = await getCognitiveHistory(this.user.id, 8);
-  if (!sessions.length) return;
+  try {
+    const sessions = await getCognitiveHistory(this.user.id, 8);
+    if (!sessions || !sessions.length) return;
 
-  const analysis = buildTrendAnalysis(sessions);
-  if (!analysis) return;
+    const analysis = buildTrendAnalysis(sessions);
+    if (!analysis) return;
 
-  const iqValues = analysis.iqTrend.map(p => p.value);
+    /* ===============================
+       1️⃣ RENDER CHART
+    =============================== */
 
-  renderIQTrendPreview('iqTrendPreview', iqValues);
+    const iqValues = analysis.iqTrend.map(p => p.value);
+    renderIQTrendPreview('iqTrendPreview', iqValues);
 
-  const deltaEl = document.getElementById('iqTrendDelta');
-  if (deltaEl) {
-    deltaEl.textContent =
-      analysis.delta >= 0
-        ? `+${analysis.delta.toFixed(1)}`
-        : analysis.delta.toFixed(1);
+    /* ===============================
+       2️⃣ DELTA DISPLAY
+    =============================== */
+
+    const deltaEl = document.getElementById('iqTrendDelta');
+
+    if (deltaEl) {
+      const deltaText =
+        analysis.delta >= 0
+          ? `+${analysis.delta.toFixed(1)}`
+          : analysis.delta.toFixed(1);
+
+      deltaEl.textContent = deltaText;
+
+      // Dynamic color based on trendStatus
+      deltaEl.classList.remove(
+        'trend-up',
+        'trend-down',
+        'trend-stable'
+      );
+
+      if (analysis.trendStatus.includes("uptrend")) {
+        deltaEl.classList.add('trend-up');
+      } else if (analysis.trendStatus.includes("downtrend")) {
+        deltaEl.classList.add('trend-down');
+      } else {
+        deltaEl.classList.add('trend-stable');
+      }
+    }
+
+    /* ===============================
+       3️⃣ STRENGTH / WEAKNESS
+    =============================== */
+
+    const strengthEl = document.getElementById('strengthText');
+    const weaknessEl = document.getElementById('weaknessText');
+
+    if (strengthEl) {
+      strengthEl.textContent = analysis.strength.name;
+    }
+
+    if (weaknessEl) {
+      weaknessEl.textContent = analysis.weakness.name;
+    }
+
+    /* ===============================
+       4️⃣ STABILITY SCORE
+    =============================== */
+
+    const stabilityEl = document.getElementById('stabilityScore');
+
+    if (stabilityEl) {
+      stabilityEl.textContent = `${analysis.stabilityScore}%`;
+    }
+
+    /* ===============================
+       5️⃣ CONFIDENCE WARNING
+    =============================== */
+
+    const confidenceEl = document.getElementById('confidenceNote');
+
+    if (confidenceEl) {
+      if (analysis.confidenceNote) {
+        confidenceEl.textContent = analysis.confidenceNote;
+        confidenceEl.style.display = "block";
+      } else {
+        confidenceEl.style.display = "none";
+      }
+    }
+
+  } catch (err) {
+    console.error("IQ Trend Preview Error:", err);
   }
-
-  const strengthEl = document.getElementById('strengthText');
-  const weaknessEl = document.getElementById('weaknessText');
-
-  strengthEl && (strengthEl.textContent = analysis.strength.name);
-  weaknessEl && (weaknessEl.textContent = analysis.weakness.name);
 },
-
+  
   /* =========================
    * EVENTS
    * ========================= */
