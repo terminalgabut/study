@@ -4,6 +4,8 @@ import { supabase } from '../services/supabase.js';
 import { getProfile, updateProfile } from '../services/profileService.js';
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
+import { buildTrendAnalysis } from '../lib/trendEngine.js';
+import { renderIQTrendPreview } from '../lib/iqTrendPreview.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
 import { profileStatsController } from './profileStatsController.js'; 
 
@@ -61,15 +63,32 @@ export const profileController = {
    * IQ TREND PREVIEW (HEADER)
    * ========================= */
   async loadIQTrendPreview() {
-    if (!this.user) return;
+  if (!this.user) return;
 
-    // nanti logic ini kita isi:
-    // - ambil data sesi
-    // - lempar ke trendEngine
-    // - render mini chart
+  const sessions = await getCognitiveHistory(this.user.id, 8);
+  if (!sessions.length) return;
 
-    console.log('[Profile] IQ Trend Preview init for', this.user.id);
-  },
+  const analysis = buildTrendAnalysis(sessions);
+  if (!analysis) return;
+
+  const iqValues = analysis.iqTrend.map(p => p.value);
+
+  renderIQTrendPreview('iqTrendPreview', iqValues);
+
+  const deltaEl = document.getElementById('iqTrendDelta');
+  if (deltaEl) {
+    deltaEl.textContent =
+      analysis.delta >= 0
+        ? `+${analysis.delta.toFixed(1)}`
+        : analysis.delta.toFixed(1);
+  }
+
+  const strengthEl = document.getElementById('strengthText');
+  const weaknessEl = document.getElementById('weaknessText');
+
+  strengthEl && (strengthEl.textContent = analysis.strength.name);
+  weaknessEl && (weaknessEl.textContent = analysis.weakness.name);
+},
 
   /* =========================
    * EVENTS
