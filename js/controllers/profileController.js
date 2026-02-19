@@ -12,9 +12,8 @@ export const profileController = {
   async init() {
     this.cacheDom();
     await this.loadProfile();
+    await this.loadIQTrendPreview();
     this.bindEvents();
-
-    // ✅ TAMBAHAN: init tab internal profile
     this.initProfileTabs();
   },
 
@@ -56,6 +55,20 @@ export const profileController = {
       this.avatarEl.src =
         profile.avatar_url || '/img/avatar-default.png';
     } 
+  },
+
+  /* =========================
+   * IQ TREND PREVIEW (HEADER)
+   * ========================= */
+  async loadIQTrendPreview() {
+    if (!this.user) return;
+
+    // nanti logic ini kita isi:
+    // - ambil data sesi
+    // - lempar ke trendEngine
+    // - render mini chart
+
+    console.log('[Profile] IQ Trend Preview init for', this.user.id);
   },
 
   /* =========================
