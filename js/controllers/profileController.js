@@ -6,6 +6,7 @@ import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
 import { profileStatsController } from './profileStatsController.js'; 
+import { buildTrendAnalysis } from '../lib/trendEngine.js';
 
 export const profileController = {
 
@@ -55,7 +56,10 @@ export const profileController = {
     if (this.avatarEl) {
       this.avatarEl.src =
         profile.avatar_url || '/img/avatar-default.png';
-    }
+    } 
+
+    // 🔥 LOAD TREND PREVIEW (HEADER)
+    await this.loadTrendPreview();
   },
 
   /* =========================
@@ -139,6 +143,48 @@ export const profileController = {
 
   render('homeProfile');
 },
+
+  /* =========================
+   * IQ TREND PREVIEW (HEADER)
+   * ========================= */
+  async loadTrendPreview() {
+    if (!this.user) return;
+
+    const sessions = await getCognitiveHistory(this.user.id);
+
+    if (!sessions || sessions.length < 2) {
+      const deltaEl = document.getElementById('iqTrendDelta');
+      if (deltaEl) deltaEl.textContent = 'Not enough data';
+      return;
+    }
+
+    const trend = buildTrendAnalysis(sessions);
+    if (!trend) return;
+
+    // Mini Chart
+    renderIQTrendPreview('iqTrendPreview', trend.iqTrend);
+
+    // Delta %
+    const deltaEl = document.getElementById('iqTrendDelta');
+    if (deltaEl) {
+      const icon = trend.deltaPercent >= 0 ? '🔽' : '🔼';
+      deltaEl.textContent = `${trend.deltaPercent}% ${icon}`;
+    }
+
+    // Strength
+    const strengthEl = document.getElementById('strengthText');
+    if (strengthEl) {
+      strengthEl.textContent =
+        `${trend.strength.name} (${trend.strength.percent}%)`;
+    }
+
+    // Weakness
+    const weaknessEl = document.getElementById('weaknessText');
+    if (weaknessEl) {
+      weaknessEl.textContent =
+        `${trend.weakness.name} (${trend.weakness.percent}%)`;
+    }
+  },
 
   /* =========================
    * AVATAR MODAL HANDLER
