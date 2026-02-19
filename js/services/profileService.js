@@ -54,6 +54,34 @@ export async function upsertProfile(profile) {
 }
 
 /* =====================================================
+   📈 COGNITIVE HISTORY (FOR TREND ENGINE)
+   ===================================================== */
+
+export async function getCognitiveHistory(userId) {
+  const { data, error } = await supabase
+    .from('user_cognitive_history') // tabel baru
+    .select(`
+      iq_estimated,
+      iq_confidence,
+      memory_score,
+      reading_score,
+      reasoning_score,
+      analogy_score,
+      vocabulary_score,
+      created_at
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('getCognitiveHistory error:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/* =====================================================
    📊 RADAR STATS PROFILE
    ===================================================== */
 
