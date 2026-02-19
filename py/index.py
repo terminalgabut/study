@@ -3,6 +3,7 @@ import json
 import re
 import logging
 import requests
+from openai import OpenAI
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,31 +27,34 @@ app.include_router(cognitive_router)
 
 BASE_SYSTEM_PROMPT = "Kamu adalah AI Mentalist profesional yang ahli dalam menyusun soal test iQ kritis gunakan 5 dimension di aturan wajib. Kamu HARUS mematuhi struktur JSON yang diminta."
 
-def call_openrouter_api(messages: list):
-    api_key = os.environ.get("OPENROUTER_API_KEY")
-    if not api_key:
-        raise Exception("OPENROUTER_API_KEY tidak ditemukan di environment variables")
-
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://terminalgabut.github.io",
-            "X-Title": "Study AI"
-        },
-        json={
-            "model": "openai/gpt-oss-120b",
-            "messages": messages,
-            "temperature": 0.2,
-            "top_p": 0.9,
-            "reasoning": {"effort": "high"}
-        },
-        timeout=90
+def generate_quiz(messages, mode="qa"):
+    client = OpenAI(
+        api_key=os.getenv("ATLASCLOUD_API_KEY"),
+        base_url="https://api.atlascloud.ai/v1"
     )
-    response.raise_for_status()
-    data = response.json()
-    return data["choices"][0]["message"]["content"]
+
+    MODE_SETTINGS = {
+        "qa": {
+            "temperature": 0.2,
+            "max_tokens": 3000
+        },
+        "creative": {
+            "temperature": 0.9,
+            "max_tokens": 5000
+        }
+    }
+
+    settings = MODE_SETTINGS.get(mode, MODE_SETTINGS["qa"])
+
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-120b",
+        messages=messages,
+        temperature=settings["temperature"],
+        max_tokens=settings["max_tokens"],
+        top_p=0.8
+    )
+
+    return response.choices[0].message.content 
 
 def validate_quiz_structure(data: dict):
     if "questions" not in data:
