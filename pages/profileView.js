@@ -11,21 +11,47 @@ export const profileView = `
     </p>
   </div>
 
-  <!-- Header Profil (TETAP) -->
+  <!-- Header Profil + Analytics Preview -->
   <div class="home-card">
-    <div class="profile-info">
-      
-      <div class="profile-avatar">
-        <img 
-          src="/assets/default-avatar.png" 
-          alt="Foto Profil" 
-          id="profileAvatar"
-        />
+    <div class="profile-top-section">
+
+      <!-- Avatar Block -->
+      <div class="profile-avatar-block">
+        <div class="profile-avatar">
+          <img 
+            src="/assets/default-avatar.png" 
+            alt="Foto Profil" 
+            id="profileAvatar"
+          />
+        </div>
+
+        <div class="profile-details">
+          <p><strong id="profileFullName">Unknown</strong></p>
+          <p>uid: <strong id="profileUid">01010101</strong></p>
+        </div>
       </div>
 
-      <div class="profile-details">
-        <p><strong id="profileFullName">Unknown</strong></p>
-        <p>uid: <strong id="profileUid">01010101</strong></p>
+      <!-- Analytics Preview (Trend + Strength) -->
+      <div class="profile-analytics-preview">
+
+        <div class="trend-header">
+          <strong>IQ Trend</strong>
+          <span id="iqTrendDelta"></span>
+        </div>
+
+        <canvas id="iqTrendPreview"></canvas>
+
+        <div class="strength-summary">
+          <p>
+            <strong>Strength:</strong> 
+            <span id="strengthText">-</span>
+          </p>
+          <p>
+            <strong>Needs Work:</strong> 
+            <span id="weaknessText">-</span>
+          </p>
+        </div>
+
       </div>
 
     </div>
