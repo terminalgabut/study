@@ -186,9 +186,6 @@ export const profileController = {
     });
   },
 
-  /* =========================
-   * EDIT PROFILE
-   * ========================= */
   openEditModal() {
     alert('Modal edit profil akan dibuat di sini');
   }
