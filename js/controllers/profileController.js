@@ -1,7 +1,11 @@
 // root/js/controllers/profileController.js
 
 import { supabase } from '../services/supabase.js';
-import { getProfile, updateProfile } from '../services/profileService.js';
+import { 
+  getProfile, 
+  updateProfile, 
+  getCognitiveHistory 
+} from '../services/profileService.js';
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
 import { buildTrendAnalysis } from '../lib/trendEngine.js';
