@@ -53,7 +53,7 @@ def generate_quiz(messages, mode="qa"):
     temperature=settings["temperature"],
     max_tokens=settings["max_tokens"],
     top_p=0.8,
-    response_format={"type": "json_object"}
+    
 )
 
     return response.choices[0].message.content 
