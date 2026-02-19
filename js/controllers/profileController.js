@@ -104,6 +104,9 @@ export const profileController = {
       <p><strong>Classification:</strong> <span id="iqClass"></span></p>
       <p><strong>Confidence:</strong> <span id="iqConfidence"></span>%</p>
       <p><strong>Neuro Type:</strong> <span id="neuroType"></span></p>
+      <div class="iq-insight">
+      <p id="iqDescription"></p>
+      </div>
     </div>
   </div>
 `,
