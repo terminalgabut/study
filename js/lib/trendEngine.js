@@ -5,7 +5,7 @@
 ========================================= */
 
 function average(arr) {
-  if (!arr || arr.length === 0) return 0;
+  if (!Array.isArray(arr) || arr.length === 0) return 0;
   return arr.reduce((a, b) => a + b, 0) / arr.length;
 }
 
@@ -15,11 +15,32 @@ function percentChange(oldVal, newVal) {
 }
 
 function personalBest(sessions, key) {
-  return Math.max(...sessions.map(s => s[key] || 0));
+  return Math.max(...sessions.map(s => Number(s[key]) || 0));
 }
 
 function detectDomains() {
   return ["memory", "reading", "reasoning", "analogy", "vocabulary"];
+}
+
+function calculateStability(values) {
+  if (!values.length) return 0;
+
+  const avg = average(values);
+  const variance =
+    average(values.map(v => Math.pow(v - avg, 2)));
+
+  const stdDev = Math.sqrt(variance);
+
+  // Skala 0-100 (semakin kecil deviasi semakin stabil)
+  return Math.max(0, 100 - stdDev);
+}
+
+function classifyTrend(delta) {
+  if (delta > 5) return "uptrend_strong";
+  if (delta > 2) return "uptrend";
+  if (delta < -5) return "downtrend_strong";
+  if (delta < -2) return "downtrend";
+  return "stable";
 }
 
 /* =========================================
@@ -28,7 +49,7 @@ function detectDomains() {
 
 export function buildTrendAnalysis(sessions = [], options = {}) {
 
-  if (!sessions || sessions.length === 0) {
+  if (!Array.isArray(sessions) || sessions.length === 0) {
     return null;
   }
 
@@ -44,29 +65,33 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
   const recentSessions = sessions.slice(-trendWindow);
 
   const iqTrend = recentSessions.map(s => ({
-  date: s.date || s.session_at || null,
-  value: Number(s.iq_estimated) || 0
-}));
+    date: s.date || s.session_at || null,
+    value: Number(s.iq_estimated) || 0
+  }));
 
-  const firstIQ = iqTrend[0] || 0;
-  const lastIQ = iqTrend[iqTrend.length - 1] || 0;
+  const firstIQ = iqTrend[0]?.value || 0;
+  const lastIQ = iqTrend[iqTrend.length - 1]?.value || 0;
 
   const delta = lastIQ - firstIQ;
   const deltaPercent = percentChange(firstIQ, lastIQ);
+  const trendStatus = classifyTrend(delta);
+
+  const stabilityScore = calculateStability(
+    iqTrend.map(i => i.value)
+  );
 
   /* ===============================
      2️⃣ DOMAIN STRENGTH / WEAKNESS
   =============================== */
 
-  const domains = detectDomains(sessions);
-
+  const domains = detectDomains();
   const lastSession = sessions[sessions.length - 1];
 
   const domainStats = domains.map(domainKey => {
 
     const avg = average(sessions.map(s => s[domainKey] || 0));
     const best = personalBest(sessions, domainKey);
-    const current = lastSession[domainKey] || 0;
+    const current = Number(lastSession[domainKey]) || 0;
 
     let percent = 0;
 
@@ -77,7 +102,7 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
     }
 
     return {
-      key: domainKey.replace("_score", ""),
+      key: domainKey,
       current,
       avg,
       best,
@@ -91,15 +116,16 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
   const weakness = domainStats[domainStats.length - 1];
 
   /* ===============================
-     3️⃣ CONFIDENCE WARNING
+     3️⃣ CONFIDENCE CHECK
   =============================== */
 
-  const lastConfidence = lastSession.iq_confidence || 0;
+  const lastConfidence = Number(lastSession.iq_confidence) || 0;
 
   let confidenceNote = null;
 
   if (lastConfidence < 30) {
-    confidenceNote = "Data masih terbatas, estimasi bisa berubah signifikan.";
+    confidenceNote =
+      "Data masih terbatas, estimasi bisa berubah signifikan.";
   }
 
   /* ===============================
@@ -110,11 +136,7 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
   const maxVal = Math.max(...values);
   const minVal = Math.min(...values);
 
-  let imbalanceDetected = false;
-
-  if (maxVal - minVal > 60) {
-    imbalanceDetected = true;
-  }
+  const imbalanceDetected = (maxVal - minVal > 60);
 
   /* ===============================
      FINAL RETURN
@@ -124,6 +146,8 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
     iqTrend,
     delta,
     deltaPercent: Number(deltaPercent.toFixed(1)),
+    trendStatus,
+    stabilityScore: Number(stabilityScore.toFixed(1)),
 
     strength: {
       name: strength.key,
@@ -139,7 +163,6 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
 
     confidence: lastConfidence,
     confidenceNote,
-
     imbalanceDetected
   };
 }
