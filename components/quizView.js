@@ -7,7 +7,7 @@ export const quizView = {
       <div class="quiz-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px;">
         <div class="quiz-loader" style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
         <div class="quiz-placeholder" style="text-align:center;">
-          <p style="color:var(--text-primary); font-weight:500; margin-bottom:10px;">Memasuki mode latihan, Dalam 60 detik...</p>
+          <p style="color:var(--text-primary); font-weight:500; margin-bottom:10px;">Memasuki mode latihan, dalam <span id="countdownText">60</span> detik...</p>
           <p style="color:var(--text-muted); font-size:14px;">AI sedang menyusun pertanyaan berdasarkan materi.</p>
         </div>
         
