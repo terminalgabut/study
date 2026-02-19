@@ -31,7 +31,6 @@ export function initQuizGenerator() {
     const contentEl = document.getElementById('learningContent');
     const titleEl = document.getElementById('learningTitle');
     
-    // Sekarang titleEl berisi JUDUL BAB (misal: "Majas Personifikasi")
     const babTitle = titleEl ? titleEl.textContent.trim() : "Materi";
     const contentText = contentEl ? contentEl.textContent.trim() : "";
 
@@ -51,6 +50,7 @@ export function initQuizGenerator() {
     
     quizEl.removeAttribute('hidden');
     quizEl.innerHTML = quizView.loading();
+    startLoadingCountdown();
     
     if (titleEl) titleEl.scrollIntoView({ behavior: 'smooth' });
 
