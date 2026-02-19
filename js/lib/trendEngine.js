@@ -18,11 +18,8 @@ function personalBest(sessions, key) {
   return Math.max(...sessions.map(s => s[key] || 0));
 }
 
-function detectDomains(sessions) {
-  const sample = sessions[0];
-  return Object.keys(sample).filter(key =>
-    key.includes("_score")
-  );
+function detectDomains() {
+  return ["memory", "reading", "reasoning", "analogy", "vocabulary"];
 }
 
 /* =========================================
