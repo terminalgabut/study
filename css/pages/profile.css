@@ -1,18 +1,23 @@
 /* =========================================
-   PROFILE INFO HEADER
+   PROFILE TOP SECTION (Avatar + Analytics)
 ========================================= */
 
-.profile-info {
+.profile-top-section {
   display: flex;
-  align-items: center;
-  gap: var(--space-lg);
+  align-items: flex-start;
+  gap: var(--space-xl);
   flex-wrap: wrap;
 }
 
-.profile-avatar {
-  flex-shrink: 0;
+/* Avatar Block */
+.profile-avatar-block {
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
+/* Avatar image */
 .profile-avatar img {
   width: 120px;
   height: 120px;
@@ -22,26 +27,61 @@
   background: var(--surface);
 }
 
+/* Details */
 .profile-details {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
 }
 
-/* Nama lebih dominan */
 .profile-details p:first-child strong {
   font-size: 1.25rem;
   font-weight: 600;
 }
 
-/* UID subtle */
 .profile-details p:last-child {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
 
-.profile-details p:last-child strong {
-  font-weight: 500;
+/* =========================================
+   ANALYTICS PREVIEW CARD
+========================================= */
+
+.profile-analytics-preview {
+  flex: 1;
+  min-width: 280px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Trend header */
+.trend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+/* Chart */
+#iqTrendPreview {
+  width: 100%;
+  height: 200px;
+  display: block;
+}
+
+/* Strength summary */
+.strength-summary {
+  margin-top: var(--space-md);
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.strength-summary strong {
+  color: var(--accent);
 }
 
 /* =========================================
