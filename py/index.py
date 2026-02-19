@@ -43,11 +43,11 @@ def call_openrouter_api(messages: list):
             "model": "openai/gpt-oss-120b:nitro",
             "messages": messages,
             "temperature": 0.2,
-            "top_p": 0.8,
-            "max_tokens": 3000,
+            "top_p": 0.9,
+            "max_tokens": 5000,
             "reasoning": {"effort": "high"}
         },
-        timeout=60
+        timeout=90
     )
     response.raise_for_status()
     data = response.json()
