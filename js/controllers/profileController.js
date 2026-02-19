@@ -9,6 +9,7 @@ import {
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
 import { buildTrendAnalysis } from '../lib/trendEngine.js';
+import { buildStrengthProfile } from '../lib/strengthEngine.js';
 import { renderIQTrendPreview } from '../lib/iqTrendPreview.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
 import { profileStatsController } from './profileStatsController.js'; 
