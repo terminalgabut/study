@@ -42,19 +42,38 @@ export const quizCore = {
   container: null,
   slug: null,
   categoryPath: null,
-  babTitle: null, // Tambahkan untuk menyimpan judul bab
+  babTitle: null, 
 
-  init(questions, container, babTitle) { // Terima babTitle dari generator
+  init(questions, container, babTitle) { 
     const hash = window.location.hash; 
     const parts = hash.split('/'); 
     
     this.categoryPath = parts[1] || "umum"; 
     this.slug = parts[2] || "default";
     this.container = container;
-    this.babTitle = babTitle; // Simpan ke state kuis
+    this.babTitle = babTitle; 
 
-    const data = questions?.questions || questions;
-    quizState.reset(Array.isArray(data) ? data : []);
+  const data = questions?.questions || questions;
+  let processed = Array.isArray(data) ? data : [];
+      processed = processed.map(q => {
+  if (!q.options || !q.correct_answer) return q;
+
+  const options = q.options.map(opt => ({
+    text: opt,
+    isCorrect: opt === q.correct_answer
+  }));
+
+  const shuffled = shuffleArray(options);
+
+  return {
+    ...q,
+    options: shuffled.map(o => o.text),
+    correct_answer: shuffled.find(o => o.isCorrect)?.text
+  };
+});
+
+    processed = avoidStreak(processed); 
+    quizState.reset(processed);
     this.start();
   },
 
