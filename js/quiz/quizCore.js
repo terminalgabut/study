@@ -6,6 +6,37 @@ import { quizView } from '../../components/quizView.js';
 import { quizState } from './quizState.js';
 import { quizTimer } from './quizTimer.js';
 
+// shuffle 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function avoidStreak(questions) {
+  for (let i = 2; i < questions.length; i++) {
+    if (
+      questions[i].correct_answer === questions[i - 1].correct_answer &&
+      questions[i].correct_answer === questions[i - 2].correct_answer
+    ) {
+      // paksa tukar dengan opsi lain
+      const opts = [...questions[i].options];
+      const correctIndex = opts.indexOf(questions[i].correct_answer);
+
+      const newIndex = (correctIndex + 1) % opts.length;
+      const temp = opts[newIndex];
+
+      opts[newIndex] = opts[correctIndex];
+      opts[correctIndex] = temp;
+
+      questions[i].options = opts;
+      questions[i].correct_answer = opts[newIndex];
+    }
+  }
+  return questions;
+}
 
 export const quizCore = {
   container: null,
