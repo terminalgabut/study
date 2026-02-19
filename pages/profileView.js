@@ -36,7 +36,10 @@ export const profileView = `
 
         <div class="trend-header">
           <strong>Cogitive Poin Trend</strong>
-          <span id="iqTrendDelta"></span>
+          <div class="trend-meta">
+           <span id="iqTrendDelta"></span>
+           <span id="volatilityBadge" class="volatility-badge"></span>
+          </div>
         </div>
 
         <div class="chart-wrapper">
