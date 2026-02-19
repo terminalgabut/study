@@ -1,7 +1,23 @@
 // root/js/ui/generator.js
 import { generateQuiz } from '../services/quizClient.js';
 import { quizCore } from '../quiz/quizCore.js';
-import { quizView } from '../../components/quizView.js';
+import { quizView } from '../../components/quizView.js'; 
+
+function startLoadingCountdown() {
+  let timeLeft = 60;
+  const countdownEl = document.getElementById("countdownText");
+
+  if (!countdownEl) return;
+
+  const timer = setInterval(() => {
+    timeLeft--;
+    countdownEl.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+    }
+  }, 1000);
+}
 
 export function initQuizGenerator() {
   const btnEl = document.getElementById('generateQuizBtn');
