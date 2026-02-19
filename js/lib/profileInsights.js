@@ -27,7 +27,7 @@ export function getIQInsight(summary) {
 
   if (confidence < 30) {
     iqDescription =
-      "Estimasi IQ masih sangat awal dan memiliki tingkat kepastian rendah. Skor dapat berubah seiring bertambahnya data latihan.";
+      "Estimasi Conitive Poin masih sangat awal dan memiliki tingkat kepastian rendah. Skor dapat berubah seiring bertambahnya data latihan.";
   } else {
     switch (iqClass) {
       case "Below Average":
