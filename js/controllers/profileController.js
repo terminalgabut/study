@@ -201,7 +201,7 @@ async loadIQTrendPreview() {
     <canvas id="stabilityChart"></canvas>
 
     <div class="iq-summary-card">
-      <p><strong>Estimated IQ:</strong> <span id="iqValue"></span></p>
+      <p><strong>Estimated Cognitive Poin:</strong> <span id="iqValue"></span></p>
       <p><strong>Classification:</strong> <span id="iqClass"></span></p>
       <p><strong>Confidence:</strong> <span id="iqConfidence"></span>%</p>
       <p><strong>Neuro Type:</strong> <span id="neuroType"></span></p>
