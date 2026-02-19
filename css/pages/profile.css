@@ -114,6 +114,34 @@
   font-weight: 500;
 }
 
+.trend-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.volatility-badge {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.volatility-stable {
+  background: rgba(34,197,94,0.15);
+  color: #22c55e;
+}
+
+.volatility-moderate {
+  background: rgba(234,179,8,0.15);
+  color: #eab308;
+}
+
+.volatility-high {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+}
+
 .chart-wrapper {
   position: relative;
   width: 100%;
