@@ -45,7 +45,7 @@ export function renderIQTrendPreview(canvasId, iqTrend = []) {
       labels: iqTrend.map((_, i) => `D${i + 1}`),
       datasets: [
         {
-          label: 'IQ Trend (7 Hari Terakhir)',
+          label: 'CP Trend (7 Hari Terakhir)',
           data: iqTrend,
           borderColor: lineColor,
           backgroundColor: gradient,
@@ -81,7 +81,7 @@ export function renderIQTrendPreview(canvasId, iqTrend = []) {
           borderWidth: 1,
           callbacks: {
             label: function(context) {
-              return `IQ: ${context.parsed.y}`;
+              return `CP: ${context.parsed.y}`;
             }
           }
         }
