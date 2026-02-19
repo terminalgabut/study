@@ -5,6 +5,7 @@ import { getProfile, updateProfile } from '../services/profileService.js';
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
+import { profileStatsController } from './profileStatsController.js'; 
 
 export const profileController = {
 
@@ -92,12 +93,20 @@ export const profileController = {
         </div>
       `,
       statistikProfile: `
-        <div class="home-card">
-          <h3>Statistik</h3>
-          <p>Statistik progres belajar kamu.</p>
-          <canvas id="profileRadar"></canvas>
-        </div>
-      `,
+  <div class="home-card">
+    <h3>Statistik</h3>
+
+    <canvas id="profileRadar"></canvas>
+    <canvas id="stabilityChart"></canvas>
+
+    <div class="iq-summary-card">
+      <p><strong>Estimated IQ:</strong> <span id="iqValue"></span></p>
+      <p><strong>Classification:</strong> <span id="iqClass"></span></p>
+      <p><strong>Confidence:</strong> <span id="iqConfidence"></span>%</p>
+      <p><strong>Neuro Type:</strong> <span id="neuroType"></span></p>
+    </div>
+  </div>
+`,
       settingProfile: `
         <div class="home-card">
           <h3>Pengaturan</h3>
@@ -113,12 +122,8 @@ export const profileController = {
 
     // 🔥 TARUH DI SINI
     if (tab === 'statistikProfile') {
-      const { getProfileRadarStats } = await import('../services/profileService.js');
-      const { renderProfileRadar } = await import('../lib/chartsProfile.js');
-
-      const stats = await getProfileRadarStats(this.user.id);
-      renderProfileRadar('profileRadar', stats);
-    }
+  await profileStatsController.render(this.user.id);
+}
   };
 
   tabs.forEach(tab => {
