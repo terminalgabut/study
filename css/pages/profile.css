@@ -31,14 +31,72 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--accent);
   background: var(--surface);
+  border: 3px solid var(--tier-color, #94a3b8);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
   transition: transform 0.3s ease;
 }
 
 .profile-avatar img:hover {
   transform: scale(1.04);
+}
+
+/* Beginner */
+.badge-beginner .profile-avatar img {
+  border: 3px solid #94a3b8;
+}
+
+/* Master */
+.badge-master .profile-avatar img {
+  border: 3px solid #38bdf8;
+}
+
+/* Legend */
+.badge-legend .profile-avatar img {
+  border: 3px solid #a855f7;
+}
+
+/* Advanced Practitioner */
+.badge-advanced-practitioner .profile-avatar img {
+  border: 3px solid #3b82f6;
+  box-shadow: 0 0 10px rgba(59,130,246,0.4);
+}
+
+/* Specialist */
+.badge-specialist .profile-avatar img {
+  border: 3px solid #a855f7;
+  box-shadow: 0 0 12px rgba(168,85,247,0.4);
+}
+
+/* Expert */
+.badge-expert .profile-avatar img {
+  border: 3px solid #ec4899;
+  box-shadow: 0 0 15px rgba(236,72,153,0.4);
+}
+
+/* Distinguished */
+.badge-distinguished .profile-avatar img {
+  border: 3px solid #f97316;
+  box-shadow: 0 0 18px rgba(249,115,22,0.5);
+}
+
+/* Pinnacle */
+.badge-pinnacle .profile-avatar img {
+  border: 3px solid #facc15;
+  animation: pinnacleRing 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes pinnacleRing {
+  from {
+    box-shadow:
+      0 0 15px rgba(250,204,21,0.6),
+      0 0 25px rgba(249,115,22,0.4);
+  }
+  to {
+    box-shadow:
+      0 0 25px rgba(250,204,21,0.9),
+      0 0 45px rgba(249,115,22,0.6);
+  }
 }
 
 /* =========================================
