@@ -196,7 +196,19 @@ export const profileHomeController = {
 
     /* ===== Target ===== */
 
-    const xpRow =
+    /* ===== Target ===== */
+
+// Level + Badge
+const targetValue =
+  root.querySelector('.target-row .target-value');
+
+if (targetValue) {
+  targetValue.textContent =
+    `Level ${data.target.level} (${data.target.badgeName})`;
+}
+
+// XP Needed
+const xpRow =
   root.querySelector('.xp-needed');
 
 if (xpRow) {
@@ -204,6 +216,7 @@ if (xpRow) {
     `${data.target.remainingXP} XP needed`;
 }
 
+// Progress bar
 const progressFill =
   root.querySelector('.progress-fill');
 
