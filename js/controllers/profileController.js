@@ -58,7 +58,7 @@ export const profileController = {
     this.fullNameEl && (this.fullNameEl.textContent = profile.full_name || '-');
     if (this.uuidEl) {
     this.uuidEl.textContent =
-    profile.uuid || this.user.id.slice(0, 8);
+  profile.uuid || this.user.id.slice(0, 8);
            }
     this.bioEl && (this.bioEl.textContent = profile.bio || 'Belum ada bio.'); 
 
