@@ -102,6 +102,19 @@ if (badgeEl) {
   badgeEl.className =
     `badge ${levelData.badge.className}`;
 }
+           
+/* ===============================
+   APPLY BADGE TO AVATAR
+=============================== */
+
+const avatarWrapper =
+  document.querySelector('.profile-avatar');
+
+if (avatarWrapper) {
+  avatarWrapper.className =
+    `profile-avatar ${levelData.badge.className}`;
+
+}
   },
 
   /* =========================
