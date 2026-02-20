@@ -389,9 +389,11 @@ if (strengthProfile) {
     const render = async (tab) => {
     content.innerHTML = views[tab] || views.homeProfile;
 
-    // 🔥 TARUH DI SINI
+    if (tab === 'homeProfile') {
+      await profileHomeController.render(this.user.id);  
+}
     if (tab === 'statistikProfile') {
-  await profileStatsController.render(this.user.id);
+      await profileStatsController.render(this.user.id);
 }
   };
 
