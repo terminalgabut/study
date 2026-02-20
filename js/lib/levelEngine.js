@@ -47,26 +47,29 @@ const BADGE_TIERS = [
 ========================================= */
 
 export function xpRequiredForLevel(level) {
-  let total = 0;
+  if (level <= 1) return LEVEL_CONFIG.baseXP;
+
+  let xp = LEVEL_CONFIG.baseXP;
 
   for (let i = 1; i < level; i++) {
-    if (i <= LEVEL_CONFIG.midPoint) {
-      total += LEVEL_CONFIG.baseXP *
-        Math.pow(LEVEL_CONFIG.earlyGrowth, i - 1);
-    } else {
-      const earlyTotal =
-        LEVEL_CONFIG.baseXP *
-        Math.pow(LEVEL_CONFIG.earlyGrowth, LEVEL_CONFIG.midPoint - 1);
+    let growth;
 
-      total += earlyTotal *
-        Math.pow(
-          LEVEL_CONFIG.lateGrowth,
-          i - LEVEL_CONFIG.midPoint
-        );
+    if (i <= LEVEL_CONFIG.earlyHookEnd) {
+      growth = LEVEL_CONFIG.growth.earlyHook;
+    } else if (i <= LEVEL_CONFIG.earlyEnd) {
+      growth = LEVEL_CONFIG.growth.early;
+    } else if (i <= LEVEL_CONFIG.midEnd) {
+      growth = LEVEL_CONFIG.growth.mid;
+    } else if (i <= LEVEL_CONFIG.lateEnd) {
+      growth = LEVEL_CONFIG.growth.late;
+    } else {
+      growth = LEVEL_CONFIG.growth.veryLate;
     }
+
+    xp *= growth;
   }
 
-  return Math.floor(total);
+  return Math.floor(xp);
 }
 
 /**
