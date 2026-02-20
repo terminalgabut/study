@@ -12,8 +12,10 @@
 ========================================= */
 
 const LEVEL_CONFIG = {
-  baseXP: 100,        // XP required for level 1 → 2
-  growthRate: 1.15,   // Exponential growth factor
+  baseXP: 100,
+  earlyGrowth: 1.08,   // Level 1–50
+  lateGrowth: 1.04,    // Level 51–100
+  midPoint: 50,
   maxLevel: 100
 };
 
@@ -31,36 +33,30 @@ const BADGE_TIERS = [
 ];
 
 /* =========================================
-   CORE XP CALCULATIONS
+   XP CALCULATION (HYBRID CURVE)
 ========================================= */
 
-/**
- * Total XP required to reach a specific level
- */
 function xpRequiredForLevel(level) {
   let total = 0;
 
   for (let i = 1; i < level; i++) {
-    total += LEVEL_CONFIG.baseXP * Math.pow(LEVEL_CONFIG.growthRate, i - 1);
+    if (i <= LEVEL_CONFIG.midPoint) {
+      total += LEVEL_CONFIG.baseXP *
+        Math.pow(LEVEL_CONFIG.earlyGrowth, i - 1);
+    } else {
+      const earlyTotal =
+        LEVEL_CONFIG.baseXP *
+        Math.pow(LEVEL_CONFIG.earlyGrowth, LEVEL_CONFIG.midPoint - 1);
+
+      total += earlyTotal *
+        Math.pow(
+          LEVEL_CONFIG.lateGrowth,
+          i - LEVEL_CONFIG.midPoint
+        );
+    }
   }
 
   return Math.floor(total);
-}
-
-/**
- * Determine level based on total XP
- */
-function calculateLevel(totalXP) {
-  let level = 1;
-
-  while (
-    level < LEVEL_CONFIG.maxLevel &&
-    totalXP >= xpRequiredForLevel(level + 1)
-  ) {
-    level++;
-  }
-
-  return level;
 }
 
 /**
