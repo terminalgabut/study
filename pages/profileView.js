@@ -31,23 +31,24 @@ export const profileView = `
 
   <div class="profile-gamification">
 
-  <div class="badge-wrapper">
+  <!-- Level Center -->
+  <div class="level-center-row">
+    <span class="level-label">
+      Lv.<span id="userLevel">1</span>
+    </span>
+
     <span id="levelBadge" class="badge badge-beginner">
       Pemula
     </span>
   </div>
 
-  <div class="level-block">
-    <div class="level-number">
-      Lv. <span id="userLevel">1</span>
-    </div>
-
-    <div class="xp-meta">
-      <span id="userXP">75</span> / 
-      <span id="nextLevelXP">100</span> XP
-    </div>
+  <!-- XP Text -->
+  <div class="xp-meta-row">
+    <span id="userXP">7</span> /
+    <span id="nextLevelXP">100</span> XP
   </div>
 
+  <!-- XP Bar -->
   <div class="xp-bar">
     <div class="xp-fill" id="xpFill"></div>
   </div>
