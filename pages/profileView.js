@@ -26,10 +26,25 @@ export const profileView = `
         </div>
 
         <div class="profile-details">
-          <p><strong id="profileFullName">Unknown</strong></p>
-          <p>uid: <strong id="profileUid">01010101</strong></p>
-        </div>
-      </div>
+  <p><strong id="profileFullName">Unknown</strong></p>
+  <p>uid: <strong id="profileUuid">01010101</strong></p>
+
+  <div class="profile-gamification">
+    <div class="level-row">
+      <span class="badge" id="levelBadge">Unknown</span>
+      <span class="level-text">
+        Lv. <strong id="userLevel">10101010</strong>
+      </span>
+      <span class="xp-text">
+        <strong id="userXP">10101010</strong> XP
+      </span>
+    </div>
+
+    <div class="xp-bar">
+      <div class="xp-fill" id="xpFill"></div>
+    </div>
+  </div>
+</div>
 
       <!-- Analytics Preview (Trend + Strength) -->
       <div class="profile-analytics-preview">
