@@ -10,6 +10,7 @@ import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js';
 import { buildTrendAnalysis } from '../lib/trendEngine.js';
 import { buildStrengthProfile } from '../lib/strengthEngine.js';
+import { analyzeVolatility } from '../lib/volatilityEngine.js';
 import { renderIQTrendPreview } from '../lib/iqTrendPreview.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
 import { profileStatsController } from './profileStatsController.js'; 
@@ -76,6 +77,33 @@ async loadIQTrendPreview() {
 
     const analysis = buildTrendAnalysis(sessions);
     if (!analysis) return;
+
+/* ===============================
+   VOLATILITY BADGE
+================================ */
+
+const volatilityBadgeEl =
+  document.getElementById('volatilityBadge');
+
+if (volatilityBadgeEl) {
+  const iqHistory = sessions
+    .map(s => s.cognitive_index)
+    .filter(v => typeof v === 'number');
+
+  const volatility = analyzeVolatility(iqHistory);
+
+  volatilityBadgeEl.textContent = volatility.label;
+
+  volatilityBadgeEl.classList.remove(
+    'volatility-stable',
+    'volatility-moderate',
+    'volatility-high'
+  );
+
+  volatilityBadgeEl.classList.add(
+    volatility.className
+  );
+}
 
     /* ===============================
        1️⃣ RENDER CHART
