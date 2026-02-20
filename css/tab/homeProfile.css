@@ -1,72 +1,68 @@
 /* root/css/tab/homeProfile.css
 
 /* =========================================
-   HOME OVERVIEW
+   HOME PROFILE – OVERVIEW (SCOPED SAFE)
 ========================================= */
 
-.home-overview {
+#profileDynamicContent .home-overview {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
 }
 
-/* Generic card */
-.home-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
+/* Override card spacing khusus overview */
+#profileDynamicContent .home-overview .home-card {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
-/* =========================================
-   HERO SECTION
-========================================= */
+/* ===============================
+   HERO SUMMARY
+=============================== */
 
-.overview-hero {
+.home-overview .overview-hero {
   align-items: center;
   text-align: center;
 }
 
-.hero-main {
+.home-overview .hero-main {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
 
-.hero-metric {
+.home-overview .hero-metric {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.metric-label {
+.home-overview .metric-label {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
 
-.metric-value {
+.home-overview .metric-value {
   font-size: 1.4rem;
   font-weight: 600;
 }
 
-.metric-value.accent {
+.home-overview .metric-value.accent {
   color: var(--accent);
 }
 
-/* =========================================
+/* ===============================
    DAILY GRID
-========================================= */
+=============================== */
 
-.daily-grid {
+.home-overview .daily-grid {
   display: flex;
   justify-content: space-between;
   gap: var(--space-md);
 }
 
-.daily-item {
+.home-overview .daily-item {
   flex: 1;
   text-align: center;
   display: flex;
@@ -74,41 +70,41 @@
   gap: 4px;
 }
 
-.daily-number {
+.home-overview .daily-number {
   font-size: 1.2rem;
   font-weight: 600;
 }
 
-.daily-label {
+.home-overview .daily-label {
   font-size: 0.7rem;
   color: var(--text-muted);
 }
 
-/* =========================================
+/* ===============================
    FAVORITE
-========================================= */
+=============================== */
 
-.favorite-item {
+.home-overview .favorite-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.favorite-title {
+.home-overview .favorite-title {
   font-weight: 500;
 }
 
-/* =========================================
+/* ===============================
    TARGET PROGRESS
-========================================= */
+=============================== */
 
-.target-row {
+.home-overview .target-row {
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
 }
 
-.progress-bar {
+.home-overview .progress-bar {
   width: 100%;
   height: 8px;
   background: rgba(255,255,255,0.06);
@@ -116,7 +112,7 @@
   overflow: hidden;
 }
 
-.progress-fill {
+.home-overview .progress-fill {
   height: 100%;
   background: linear-gradient(
     90deg,
