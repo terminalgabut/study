@@ -31,12 +31,12 @@ export const profileView = `
 
   <div class="profile-gamification">
     <div class="level-row">
-      <span class="badge" id="levelBadge">Unknown</span>
+      <span class="badge" id="levelBadge">Noob</span>
       <span class="level-text">
-        Lv. <strong id="userLevel">10101010</strong>
+        Lv. <strong id="userLevel">1</strong>
       </span>
       <span class="xp-text">
-        <strong id="userXP">10101010</strong> XP
+        <strong id="userXP">0</strong> XP
       </span>
     </div>
 
