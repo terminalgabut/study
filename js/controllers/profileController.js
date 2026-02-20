@@ -288,60 +288,68 @@ if (strengthProfile) {
 
     const views = {
       homeProfile: `
-  <div class="home-card profile-overview">
-    <h3>Overview</h3>
+  <div class="home-overview">
 
-    <!-- Cognitive Section -->
-    <div class="profile-section">
-      <div class="profile-row">
-        <span>Cognitive Index</span>
-        <strong class="positive">87.4 ↑</strong>
-      </div>
-      <div class="profile-row">
-        <span>Stability</span>
-        <strong>Moderate</strong>
-      </div>
-      <div class="profile-row">
-        <span>Neuro Type</span>
-        <strong class="highlight">Analytical Strategist</strong>
+    <!-- HERO SUMMARY -->
+    <div class="home-card overview-hero">
+      <div class="hero-main">
+        <div class="hero-metric">
+          <span class="metric-label">Cognitive Index</span>
+          <span class="metric-value">87.4 ↑</span>
+        </div>
+
+        <div class="hero-metric">
+          <span class="metric-label">Stability</span>
+          <span class="metric-value">Moderate</span>
+        </div>
+
+        <div class="hero-metric">
+          <span class="metric-label">Neuro Type</span>
+          <span class="metric-value accent">Analytical Strategist</span>
+        </div>
       </div>
     </div>
 
-    <!-- Target Section -->
-    <div class="profile-section target-box">
-      <div class="profile-row">
-        <span>Next Target</span>
-        <strong>Level 10 (Skilled)</strong>
-      </div>
-      <div class="profile-row">
-        <span>XP Needed</span>
-        <strong class="highlight">132 XP</strong>
-      </div>
-    </div>
-
-    <!-- Today's Activity -->
-    <div class="profile-section">
-      <h4>Today's Activity</h4>
-      <div class="profile-row">
-        <span>Quizzes Today</span>
-        <strong>6</strong>
-      </div>
-      <div class="profile-row">
-        <span>Top Score</span>
-        <strong>92</strong>
-      </div>
-      <div class="profile-row">
-        <span>Study Time</span>
-        <strong>38 min</strong>
+    <!-- DAILY STATS -->
+    <div class="home-card overview-daily">
+      <h4>Today</h4>
+      <div class="daily-grid">
+        <div class="daily-item">
+          <span class="daily-number">12</span>
+          <span class="daily-label">Quiz Done</span>
+        </div>
+        <div class="daily-item">
+          <span class="daily-number">92</span>
+          <span class="daily-label">Highest Score</span>
+        </div>
+        <div class="daily-item">
+          <span class="daily-number">+18 XP</span>
+          <span class="daily-label">XP Gained</span>
+        </div>
       </div>
     </div>
 
-    <!-- Favorite Topic -->
-    <div class="profile-section favorite-box">
-      <h4>Favorite Topic</h4>
-      <strong>Logical Fallacies – Part 2</strong>
-      <small>7 sessions in last 14 days</small>
+    <!-- FAVORITE MATERIAL -->
+    <div class="home-card overview-favorite">
+      <h4>Favorite Material</h4>
+      <div class="favorite-item">
+        <span class="favorite-title">Logical Fallacies Advanced</span>
+        <small>Most practiced this week</small>
+      </div>
     </div>
+
+    <!-- NEXT TARGET -->
+    <div class="home-card overview-target">
+      <h4>Next Target</h4>
+      <div class="target-row">
+        <span>Level 10 (Skilled)</span>
+        <span class="accent">132 XP needed</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 64%"></div>
+      </div>
+    </div>
+
   </div>
 `,
       materiProfile: `
