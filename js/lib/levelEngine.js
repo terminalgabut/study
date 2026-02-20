@@ -36,7 +36,7 @@ const BADGE_TIERS = [
    XP CALCULATION (HYBRID CURVE)
 ========================================= */
 
-function xpRequiredForLevel(level) {
+export function xpRequiredForLevel(level) {
   let total = 0;
 
   for (let i = 1; i < level; i++) {
