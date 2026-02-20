@@ -19,12 +19,12 @@ export async function getProfileHomeData(userId) {
   ]);
 
   return {
-    xpRow,
-    cognitive,
-    cognitiveSessions,
-    dailyAttempts,
-    favoriteAttempts
-  };
+  xpRow,                 // raw xp row
+  cognitive,             // user_cognitive_profile
+  cognitiveSessions,     // 2 latest sessions
+  dailyAttempts,         // today attempts
+  favoriteAttempts       // 14 day attempts
+};
 }
 
 /* =========================
