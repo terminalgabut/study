@@ -288,11 +288,62 @@ if (strengthProfile) {
 
     const views = {
       homeProfile: `
-        <div class="home-card">
-          <h3>Overview</h3>
-          <p>Selamat datang di halaman profil kamu.</p>
-        </div>
-      `,
+  <div class="home-card profile-overview">
+    <h3>Overview</h3>
+
+    <!-- Cognitive Section -->
+    <div class="profile-section">
+      <div class="profile-row">
+        <span>Cognitive Index</span>
+        <strong class="positive">87.4 ↑</strong>
+      </div>
+      <div class="profile-row">
+        <span>Stability</span>
+        <strong>Moderate</strong>
+      </div>
+      <div class="profile-row">
+        <span>Neuro Type</span>
+        <strong class="highlight">Analytical Strategist</strong>
+      </div>
+    </div>
+
+    <!-- Target Section -->
+    <div class="profile-section target-box">
+      <div class="profile-row">
+        <span>Next Target</span>
+        <strong>Level 10 (Skilled)</strong>
+      </div>
+      <div class="profile-row">
+        <span>XP Needed</span>
+        <strong class="highlight">132 XP</strong>
+      </div>
+    </div>
+
+    <!-- Today's Activity -->
+    <div class="profile-section">
+      <h4>Today's Activity</h4>
+      <div class="profile-row">
+        <span>Quizzes Today</span>
+        <strong>6</strong>
+      </div>
+      <div class="profile-row">
+        <span>Top Score</span>
+        <strong>92</strong>
+      </div>
+      <div class="profile-row">
+        <span>Study Time</span>
+        <strong>38 min</strong>
+      </div>
+    </div>
+
+    <!-- Favorite Topic -->
+    <div class="profile-section favorite-box">
+      <h4>Favorite Topic</h4>
+      <strong>Logical Fallacies – Part 2</strong>
+      <small>7 sessions in last 14 days</small>
+    </div>
+  </div>
+`,
       materiProfile: `
         <div class="home-card">
           <h3>Materiku</h3>
