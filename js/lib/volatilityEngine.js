@@ -1,7 +1,7 @@
-// root/js/lib/volatilityEngine.js
+// js/lib/volatilityEngine.js
 
 /**
- * Calculate standard deviation volatility
+ * Hitung standar deviasi (population std dev)
  */
 export function calculateVolatility(values = []) {
   if (!Array.isArray(values) || values.length < 2) return 0;
@@ -17,7 +17,7 @@ export function calculateVolatility(values = []) {
 }
 
 /**
- * Map volatility number to level
+ * Mapping level berdasarkan nilai volatility
  */
 export function getVolatilityLevel(volatility) {
   if (volatility < 3) return "stable";
@@ -26,7 +26,7 @@ export function getVolatilityLevel(volatility) {
 }
 
 /**
- * Get UI metadata (label + class)
+ * Meta untuk UI (label + class)
  */
 export function getVolatilityMeta(level) {
   switch (level) {
@@ -57,7 +57,7 @@ export function getVolatilityMeta(level) {
 }
 
 /**
- * Full analyzer (optional helper)
+ * Helper utama (pakai ini di controller)
  */
 export function analyzeVolatility(values = []) {
   const value = calculateVolatility(values);
