@@ -197,17 +197,18 @@ export const profileHomeController = {
     /* ===== Target ===== */
 
     const targetRow =
-      root.querySelector('.target-row span:last-child');
+  root.querySelector('.target-row span:last-child');
 
-    if (targetRow)
-      targetRow.textContent =
-        `${data.target.remainingXP} XP needed`;
+if (targetRow) {
+  targetRow.textContent =
+    `${data.target.remainingXP} XP needed`;
+}
 
-    const progressFill =
-      root.querySelector('.progress-fill');
+const progressFill =
+  root.querySelector('.progress-fill');
 
-    if (progressFill)
-      progressFill.style.width =
-        `${data.target.progressPercent}%`;
-  }
+if (progressFill) {
+  progressFill.style.width =
+    `${data.target.progressPercent}%`;
+}
 };
