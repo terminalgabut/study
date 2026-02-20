@@ -1,0 +1,126 @@
+/* =========================================
+   HOME OVERVIEW
+========================================= */
+
+.home-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Generic card */
+.home-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* =========================================
+   HERO SECTION
+========================================= */
+
+.overview-hero {
+  align-items: center;
+  text-align: center;
+}
+
+.hero-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.hero-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.metric-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.metric-value.accent {
+  color: var(--accent);
+}
+
+/* =========================================
+   DAILY GRID
+========================================= */
+
+.daily-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.daily-item {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.daily-number {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.daily-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* =========================================
+   FAVORITE
+========================================= */
+
+.favorite-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.favorite-title {
+  font-weight: 500;
+}
+
+/* =========================================
+   TARGET PROGRESS
+========================================= */
+
+.target-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    #60a5fa
+  );
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
