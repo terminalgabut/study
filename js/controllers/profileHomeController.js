@@ -221,5 +221,5 @@ if (progressFill) {
   progressFill.style.width =
     `${data.target.progressPercent}%`;
 }
-    
-};
+  } // ⬅️ TUTUP renderUI
+}; // ⬅️ TUTUP profileHomeController
