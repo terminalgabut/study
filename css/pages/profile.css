@@ -42,46 +42,46 @@
 }
 
 /* Beginner */
-.badge-beginner .profile-avatar img {
+.profile-avatar.badge-beginner img {
   border: 3px solid #94a3b8;
 }
 
 /* Master */
-.badge-master .profile-avatar img {
+.profile-avatar.badge-master img {
   border: 3px solid #38bdf8;
 }
 
 /* Legend */
-.badge-legend .profile-avatar img {
+.profile-avatar.badge-legend img {
   border: 3px solid #a855f7;
 }
 
 /* Advanced Practitioner */
-.badge-advanced-practitioner .profile-avatar img {
+.profile-avatar.badge-advanced-practitioner img {
   border: 3px solid #3b82f6;
   box-shadow: 0 0 10px rgba(59,130,246,0.4);
 }
 
 /* Specialist */
-.badge-specialist .profile-avatar img {
+.profile-avatar.badge-specialist img {
   border: 3px solid #a855f7;
   box-shadow: 0 0 12px rgba(168,85,247,0.4);
 }
 
 /* Expert */
-.badge-expert .profile-avatar img {
+.profile-avatar.badge-expert img {
   border: 3px solid #ec4899;
   box-shadow: 0 0 15px rgba(236,72,153,0.4);
 }
 
 /* Distinguished */
-.badge-distinguished .profile-avatar img {
+.profile-avatar.badge-distinguished img {
   border: 3px solid #f97316;
   box-shadow: 0 0 18px rgba(249,115,22,0.5);
 }
 
 /* Pinnacle */
-.badge-pinnacle .profile-avatar img {
+.profile-avatar.badge-pinnacle img {
   border: 3px solid #facc15;
   animation: pinnacleRing 2.5s ease-in-out infinite alternate;
 }
