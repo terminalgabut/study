@@ -272,11 +272,10 @@
 ========================================= */
 
 .strength-summary {
-  margin-top: var(--space-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  font-size: 0.9rem;
+margin-top: var(--space-md);
+display: grid;
+gap: var(--space-xs);
+font-size: 0.9rem;
 }
 
 .strength-summary strong {
@@ -309,7 +308,14 @@
 ========================================= */
 
 .profile-nav {
-  margin-top: var(--space-xl);
+margin-top: var(--space-lg);
+padding: var(--space-sm);
+background: var(--card);
+border-radius: var(--radius-md);
+border: 1px solid var(--border);
+display: flex;
+gap: var(--space-sm);
+box-shadow: var(--shadow-sm);
 }
 
 .profile-tab {
