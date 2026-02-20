@@ -147,16 +147,28 @@ if (volatilityBadgeEl) {
        3️⃣ STRENGTH / WEAKNESS
     =============================== */
 
-    const strengthEl = document.getElementById('strengthText');
-    const weaknessEl = document.getElementById('weaknessText');
+    const strengthDescEl = document.getElementById('strengthDescription');
+const weaknessDescEl = document.getElementById('weaknessDescription');
+const balanceNoteEl = document.getElementById('balanceNote');
 
-    if (strengthEl) {
-      strengthEl.textContent = analysis.strength.name;
-    }
+// ⚠️ Kita build ulang profile pakai strengthEngine
+const strengthProfile = buildStrengthProfile(sessions);
 
-    if (weaknessEl) {
-      weaknessEl.textContent = analysis.weakness.name;
-    }
+if (strengthProfile) {
+  const narrative = buildStrengthNarrative(strengthProfile);
+
+  if (strengthDescEl) {
+    strengthDescEl.textContent = narrative.strengthText;
+  }
+
+  if (weaknessDescEl) {
+    weaknessDescEl.textContent = narrative.weaknessText;
+  }
+
+  if (balanceNoteEl) {
+    balanceNoteEl.textContent = narrative.balanceNote;
+  }
+}
 
     /* ===============================
        4️⃣ STABILITY SCORE
