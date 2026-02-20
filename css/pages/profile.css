@@ -118,8 +118,8 @@
 }
 
 .profile-details p:last-child {
-  font-size: 0.45rem;
-  font-weight: 200;
+  font-size: 0.8rem;
+  font-weight: 300;
   color: var(--text-muted);
   letter-spacing: 0.5px;
   opacity: 0.5;
