@@ -129,11 +129,11 @@ export const profileHomeController = {
     buildLevelProfile(totalXP);
 
   return {
-    level: levelData.level,
-    badgeName: levelData.badge.name,
-    remainingXP: levelData.remainingXP,
-    progressPercent: levelData.progressPercent
-  };
+  level: levelData.level,
+  badgeName: levelData.badge.name,
+  remainingXP: levelData.remainingXP,
+  progressPercent: levelData.progressPercent
+};
 },
 
   /* ==================================================
@@ -196,27 +196,24 @@ export const profileHomeController = {
 
     /* ===== Target ===== */
 
-    /* ===== Target ===== */
+const targetRow =
+  root.querySelector('.target-row');
 
-// Level + Badge
-const targetValue =
-  root.querySelector('.target-row .target-value');
+if (targetRow) {
+  const levelEl = targetRow.querySelector('span:first-child');
+  const xpEl = targetRow.querySelector('span:last-child');
 
-if (targetValue) {
-  targetValue.textContent =
-    `Level ${data.target.level} (${data.target.badgeName})`;
+  if (levelEl) {
+    levelEl.textContent =
+      `Level ${data.target.level} (${data.target.badgeName})`;
+  }
+
+  if (xpEl) {
+    xpEl.textContent =
+      `${data.target.remainingXP} XP needed`;
+  }
 }
 
-// XP Needed
-const xpRow =
-  root.querySelector('.xp-needed');
-
-if (xpRow) {
-  xpRow.textContent =
-    `${data.target.remainingXP} XP needed`;
-}
-
-// Progress bar
 const progressFill =
   root.querySelector('.progress-fill');
 
@@ -224,4 +221,5 @@ if (progressFill) {
   progressFill.style.width =
     `${data.target.progressPercent}%`;
 }
+    
 };
