@@ -29,6 +29,7 @@ export const profileController = {
    * DOM CACHE
    * ========================= */
   cacheDom() {
+    this.uuidEl = document.getElementById('profileUuid');
     this.emailEl = document.getElementById('profileEmail');
     this.usernameEl = document.getElementById('profileUsername');
     this.fullNameEl = document.getElementById('profileFullName');
@@ -54,6 +55,10 @@ export const profileController = {
     this.emailEl && (this.emailEl.textContent = user.email);
     this.usernameEl && (this.usernameEl.textContent = profile.username || '-');
     this.fullNameEl && (this.fullNameEl.textContent = profile.full_name || '-');
+    if (this.uuidEl) {
+    this.uuidEl.textContent =
+    profile.uuid || this.user.id.slice(0, 8);
+           }
     this.bioEl && (this.bioEl.textContent = profile.bio || 'Belum ada bio.'); 
 
     if (this.avatarEl) {
