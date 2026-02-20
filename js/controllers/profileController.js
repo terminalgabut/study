@@ -1,13 +1,12 @@
 // root/js/controllers/profileController.js
 
 import { supabase } from '../services/supabase.js';
-import { 
-  getProfile, 
-  updateProfile, 
-  getCognitiveHistory 
-} from '../services/profileService.js';
+import { getProfile, 
+         updateProfile, 
+         getCognitiveHistory } from '../services/profileService.js';
 import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
-import { compressImage } from '../lib/imageCompressor.js';
+import { compressImage } from '../lib/imageCompressor.js'; 
+import { buildLevelProfile } from '../lib/levelEngine.js';
 import { buildTrendAnalysis } from '../lib/trendEngine.js';
 import { buildStrengthProfile } from '../lib/strengthEngine.js';
 import { analyzeVolatility } from '../lib/volatilityEngine.js';
@@ -34,8 +33,6 @@ export const profileController = {
     this.usernameEl = document.getElementById('profileUsername');
     this.fullNameEl = document.getElementById('profileFullName');
     this.bioEl = document.getElementById('profileBio');
-    this.xpEl = document.getElementById('profileXP');
-
     this.avatarEl = document.getElementById('profileAvatar');
     this.editBtn = document.getElementById('editProfileBtn');
   },
@@ -57,13 +54,32 @@ export const profileController = {
     this.emailEl && (this.emailEl.textContent = user.email);
     this.usernameEl && (this.usernameEl.textContent = profile.username || '-');
     this.fullNameEl && (this.fullNameEl.textContent = profile.full_name || '-');
-    this.bioEl && (this.bioEl.textContent = profile.bio || 'Belum ada bio.');
-    this.xpEl && (this.xpEl.textContent = profile.xp ?? 0);
+    this.bioEl && (this.bioEl.textContent = profile.bio || 'Belum ada bio.'); 
 
     if (this.avatarEl) {
       this.avatarEl.src =
         profile.avatar_url || '/img/avatar-default.png';
     } 
+
+    /* ===============================
+   LEVEL ENGINE
+=============================== */
+
+const levelData = buildLevelProfile(profile.xp);
+
+const levelEl = document.getElementById('userLevel');
+const xpTextEl = document.getElementById('userXP');
+const xpFillEl = document.getElementById('xpFill');
+const badgeEl = document.getElementById('levelBadge');
+
+if (levelEl) levelEl.textContent = levelData.level;
+if (xpTextEl) xpTextEl.textContent = levelData.xp;
+if (xpFillEl) xpFillEl.style.width = `${levelData.progressPercent}%`;
+
+if (badgeEl) {
+  badgeEl.textContent = levelData.badge.name;
+  badgeEl.className = `badge ${levelData.badge.class}`;
+}   
   },
 
   /* =========================
