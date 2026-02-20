@@ -124,16 +124,28 @@ export const profileHomeController = {
   ================================================== */
 
   computeTarget(totalXP) {
+  const current = buildLevelProfile(totalXP);
 
-  const levelData =
-    buildLevelProfile(totalXP);
+  const currentLevel = current.level;
+
+  const targetLevel =
+    currentLevel < 10
+      ? 10
+      : Math.ceil(currentLevel / 10) * 10;
+
+  const targetXP =
+    buildLevelProfile(
+      current.nextLevelXP
+    );
 
   return {
-  level: levelData.level,
-  badgeName: levelData.badge.name,
-  remainingXP: levelData.remainingXP,
-  progressPercent: levelData.progressPercent
-};
+    level: targetLevel,
+    badgeName: targetXP.badge.name,
+    remainingXP:
+      targetXP.nextLevelXP - totalXP,
+    progressPercent:
+      current.progressPercent
+  };
 },
 
   /* ==================================================
