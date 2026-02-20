@@ -16,20 +16,23 @@ export const profileView = `
     <div class="profile-top-section">
 
       <!-- Avatar Block -->
-      <div class="profile-avatar-block">
-       <div class="profile-avatar badge-master">
-          <img 
-            src="/assets/default-avatar.jpg" 
-            alt="Foto Profil" 
-            id="profileAvatar"
-          />
-        </div>
+<div class="profile-avatar-block">
+  <div class="profile-avatar badge-master">
+    <img 
+      src="/assets/default-avatar.jpg" 
+      alt="Foto Profil" 
+      id="profileAvatar"
+    />
+  </div>
 
-        <div class="profile-details">
-  <p><strong id="profileFullName">Unknown</strong></p>
-  <p>uid: <strong id="profileUuid">01010101</strong></p>
+  <div class="profile-details">
+    <p><strong id="profileFullName">Unknown</strong></p>
+    <p>uid: <strong id="profileUuid">01010101</strong></p>
+  </div>
+</div>
 
-  <div class="profile-gamification">
+<!-- Gamification (DI LUAR avatar block) -->
+<div class="profile-gamification">
 
   <!-- Level Center -->
   <div class="level-center-row">
@@ -53,7 +56,6 @@ export const profileView = `
     <div class="xp-fill" id="xpFill"></div>
   </div>
 
-</div>
 </div>
 
       <!-- Analytics Preview (Trend + Strength) -->
