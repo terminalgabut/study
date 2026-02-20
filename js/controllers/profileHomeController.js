@@ -1,7 +1,7 @@
 // root/js/controllers/profileHomeController.js
 
+import { getProfileHomeData } from '../services/profileHomeService.js';
 import { buildLevelProfile } from '../lib/levelEngine.js';
-// import { } from '../services/profileService.js';
 
 export const profileHomeController = {
 
