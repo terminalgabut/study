@@ -268,18 +268,36 @@
 }
 
 /* =========================================
-   STRENGTH SUMMARY
+   STRENGTH SUMMARY – LEFT ALIGNED
 ========================================= */
 
 .strength-summary {
-margin-top: var(--space-md);
-display: grid;
-gap: var(--space-xs);
-font-size: 0.9rem;
+  margin-top: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  font-size: 0.9rem;
+  text-align: left;        /* ⬅️ penting */
+  align-items: flex-start; /* ⬅️ jangan ikut center parent */
+  width: 100%;
+  max-width: 680px;        /* biar readable */
+}
+
+.strength-summary p {
+  line-height: 1.5;
 }
 
 .strength-summary strong {
   color: var(--accent);
+  font-weight: 600;
+}
+
+/* Narrative description */
+.strength-desc,
+.weakness-desc,
+.balance-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 /* Trend Colors */
