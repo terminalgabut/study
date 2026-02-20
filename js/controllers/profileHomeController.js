@@ -125,16 +125,16 @@ export const profileHomeController = {
 
   computeTarget(totalXP) {
 
-    const levelData =
-      buildLevelProfile(totalXP);
+  const levelData =
+    buildLevelProfile(totalXP);
 
-    return {
-      level: levelData.level,
-      remainingXP: levelData.remainingXP,
-      progressPercent:
-        levelData.progressPercent
-    };
-  },
+  return {
+    level: levelData.level,
+    badgeName: levelData.badge.name,
+    remainingXP: levelData.remainingXP,
+    progressPercent: levelData.progressPercent
+  };
+},
 
   /* ==================================================
      🎨 UI RENDER
@@ -196,11 +196,11 @@ export const profileHomeController = {
 
     /* ===== Target ===== */
 
-    const targetRow =
-  root.querySelector('.target-row span:last-child');
+    const xpRow =
+  root.querySelector('.xp-needed');
 
-if (targetRow) {
-  targetRow.textContent =
+if (xpRow) {
+  xpRow.textContent =
     `${data.target.remainingXP} XP needed`;
 }
 
