@@ -9,19 +9,12 @@ export const profileHomeController = {
     if (!userId) return;
 
     try {
-      this.userId = userId;
+      const raw = await getProfileHomeData(userId);
 
-      const [
-        cognitive,
-        daily,
-        favorite
-      ] = await Promise.all([
-        this.loadCognitiveSummary(),
-        this.loadDailyStats(),
-        this.loadFavoriteMaterial()
-      ]);
-
-      const target = this.loadNextTarget(cognitive.xp);
+      const cognitive = this.computeCognitive(raw);
+      const daily = this.computeDaily(raw.dailyAttempts);
+      const favorite = this.computeFavorite(raw.favoriteAttempts);
+      const target = this.computeTarget(raw.xpRow?.xp || 0);
 
       this.renderUI({
         cognitive,
@@ -35,52 +28,120 @@ export const profileHomeController = {
     }
   },
 
-  /* ===============================
-     DATA LOADERS (TEMP MOCK)
-  =============================== */
+  /* ==================================================
+     🧠 COGNITIVE SUMMARY LOGIC
+  ================================================== */
 
-  async loadCognitiveSummary() {
-    // nanti diganti service DB
+  computeCognitive(raw) {
+
+    const sessions = raw.cognitiveSessions || [];
+    const summary = raw.cognitive || {};
+
+    let delta = 0;
+
+    if (sessions.length >= 2) {
+      delta =
+        Number(sessions[0].cognitive_index || 0) -
+        Number(sessions[1].cognitive_index || 0);
+    }
+
     return {
-      index: 87.4,
-      delta: 1.2,
-      stability: "Moderate",
-      neuroType: "Analytical Strategist",
-      xp: 860
+      index: Number(summary.cognitive_index || 0).toFixed(1),
+      delta,
+      stability: this.mapStability(summary.stability_index),
+      neuroType: summary.neuro_type || "Unknown"
     };
   },
 
-  async loadDailyStats() {
+  mapStability(value = 0) {
+    if (value >= 75) return "Stable";
+    if (value >= 45) return "Moderate";
+    return "Volatile";
+  },
+
+  /* ==================================================
+     📊 DAILY LOGIC
+  ================================================== */
+
+  computeDaily(attempts = []) {
+
+    const quizDone = attempts.length;
+
+    let highestScore = 0;
+    let correctCount = 0;
+
+    for (const a of attempts) {
+      const score = Number(a.score || 0);
+
+      if (score > highestScore)
+        highestScore = score;
+
+      if (a.is_correct)
+        correctCount++;
+    }
+
     return {
-      quizDone: 12,
-      highestScore: 92,
-      xpToday: 18
+      quizDone,
+      highestScore,
+      xpToday: correctCount // rule XP = correct answers
     };
   },
 
-  async loadFavoriteMaterial() {
+  /* ==================================================
+     ⭐ FAVORITE MATERIAL LOGIC
+  ================================================== */
+
+  computeFavorite(attempts = []) {
+
+    if (!attempts.length)
+      return { title: "No activity yet" };
+
+    const counter = {};
+
+    for (const a of attempts) {
+      if (!a.title) continue;
+      counter[a.title] =
+        (counter[a.title] || 0) + 1;
+    }
+
+    let topTitle = null;
+    let topCount = 0;
+
+    for (const [title, count] of Object.entries(counter)) {
+      if (count > topCount) {
+        topTitle = title;
+        topCount = count;
+      }
+    }
+
     return {
-      title: "Logical Fallacies Advanced"
+      title: topTitle || "No activity yet"
     };
   },
 
-  loadNextTarget(totalXP) {
-    const levelData = buildLevelProfile(totalXP);
+  /* ==================================================
+     🎯 LEVEL TARGET LOGIC
+  ================================================== */
+
+  computeTarget(totalXP) {
+
+    const levelData =
+      buildLevelProfile(totalXP);
 
     return {
       level: levelData.level,
-      nextLevelXP:
-        levelData.nextLevelXP - levelData.currentLevelXP,
       remainingXP: levelData.remainingXP,
-      progressPercent: levelData.progressPercent
+      progressPercent:
+        levelData.progressPercent
     };
   },
 
-  /* ===============================
-     UI RENDER
-  =============================== */
+  /* ==================================================
+     🎨 UI RENDER
+  ================================================== */
 
   renderUI(data) {
+
     const root =
       document.querySelector('#profileDynamicContent .home-overview');
 
@@ -88,26 +149,24 @@ export const profileHomeController = {
 
     /* ===== Cognitive ===== */
 
-    const indexEl = root.querySelector('.metric-value');
-    if (indexEl) {
-      const arrow = data.cognitive.delta >= 0 ? "↑" : "↓";
-      indexEl.textContent =
+    const metrics =
+      root.querySelectorAll('.metric-value');
+
+    if (metrics[0]) {
+      const arrow =
+        data.cognitive.delta >= 0 ? "↑" : "↓";
+
+      metrics[0].textContent =
         `${data.cognitive.index} ${arrow}`;
     }
 
-    const stabilityEl =
-      root.querySelectorAll('.metric-value')[1];
-    if (stabilityEl) {
-      stabilityEl.textContent =
+    if (metrics[1])
+      metrics[1].textContent =
         data.cognitive.stability;
-    }
 
-    const neuroEl =
-      root.querySelectorAll('.metric-value')[2];
-    if (neuroEl) {
-      neuroEl.textContent =
+    if (metrics[2])
+      metrics[2].textContent =
         data.cognitive.neuroType;
-    }
 
     /* ===== Daily ===== */
 
@@ -130,25 +189,25 @@ export const profileHomeController = {
 
     const favEl =
       root.querySelector('.favorite-title');
-    if (favEl) {
+
+    if (favEl)
       favEl.textContent =
         data.favorite.title;
-    }
 
     /* ===== Target ===== */
 
     const targetRow =
       root.querySelector('.target-row span:last-child');
-    if (targetRow) {
+
+    if (targetRow)
       targetRow.textContent =
         `${data.target.remainingXP} XP needed`;
-    }
 
     const progressFill =
       root.querySelector('.progress-fill');
-    if (progressFill) {
+
+    if (progressFill)
       progressFill.style.width =
         `${data.target.progressPercent}%`;
-    }
   }
 };
