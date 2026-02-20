@@ -142,16 +142,30 @@ if (volatilityBadgeEl) {
         deltaEl.classList.add('trend-stable');
       }
     }
+    
+ /* ===============================
+   3️⃣ STRENGTH / WEAKNESS
+=============================== */
 
-    /* ===============================
-       3️⃣ STRENGTH / WEAKNESS
-    =============================== */
+const strengthEl = document.getElementById('strengthText');
+const weaknessEl = document.getElementById('weaknessText');
 
-    const strengthDescEl = document.getElementById('strengthDescription');
+if (strengthEl) {
+  strengthEl.textContent = analysis.strength.name;
+}
+
+if (weaknessEl) {
+  weaknessEl.textContent = analysis.weakness.name;
+}
+
+/* ===============================
+   3️⃣b STRENGTH NARRATIVE
+=============================== */
+
+const strengthDescEl = document.getElementById('strengthDescription');
 const weaknessDescEl = document.getElementById('weaknessDescription');
 const balanceNoteEl = document.getElementById('balanceNote');
 
-// ⚠️ Kita build ulang profile pakai strengthEngine
 const strengthProfile = buildStrengthProfile(sessions);
 
 if (strengthProfile) {
