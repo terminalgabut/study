@@ -84,18 +84,30 @@
    FAVORITE
 =============================== */
 
+.home-overview .overview-favorite {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
 .home-overview .favorite-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .home-overview .favorite-title {
-  font-size: 1.35rem;          /* 🔥 lebih besar */
+  font-size: 1.4rem;        /* sedikit lebih tegas */
   font-weight: 600;
   color: var(--text);
   line-height: 1.4;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
+}
+
+.home-overview .favorite-item small {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.85;
 }
 
 /* ===============================
