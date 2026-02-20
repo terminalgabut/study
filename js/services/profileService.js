@@ -60,12 +60,13 @@ export async function getCognitiveHistory(userId, limit = 8) {
   const { data, error } = await supabase
     .from('user_cognitive_sessions')
     .select(`
-      session_at,
-      iq_estimated,
-      iq_confidence,
-      iq_class,
-      scores
-    `)
+     session_at,
+     cognitive_index,
+     iq_estimated,
+     iq_confidence,
+     iq_class,
+     scores
+   `)
     .eq('user_id', userId)
     .order('session_at', { ascending: true })
     .limit(limit);
@@ -78,6 +79,9 @@ export async function getCognitiveHistory(userId, limit = 8) {
   // normalize ke format trendEngine
   return (data || []).map(row => ({
   date: row.session_at,
+
+  cognitive_index: Number(row.cognitive_index) || 0,
+
   iq_estimated: Number(row.iq_estimated) || 0,
   iq_confidence: Number(row.iq_confidence) || 0,
 
