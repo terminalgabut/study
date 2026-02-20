@@ -1,14 +1,15 @@
 /* root/css/pages/profile.css */
 
 /* =========================================
-   PROFILE TOP SECTION (Avatar + Analytics)
+   PROFILE TOP SECTION (Vertical Layout)
 ========================================= */
 
 .profile-top-section {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   gap: var(--space-xl);
-  flex-wrap: wrap;
+  width: 100%;
 }
 
 /* =========================================
@@ -16,10 +17,13 @@
 ========================================= */
 
 .profile-avatar-block {
-  flex: 0 0 220px;
+  width: 100%;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--space-sm);
+  text-align: center;
 }
 
 .profile-avatar img {
@@ -44,6 +48,7 @@
 .profile-details {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--space-xs);
 }
 
@@ -58,11 +63,12 @@
 }
 
 /* =========================================
-   GAMIFICATION – PROFESSIONAL CLEAN
+   GAMIFICATION – FULL WIDTH CLEAN
 ========================================= */
 
 .profile-gamification {
-  margin-top: var(--space-md);
+  width: 100%;
+  max-width: 520px;
   padding: var(--space-md);
   background: var(--card);
   border: 1px solid var(--border);
@@ -70,6 +76,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  text-align: left;
 }
 
 /* =========================
@@ -165,33 +172,32 @@
 
 
 /* =========================================
-   ANALYTICS PREVIEW CARD (Crypto Style)
+   ANALYTICS PREVIEW CARD – FULL WIDTH
 ========================================= */
 
 .profile-analytics-preview {
-  flex: 1 1 0%;
   width: 100%;
-  min-width: 0; /* penting untuk fix flex shrink bug */
+  max-width: 720px;
+  margin-top: var(--space-lg);
 
   background: linear-gradient(
     180deg,
     rgba(255,255,255,0.02),
     rgba(255,255,255,0.01)
   );
+
   backdrop-filter: blur(6px);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  box-shadow:
-    0 10px 25px rgba(0,0,0,0.4),
-    inset 0 1px 0 rgba(255,255,255,0.03);
 
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  position: relative;
-  overflow: hidden;
-  box-sizing: border-box;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 /* Soft glow top edge */
@@ -267,7 +273,8 @@
 
 .strength-summary {
   margin-top: var(--space-md);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-xs);
   font-size: 0.9rem;
 }
@@ -302,14 +309,7 @@
 ========================================= */
 
 .profile-nav {
-  margin-top: var(--space-lg);
-  padding: var(--space-sm);
-  background: var(--card);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  display: flex;
-  gap: var(--space-sm);
-  box-shadow: var(--shadow-sm);
+  margin-top: var(--space-xl);
 }
 
 .profile-tab {
@@ -407,16 +407,16 @@
 @media (max-width: 768px) {
 
   .profile-top-section {
-    flex-direction: column;
+    align-items: center;
   }
 
   .profile-avatar-block {
-    align-items: flex-start;
-  }
-
-  .profile-analytics-preview canvas {
-    flex: 1 1 100%;
-    width: 100%;
     max-width: 100%;
   }
+
+  .profile-gamification,
+  .profile-analytics-preview {
+    max-width: 100%;
+  }
+
 }
