@@ -13,7 +13,7 @@ import { analyzeVolatility } from '../lib/volatilityEngine.js';
 import { buildStrengthNarrative } from "../lib/strengthNarrative.js"; 
 import { renderIQTrendPreview } from '../lib/iqTrendPreview.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
-import { profileHomeController } from './profileHomeController.js
+import { profileHomeController } from './profileHomeController.js';
 import { profileStatsController } from './profileStatsController.js'; 
 
 export const profileController = {
