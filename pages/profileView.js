@@ -17,9 +17,9 @@ export const profileView = `
 
       <!-- Avatar Block -->
       <div class="profile-avatar-block">
-        <div class="profile-avatar">
+       <div class="profile-avatar badge-master">
           <img 
-            src="/assets/default-avatar.png" 
+            src="/assets/default-avatar.jpg" 
             alt="Foto Profil" 
             id="profileAvatar"
           />
