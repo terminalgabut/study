@@ -18,10 +18,15 @@ const LEVEL_CONFIG = {
 };
 
 const BADGE_TIERS = [
-  { minLevel: 50, name: "Grandmaster", className: "badge-grandmaster" },
-  { minLevel: 20, name: "Legend", className: "badge-legend" },
-  { minLevel: 10, name: "Master", className: "badge-master" },
-  { minLevel: 5,  name: "Advanced", className: "badge-advanced" },
+  { minLevel: 95, name: "Pinnacle", className: "badge-pinnacle" },
+  { minLevel: 85, name: "Distinguished", className: "badge-distinguished" },
+  { minLevel: 75, name: "Expert", className: "badge-expert" },
+  { minLevel: 65, name: "Specialist", className: "badge-specialist" },
+  { minLevel: 50, name: "Advanced Practitioner", className: "badge-advanced-practitioner" },
+  { minLevel: 35, name: "Proficient", className: "badge-proficient" },
+  { minLevel: 20, name: "Competent", className: "badge-competent" },
+  { minLevel: 10, name: "Skilled", className: "badge-skilled" },
+  { minLevel: 5,  name: "Developing", className: "badge-developing" },
   { minLevel: 1,  name: "Pemula", className: "badge-beginner" }
 ];
 
