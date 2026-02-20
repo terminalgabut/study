@@ -11,6 +11,7 @@ import { compressImage } from '../lib/imageCompressor.js';
 import { buildTrendAnalysis } from '../lib/trendEngine.js';
 import { buildStrengthProfile } from '../lib/strengthEngine.js';
 import { analyzeVolatility } from '../lib/volatilityEngine.js';
+import { buildStrengthNarrative } from "../lib/strengthNarrative.js"; 
 import { renderIQTrendPreview } from '../lib/iqTrendPreview.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
 import { profileStatsController } from './profileStatsController.js'; 
