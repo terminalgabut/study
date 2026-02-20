@@ -1,7 +1,7 @@
 // root/js/controllers/profileHomeController.js
 
 import { getProfileHomeData } from '../services/profileHomeService.js';
-import { buildLevelProfile } from '../lib/levelEngine.js';
+import { buildLevelProfile, xpRequiredForLevel } from '../lib/levelEngine.js'; 
 
 export const profileHomeController = {
 
@@ -122,31 +122,54 @@ export const profileHomeController = {
   /* ==================================================
      🎯 LEVEL TARGET LOGIC
   ================================================== */
-
-  computeTarget(totalXP) {
+  
+computeTarget(totalXP) {
   const current = buildLevelProfile(totalXP);
-
   const currentLevel = current.level;
 
+  // 🎯 target per kelipatan 10
   const targetLevel =
     currentLevel < 10
       ? 10
       : Math.ceil(currentLevel / 10) * 10;
 
-  const targetXP =
-    buildLevelProfile(
-      current.nextLevelXP
+  // XP minimum untuk target level
+  const targetLevelXP =
+    xpRequiredForLevel(targetLevel);
+
+  // XP awal level sekarang
+  const currentLevelXP =
+    xpRequiredForLevel(currentLevel);
+
+  const progressRange =
+    targetLevelXP - currentLevelXP;
+
+  const progressValue =
+    totalXP - currentLevelXP;
+
+  const progressPercent =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        (progressValue / progressRange) * 100
+      )
     );
+
+  // 🔥 badge DIAMBIL DARI LEVEL TARGET
+  const targetBadge =
+    buildLevelProfile(targetLevelXP).badge;
 
   return {
     level: targetLevel,
-    badgeName: targetXP.badge.name,
+    badgeName: targetBadge.name,
     remainingXP:
-      targetXP.nextLevelXP - totalXP,
+      Math.max(0, targetLevelXP - totalXP),
     progressPercent:
-      current.progressPercent
+      Number(progressPercent.toFixed(1))
   };
 },
+
 
   /* ==================================================
      🎨 UI RENDER
