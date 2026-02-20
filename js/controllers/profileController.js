@@ -60,26 +60,43 @@ export const profileController = {
       this.avatarEl.src =
         profile.avatar_url || '/img/avatar-default.png';
     } 
-
-    /* ===============================
+           
+/* ===============================
    LEVEL ENGINE
 =============================== */
 
 const levelData = buildLevelProfile(profile.xp);
 
 const levelEl = document.getElementById('userLevel');
-const xpTextEl = document.getElementById('userXP');
+const xpEl = document.getElementById('userXP');
+const nextXpEl = document.getElementById('nextLevelXP');
 const xpFillEl = document.getElementById('xpFill');
 const badgeEl = document.getElementById('levelBadge');
 
-if (levelEl) levelEl.textContent = levelData.level;
-if (xpTextEl) xpTextEl.textContent = levelData.xp;
-if (xpFillEl) xpFillEl.style.width = `${levelData.progressPercent}%`;
+if (levelEl) {
+  levelEl.textContent = levelData.level;
+}
+
+if (xpEl) {
+  xpEl.textContent =
+    levelData.xp - levelData.currentLevelXP;
+}
+
+if (nextXpEl) {
+  nextXpEl.textContent =
+    levelData.nextLevelXP - levelData.currentLevelXP;
+}
+
+if (xpFillEl) {
+  xpFillEl.style.width =
+    `${levelData.progressPercent}%`;
+}
 
 if (badgeEl) {
   badgeEl.textContent = levelData.badge.name;
-  badgeEl.className = `badge ${levelData.badge.class}`;
-}   
+  badgeEl.className =
+    `badge ${levelData.badge.className}`;
+}
   },
 
   /* =========================
