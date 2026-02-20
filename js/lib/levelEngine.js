@@ -64,8 +64,17 @@ function xpRequiredForLevel(level) {
  */
 function calculateProgress(totalXP, level) {
   const currentLevelXP = xpRequiredForLevel(level);
-  const nextLevelXP = xpRequiredForLevel(level + 1);
 
+  if (level >= LEVEL_CONFIG.maxLevel) {
+    return {
+      percent: 100,
+      currentLevelXP,
+      nextLevelXP: currentLevelXP,
+      remainingXP: 0
+    };
+  }
+
+  const nextLevelXP = xpRequiredForLevel(level + 1);
   const levelRange = nextLevelXP - currentLevelXP;
   const progressXP = totalXP - currentLevelXP;
 
@@ -92,6 +101,19 @@ function resolveBadge(level) {
 /* =========================================
    PUBLIC BUILDER
 ========================================= */
+
+function calculateLevel(totalXP) {
+  let level = 1;
+
+  while (
+    level < LEVEL_CONFIG.maxLevel &&
+    xpRequiredForLevel(level + 1) <= totalXP
+  ) {
+    level++;
+  }
+
+  return level;
+}
 
 export function buildLevelProfile(xp = 0) {
   const safeXP = Math.max(0, Number(xp) || 0);
