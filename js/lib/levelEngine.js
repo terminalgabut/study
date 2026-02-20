@@ -12,11 +12,21 @@
 ========================================= */
 
 const LEVEL_CONFIG = {
-  baseXP: 100,
-  earlyGrowth: 1.08,   // Level 1–50
-  lateGrowth: 1.04,    // Level 51–100
-  midPoint: 50,
-  maxLevel: 100
+  baseXP: 25,
+
+  earlyHookEnd: 10,    // growth 1.04
+  earlyEnd: 30,        // growth 1.05
+  midEnd: 50,          // growth 1.04
+  lateEnd: 90,         // growth 1.03
+  maxLevel: 100,       // growth 1.02
+
+  growth: {
+    earlyHook: 1.04,
+    early: 1.05,
+    mid: 1.04,
+    late: 1.03,
+    veryLate: 1.02
+  }
 };
 
 const BADGE_TIERS = [
