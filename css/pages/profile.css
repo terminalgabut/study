@@ -92,6 +92,11 @@
   transition: width 0.4s ease;
 }
 
+.badge-beginner { background: #e0e0e0; }
+.badge-advanced { background: #4caf50; color: white; }
+.badge-master { background: #2196f3; color: white; }
+.badge-legend { background: #9c27b0; color: white; }
+
 /* =========================================
    ANALYTICS PREVIEW CARD (Crypto Style)
 ========================================= */
