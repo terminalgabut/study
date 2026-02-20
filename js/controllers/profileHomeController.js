@@ -1,7 +1,7 @@
 // root/js/controllers/profileHomeController.js
 
 import { buildLevelProfile } from '../lib/levelEngine.js';
-// nanti akan import service dari kamu
+// import { } from '../services/profileService.js';
 
 export const profileHomeController = {
 
