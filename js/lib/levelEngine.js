@@ -76,7 +76,7 @@ export function xpRequiredForLevel(level) {
    TOTAL XP HELPER (CUMULATIVE)
 ========================================= */
 
-function getTotalXPToReachLevel(level) {
+export function getTotalXPToReachLevel(level) {
   let total = 0;
 
   for (let i = 1; i < level; i++) {
@@ -89,7 +89,7 @@ function getTotalXPToReachLevel(level) {
 /**
  * Calculate progress within current level
  */
-function calculateProgress(totalXP, level) {
+export function calculateProgress(totalXP, level) {
   if (level >= LEVEL_CONFIG.maxLevel) {
     return {
       percent: 100,
@@ -118,7 +118,7 @@ function calculateProgress(totalXP, level) {
 /**
  * Determine badge tier
  */
-function resolveBadge(level) {
+export function resolveBadge(level) {
   return (
     BADGE_TIERS.find(tier => level >= tier.minLevel) ||
     BADGE_TIERS[BADGE_TIERS.length - 1]
@@ -129,7 +129,7 @@ function resolveBadge(level) {
    PUBLIC BUILDER
 ========================================= */
 
-function calculateLevel(totalXP) {
+export function calculateLevel(totalXP) {
   let level = 1;
 
   while (
