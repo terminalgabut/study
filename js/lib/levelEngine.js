@@ -72,32 +72,46 @@ export function xpRequiredForLevel(level) {
   return Math.floor(xp);
 }
 
+/* =========================================
+   TOTAL XP HELPER (CUMULATIVE)
+========================================= */
+
+function getTotalXPToReachLevel(level) {
+  let total = 0;
+
+  for (let i = 1; i < level; i++) {
+    total += xpRequiredForLevel(i);
+  }
+
+  return total;
+}
+
 /**
  * Calculate progress within current level
  */
 function calculateProgress(totalXP, level) {
-  const currentLevelXP = xpRequiredForLevel(level);
-
   if (level >= LEVEL_CONFIG.maxLevel) {
     return {
       percent: 100,
-      currentLevelXP,
-      nextLevelXP: currentLevelXP,
+      currentLevelXP: totalXP,
+      nextLevelXP: totalXP,
       remainingXP: 0
     };
   }
 
-  const nextLevelXP = xpRequiredForLevel(level + 1);
-  const levelRange = nextLevelXP - currentLevelXP;
-  const progressXP = totalXP - currentLevelXP;
+  const xpStartOfLevel = getTotalXPToReachLevel(level);
+  const xpStartOfNextLevel = getTotalXPToReachLevel(level + 1);
+
+  const levelRange = xpStartOfNextLevel - xpStartOfLevel;
+  const progressXP = totalXP - xpStartOfLevel;
 
   const percent = (progressXP / levelRange) * 100;
 
   return {
     percent: Math.max(0, Math.min(100, percent)),
-    currentLevelXP,
-    nextLevelXP,
-    remainingXP: Math.max(0, nextLevelXP - totalXP)
+    currentLevelXP: xpStartOfLevel,
+    nextLevelXP: xpStartOfNextLevel,
+    remainingXP: Math.max(0, xpStartOfNextLevel - totalXP)
   };
 }
 
