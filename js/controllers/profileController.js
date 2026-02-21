@@ -354,11 +354,12 @@ if (strengthProfile) {
   </div>
 `,
       materiProfile: `
-        <div class="home-card">
-          <h3>Materiku</h3>
-          <p>Daftar materi yang sudah kamu pelajari.</p>
-        </div>
-      `,
+  <div class="home-card">
+    <h3>Materiku</h3>
+    <p>Daftar materi yang sudah kamu pelajari.</p>
+    <div id="materiList" class="materi-list"></div>
+  </div>
+`,
       statistikProfile: `
   <div class="home-card">
     <h3>Statistik</h3>
@@ -396,6 +397,9 @@ if (strengthProfile) {
     if (tab === 'statistikProfile') {
       await profileStatsController.render(this.user.id);
 }
+             if (tab === 'materiProfile') {
+  await profileMateriController.render(this.user.id);
+             }
   };
 
   tabs.forEach(tab => {
