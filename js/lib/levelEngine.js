@@ -134,7 +134,7 @@ function calculateLevel(totalXP) {
 
   while (
     level < LEVEL_CONFIG.maxLevel &&
-    xpRequiredForLevel(level + 1) <= totalXP
+    getTotalXPToReachLevel(level + 1) <= totalXP
   ) {
     level++;
   }
