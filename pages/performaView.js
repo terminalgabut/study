@@ -8,8 +8,8 @@ export const performaView = `
     
     <div class="xp-container">
       <div class="xp-info">
-        <span class="small">Akumulasi Poin</span>
-        <span class="small" id="xp-text">0 Poin</span>
+        <span class="small">Akumulasi</span>
+        <span class="small" id="xp-text">0 Xp</span>
       </div>
       <div class="xp-bar-bg">
         <div id="xp-fill" class="xp-bar-fill" style="width: 0%"></div>
