@@ -17,24 +17,20 @@ export const performaController = {
   async init() {
     window.__DEBUG__.log("--- [DEBUG] Inisialisasi PerformaController ---");
     try {
-      // 1. Ambil data awal (Default 7 hari terakhir ditangani di Service)
+      
       const data = await performaService.getDashboardData();
       
-      // 2. Render seluruh UI dengan data awal
       this.renderAll(data);
-      
-      // 3. Pasang Listener Kalender untuk Filter Tanggal
+    
       initCalendar(async (startDate, endDate) => {
         window.__DEBUG__.log(`Filter data: ${startDate.toISOString()} - ${endDate.toISOString()}`);
         
-        // Beri feedback loading ke user
         this.showChartLoading(true);
 
         try {
-          // Ambil data baru berdasarkan range tanggal dari kalender
+          
           const filteredData = await performaService.getDashboardData(startDate, endDate);
           
-          // Render ulang komponen dengan data hasil filter
           this.renderAll(filteredData);
           
         } catch (err) {
@@ -68,19 +64,16 @@ export const performaController = {
       window.__DEBUG__.log("[Charts] Merender state kosong (tidak ada data).");
     }
     
-    // Tetap panggil library agar grafik lama dihapus & diganti placeholder/nol
     chartLib.renderTrendChart('trendChart', progress);
     chartLib.renderCategoryChart('categoryChart', progress);
   },
 
-  /**
-   * Update statistik angka di kartu ringkasan
-   */
+// Update statistik angka di kartu ringkasan
+    
  renderSummary(profile, stats) {
   const nameEl = document.getElementById('user-fullname');
   if (nameEl) nameEl.textContent = profile?.full_name || 'Pelajar';
 
-  // 🔥 GUNAKAN XP DARI PROFILE (DATABASE)
   const levelData = buildLevelProfile(profile?.xp || 0);
 
   const updateText = (id, value) => {
@@ -88,11 +81,10 @@ export const performaController = {
     if (el) el.textContent = value;
   };
 
-  // 🏆 LEVEL + BADGE
   updateText(
-    'user-rank',
-    `Lv.${levelData.level} ${levelData.badge.name}`
-  );
+  'xp-text',
+  `${levelData.xp.toLocaleString('id-ID')} XP`
+);
 
   // ⚡ XP DISPLAY (current / next level)
   updateText(
