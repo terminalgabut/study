@@ -296,17 +296,17 @@ if (strengthProfile) {
       <div class="hero-main">
         <div class="hero-metric">
           <span class="metric-label">Cognitive Index</span>
-          <span class="metric-value">87.4 ↑</span>
+          <span class="metric-value">...</span>
         </div>
 
         <div class="hero-metric">
           <span class="metric-label">Stability</span>
-          <span class="metric-value">Moderate</span>
+          <span class="metric-value">...</span>
         </div>
 
         <div class="hero-metric">
           <span class="metric-label">Neuro Type</span>
-          <span class="metric-value accent">Analytical Strategist</span>
+          <span class="metric-value accent">...</span>
         </div>
       </div>
     </div>
