@@ -1,0 +1,91 @@
+/* root/css/tab/materiProfile.css
+
+/* =========================================
+   MATERI PROFILE – LIST (SCOPED SAFE)
+========================================= */
+
+#profileDynamicContent .materi-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Card wrapper konsisten */
+#profileDynamicContent .materi-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--card-bg);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#profileDynamicContent .materi-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.04);
+}
+
+/* ===============================
+   MAIN CONTENT
+=============================== */
+
+#profileDynamicContent .materi-category {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#profileDynamicContent .materi-item h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#profileDynamicContent .materi-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+#profileDynamicContent .materi-index {
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* ===============================
+   EXPANDABLE DETAIL
+=============================== */
+
+#profileDynamicContent .materi-detail {
+  display: none;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding-top: var(--space-xs);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+#profileDynamicContent .materi-item.expanded .materi-detail {
+  display: block;
+}
+
+/* ===============================
+   INDEX COLOR STATES
+=============================== */
+
+#profileDynamicContent .index-high {
+  color: #22c55e; /* green */
+}
+
+#profileDynamicContent .index-mid {
+  color: #facc15; /* yellow */
+}
+
+#profileDynamicContent .index-low {
+  color: #ef4444; /* red */
+}
