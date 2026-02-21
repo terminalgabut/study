@@ -7,6 +7,7 @@ import { ulangModalView } from '../../components/ulangModalView.js';
 import { akurasiModalView } from '../../components/akurasiModalView.js';
 import { initCalendar } from '../lib/kalender.js';
 import { chartLib } from '../lib/charts.js'; 
+import { buildLevelProfile } from '../lib/levelEngine.js';
 
 export const performaController = {
   
@@ -75,30 +76,44 @@ export const performaController = {
   /**
    * Update statistik angka di kartu ringkasan
    */
-  renderSummary(profile, stats) {
-    const nameEl = document.getElementById('user-fullname');
-    if (nameEl) nameEl.textContent = profile?.full_name || 'Pelajar';
-    
-    // Logika Level: 1 level setiap kelipatan 500 poin
-    const level = Math.floor((stats.totalPoints || 0) / 500) + 1;
-    const progressPercent = (((stats.totalPoints || 0) % 500) / 500) * 100;
-    
-    const updateText = (id, value) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = value;
-    };
+ renderSummary(profile, stats) {
+  const nameEl = document.getElementById('user-fullname');
+  if (nameEl) nameEl.textContent = profile?.full_name || 'Pelajar';
 
-    updateText('user-rank', `Level ${level} Scholar`);
-    updateText('xp-text', `${stats.totalPoints} Poin Total`);
-    
-    const xpFillEl = document.getElementById('xp-fill');
-    if (xpFillEl) xpFillEl.style.width = `${progressPercent}%`;
+  // 🔥 GUNAKAN XP DARI PROFILE (DATABASE)
+  const levelData = buildLevelProfile(profile?.xp || 0);
 
-    updateText('stat-materi', stats.totalMateri);
-    updateText('stat-durasi', stats.timeString); 
-    updateText('stat-read-count', stats.totalReadCount);
-    updateText('stat-skor', `${stats.avgScore}%`);
-  },
+  const updateText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  // 🏆 LEVEL + BADGE
+  updateText(
+    'user-rank',
+    `Lv.${levelData.level} ${levelData.badge.name}`
+  );
+
+  // ⚡ XP DISPLAY (current / next level)
+  updateText(
+    'xp-text',
+    `${levelData.xp - levelData.currentLevelXP} / ${
+      levelData.nextLevelXP - levelData.currentLevelXP
+    } XP`
+  );
+
+  // 📊 Progress Bar
+  const xpFillEl = document.getElementById('xp-fill');
+  if (xpFillEl) {
+    xpFillEl.style.width = `${levelData.progressPercent}%`;
+  }
+
+  // 📈 Statistik tetap pakai stats (period-based)
+  updateText('stat-materi', stats.totalMateri);
+  updateText('stat-durasi', stats.timeString);
+  updateText('stat-read-count', stats.totalReadCount);
+  updateText('stat-skor', `${stats.avgScore}%`);
+ }
 
   /**
    * Mengatur interaksi klik pada kartu statistik (Membuka Modal)
