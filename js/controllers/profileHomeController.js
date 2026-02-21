@@ -130,16 +130,30 @@ export const profileHomeController = {
 
   computeTarget(totalXP) {
 
+  const MAX_LEVEL = 100;
+
   const current = buildLevelProfile(totalXP);
   const currentLevel = current.level;
 
-  // 🎯 target kelipatan 10 berikutnya
-  const targetLevel =
-    currentLevel < 10
-      ? 10
-      : Math.ceil(currentLevel / 10) * 10;
+  // 🔒 Kalau sudah max level
+  if (currentLevel >= MAX_LEVEL) {
+    return {
+      level: MAX_LEVEL,
+      badgeName: current.badge.name,
+      remainingXP: 0,
+      progressPercent: 100
+    };
+  }
 
-  // ✅ XP kumulatif
+  // 🎯 kelipatan 10 berikutnya
+  let targetLevel =
+    Math.floor(currentLevel / 10) * 10 + 10;
+
+  // 🔒 jangan lewat 100
+  if (targetLevel > MAX_LEVEL) {
+    targetLevel = MAX_LEVEL;
+  }
+
   const targetLevelXP =
     getTotalXPToReachLevel(targetLevel);
 
@@ -175,7 +189,7 @@ export const profileHomeController = {
       Number(progressPercent.toFixed(1))
   };
   },
-
+  
   
   /* ==================================================
      🎨 UI RENDER
