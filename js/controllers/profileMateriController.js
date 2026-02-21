@@ -48,6 +48,9 @@ export const profileMateriController = {
         (Math.max(0, 100 - speed) * 0.2) +
         (Math.min(item.read_count * 5, 100) * 0.2)
       );
+      let indexClass = 'index-low';
+if (cognitiveIndex >= 75) indexClass = 'index-high';
+else if (cognitiveIndex >= 50) indexClass = 'index-mid';
 
       const strength = winrate >= 80 ? 'Akurasi Tinggi' : 'Perlu Latihan';
       const needsWork = speed > 40 ? 'Kecepatan' : 'Konsistensi';
@@ -62,9 +65,9 @@ export const profileMateriController = {
               ${hours}j ${minutes}m •
               Winrate ${winrate}%
             </div>
-            <div class="materi-index">
-              Cognitive Index ${cognitiveIndex}
-            </div>
+            <div class="materi-index ${indexClass}">
+  Cognitive Index ${cognitiveIndex}
+</div>
           </div>
 
           <div class="materi-detail">
