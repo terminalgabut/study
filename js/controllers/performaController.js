@@ -69,8 +69,7 @@ export const performaController = {
   },
 
 // Update statistik angka di kartu ringkasan
-    
- renderSummary(profile, stats) {
+  renderSummary(profile, stats) {
   const nameEl = document.getElementById('user-fullname');
   if (nameEl) nameEl.textContent = profile?.full_name || 'Pelajar';
 
@@ -82,30 +81,25 @@ export const performaController = {
   };
 
   updateText(
-  'xp-text',
-  `${levelData.xp.toLocaleString('id-ID')} XP`
-);
-
-  // ⚡ XP DISPLAY (current / next level)
-  updateText(
-    'xp-text',
-    `${levelData.xp - levelData.currentLevelXP} / ${
-      levelData.nextLevelXP - levelData.currentLevelXP
-    } XP`
+    'user-rank',
+    `Lv.${levelData.level} ${levelData.badge.name}`
   );
 
-  // 📊 Progress Bar
+  updateText(
+    'xp-text',
+    `${levelData.xp.toLocaleString('id-ID')} XP`
+  );
+
   const xpFillEl = document.getElementById('xp-fill');
   if (xpFillEl) {
     xpFillEl.style.width = `${levelData.progressPercent}%`;
   }
 
-  // 📈 Statistik tetap pakai stats (period-based)
   updateText('stat-materi', stats.totalMateri);
   updateText('stat-durasi', stats.timeString);
   updateText('stat-read-count', stats.totalReadCount);
   updateText('stat-skor', `${stats.avgScore}%`);
- },
+    },
 
   /**
    * Mengatur interaksi klik pada kartu statistik (Membuka Modal)
