@@ -113,7 +113,7 @@ export const performaController = {
   updateText('stat-durasi', stats.timeString);
   updateText('stat-read-count', stats.totalReadCount);
   updateText('stat-skor', `${stats.avgScore}%`);
- }
+ },
 
   /**
    * Mengatur interaksi klik pada kartu statistik (Membuka Modal)
