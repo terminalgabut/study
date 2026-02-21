@@ -134,6 +134,7 @@ export async function getCognitiveSummary(userId) {
   const { data, error } = await supabase
     .from('user_cognitive_profile')
     .select(`
+      cognitive_index,
       stability_index,
       accuracy_stability,
       speed_stability,
@@ -155,14 +156,15 @@ export async function getCognitiveSummary(userId) {
   if (!data) return null;
 
   return {
-    stability_index: Number(data.stability_index) || 0,
-    accuracy_stability: Number(data.accuracy_stability) || 0,
-    speed_stability: Number(data.speed_stability) || 0,
-    endurance_index: Number(data.endurance_index) || 0,
-    error_consistency: Number(data.error_consistency) || 0,
-    iq_estimated: Number(data.iq_estimated) || 0,
-    iq_class: data.iq_class || "Unknown",
-    iq_confidence: Number(data.iq_confidence) || 0,
-    neuro_type: data.neuro_type || "Unknown"
-  };
+  cognitive_index: Number(data.cognitive_index) || 0,
+  stability_index: Number(data.stability_index) || 0,
+  accuracy_stability: Number(data.accuracy_stability) || 0,
+  speed_stability: Number(data.speed_stability) || 0,
+  endurance_index: Number(data.endurance_index) || 0,
+  error_consistency: Number(data.error_consistency) || 0,
+  iq_estimated: Number(data.iq_estimated) || 0,
+  iq_class: data.iq_class || "Unknown",
+  iq_confidence: Number(data.iq_confidence) || 0,
+  neuro_type: data.neuro_type || "Unknown"
+};
 }
