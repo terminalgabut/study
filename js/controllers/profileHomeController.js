@@ -1,7 +1,12 @@
 // root/js/controllers/profileHomeController.js
 
 import { getProfileHomeData } from '../services/profileHomeService.js';
-import { buildLevelProfile, xpRequiredForLevel } from '../lib/levelEngine.js'; 
+import {
+  buildLevelProfile,
+  xpRequiredForLevel,
+  getTotalXPToReachLevel
+} from '../lib/levelEngine.js';
+
 
 export const profileHomeController = {
 
@@ -122,24 +127,24 @@ export const profileHomeController = {
   /* ==================================================
      🎯 LEVEL TARGET LOGIC
   ================================================== */
-  
-computeTarget(totalXP) {
+
+  computeTarget(totalXP) {
+
   const current = buildLevelProfile(totalXP);
   const currentLevel = current.level;
 
-  // 🎯 target per kelipatan 10
+  // 🎯 target kelipatan 10 berikutnya
   const targetLevel =
     currentLevel < 10
       ? 10
       : Math.ceil(currentLevel / 10) * 10;
 
-  // XP minimum untuk target level
+  // ✅ XP kumulatif
   const targetLevelXP =
-    xpRequiredForLevel(targetLevel);
+    getTotalXPToReachLevel(targetLevel);
 
-  // XP awal level sekarang
   const currentLevelXP =
-    xpRequiredForLevel(currentLevel);
+    getTotalXPToReachLevel(currentLevel);
 
   const progressRange =
     targetLevelXP - currentLevelXP;
@@ -148,15 +153,16 @@ computeTarget(totalXP) {
     totalXP - currentLevelXP;
 
   const progressPercent =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        (progressValue / progressRange) * 100
-      )
-    );
+    progressRange > 0
+      ? Math.max(
+          0,
+          Math.min(
+            100,
+            (progressValue / progressRange) * 100
+          )
+        )
+      : 100;
 
-  // 🔥 badge DIAMBIL DARI LEVEL TARGET
   const targetBadge =
     buildLevelProfile(targetLevelXP).badge;
 
@@ -168,9 +174,9 @@ computeTarget(totalXP) {
     progressPercent:
       Number(progressPercent.toFixed(1))
   };
-},
+  },
 
-
+  
   /* ==================================================
      🎨 UI RENDER
   ================================================== */
