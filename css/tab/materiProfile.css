@@ -1,5 +1,5 @@
 /* =========================================
-   MATERI PROFILE – CONSISTENT SYSTEM
+   MATERI PROFILE – FINAL SYSTEM CONSISTENT
 ========================================= */
 
 #profileDynamicContent .materi-overview {
@@ -15,70 +15,77 @@
 #profileDynamicContent .materi-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg); /* lebih lega antar card */
 }
 
 /* =========================================
-   MATERI ITEM (gunakan design system card)
+   MATERI CARD
 ========================================= */
 
 #profileDynamicContent .materi-item {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 
   padding: var(--space-lg);
   border-radius: var(--radius-md);
+
   background: var(--card);
   border: 1px solid var(--border);
 
+  box-shadow: var(--shadow-sm);
+
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-/* Hover elevation */
+/* Hover Elevation */
 #profileDynamicContent .materi-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
 }
 
 /* =========================================
-   TYPOGRAPHY
+   HEADER SECTION
 ========================================= */
 
-#profileDynamicContent .materi-category {
-  font-size: 0.7rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
+#profileDynamicContent .materi-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
 }
 
-#profileDynamicContent .materi-item h4 {
-  font-size: 1.05rem;
+#profileDynamicContent .materi-category {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+#profileDynamicContent .materi-title {
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.4;
   color: var(--text);
 }
 
-#profileDynamicContent .materi-meta {
-  font-size: 0.8rem;
-  line-height: 1.5;
+/* =========================================
+   QUICK META (Modern Row Layout)
+========================================= */
+
+#profileDynamicContent .materi-quick-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
-/* =========================================
-   COGNITIVE INDEX
-========================================= */
-
-#profileDynamicContent .materi-index {
-  font-size: 0.85rem;
+#profileDynamicContent .materi-quick-meta strong {
+  color: var(--text);
   font-weight: 600;
-  margin-top: 4px;
 }
-
-#profileDynamicContent .index-high { color: #22c55e; }
-#profileDynamicContent .index-mid  { color: #eab308; }
-#profileDynamicContent .index-low  { color: #ef4444; }
 
 /* =========================================
    EXPANDABLE DETAIL
@@ -86,11 +93,13 @@
 
 #profileDynamicContent .materi-detail {
   display: none;
+
   margin-top: var(--space-sm);
-  padding-top: var(--space-sm);
+  padding-top: var(--space-md);
+
   border-top: 1px solid var(--border);
 
-  font-size: 0.8rem;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--text-muted);
 }
@@ -100,8 +109,57 @@
 }
 
 /* =========================================
+   DETAIL GRID (lebih modern)
+========================================= */
+
+#profileDynamicContent .materi-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+#profileDynamicContent .materi-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#profileDynamicContent .materi-detail-item span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+#profileDynamicContent .materi-detail-item strong {
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* =========================================
    EMPTY STATE
 ========================================= */
 
 #profileDynamicContent .materi-empty {
-  padding: var(--space-lg);
+  padding: var(--space-xl);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  border: 1px solid var(--border);
+
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 480px) {
+  #profileDynamicContent .materi-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #profileDynamicContent .materi-quick-meta {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+}
