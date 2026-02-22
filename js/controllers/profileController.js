@@ -358,8 +358,9 @@ if (strengthProfile) {
   <div class="home-card">
     <h3>Materiku</h3>
     <p>Daftar materi yang sudah kamu pelajari.</p>
-    <div id="materiList" class="materi-list"></div>
   </div>
+
+  <div id="materiList" class="materi-list"></div>
 `,
       statistikProfile: `
   <div class="home-card">
