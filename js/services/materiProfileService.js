@@ -30,26 +30,46 @@ export async function getMateriProfileSummary() {
 
     const attempts = Number(row.attempts_count) || 0;
     const totalPoints = Number(row.total_score_points) || 0;
+    const readCount = Number(row.read_count) || 0;
 
+    // ===== WINRATE =====
     const winrate = attempts > 0
       ? Math.round((totalPoints / attempts) * 100)
       : 0;
 
+    // ===== TOTAL WAKTU (HOURS) =====
     const totalSeconds =
       (Number(row.total_reading_seconds) || 0) +
       (Number(row.total_quiz_seconds) || 0);
 
-    const totalHours = (totalSeconds / 3600).toFixed(1);
+    const totalHours = Math.round((totalSeconds / 3600) * 10) / 10;
+
+    // ===== SPEED =====
+    const avgSpeed = Math.round(Number(row.avg_time_per_question) || 0);
+
+    // ===== COGNITIVE =====
+    const cognitiveIndex = Math.round(Number(row.avg_cognitive_index) || 0);
+
+    // ===== STRENGTH ENGINE =====
+    const strengthProfile = buildStrengthProfile({
+      winrate,
+      cognitiveIndex,
+      avgSpeed
+    });
+
+    const narrative = buildStrengthNarrative(strengthProfile);
 
     return {
-      category: row.category,
-      judul: row.bab_title,
-      dibaca: Number(row.read_count) || 0,
+      category: row.category || '-',
+      judul: row.bab_title || '-',
+      dibaca: readCount,
       total_baca_jam: totalHours,
       soal_dikerjakan: attempts,
       winrate,
-      avg_speed: Number(row.avg_time_per_question) || 0,
-      cognitive_index: Number(row.avg_cognitive_index) || 0
+      avg_speed: avgSpeed,
+      cognitive_index: cognitiveIndex,
+      strength: narrative.strength || '',
+      needs_work: narrative.needsWork || ''
     };
   });
 }
