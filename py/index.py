@@ -37,7 +37,7 @@ def generate_quiz(messages, mode="qa"):
     MODE_SETTINGS = {
         "qa": {
             "temperature": 0.2,
-            "max_tokens": 5000
+            "max_tokens": 1300
         },
         "creative": {
             "temperature": 0.9,
@@ -86,7 +86,7 @@ def validate_quiz_structure(data: dict):
         dimension_count[dim] = dimension_count.get(dim, 0) + 1
 
     for dim, count in dimension_count.items():
-        if count != 2:
+        if count != 1:
             raise ValueError(f"Distribusi dimension salah: {dim} = {count}")
 
 # --- ROUTES ---
