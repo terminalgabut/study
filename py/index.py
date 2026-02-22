@@ -168,7 +168,7 @@ VALIDATION STEP (Internal, jangan ditampilkan):
         ai_reply = generate_quiz(messages, mode="qa")
         ai_reply = ai_reply.strip()
         if ai_reply.startswith("```"):
-        ai_reply = re.sub(r"```json|```", "", ai_reply).strip()
+            ai_reply = re.sub(r"```json|```", "", ai_reply).strip()
 
         parsed = json.loads(ai_reply)
         validate_quiz_structure(parsed)
