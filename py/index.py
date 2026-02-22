@@ -118,7 +118,7 @@ Buatkan 5 soal kritis berdasarkan teks materi berikut:
 {materi}
 
 ATURAN WAJIB:
-1. Struktur 10 Soal Berbasis Teks mengunakan 5 Dimension:
+1. Struktur 5 Soal Berbasis Teks mengunakan 5 Dimension:
    1.Dimension Pemahaman Bacaan:
       Fokus: Mencari gagasan utama atau fakta tersurat.
    2.Dimension Kosakata & Semantik:
