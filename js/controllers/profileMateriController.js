@@ -28,40 +28,57 @@ export const profileMateriController = {
 
     data.forEach(item => {
 
-      const div = document.createElement('div');
-      div.className = 'home-card';
+  const div = document.createElement('div');
+  div.className = 'materi-item';
 
-      const attempts = item.attempts_count || 0;
-      const totalPoints = item.total_score_points || 0;
+  const attempts = item.attempts_count || 0;
+  const totalPoints = item.total_score_points || 0;
 
-      const winrate = attempts > 0
-        ? Math.round((totalPoints / attempts) * 100)
-        : 0;
+  const winrate = attempts > 0
+    ? Math.round((totalPoints / attempts) * 100)
+    : 0;
 
-      div.innerHTML = `
-  <div class="materi-category">${item.category}</div>
-  <div class="materi-title">${item.bab_title}</div>
-
-  <div class="materi-stats">
-    <div>
-      <div class="stat-number">${item.read_count || 0}</div>
-      <div class="stat-label">Dibaca</div>
+  div.innerHTML = `
+    <div class="materi-header">
+      <div class="materi-category">${item.category}</div>
+      <div class="materi-title">${item.bab_title}</div>
     </div>
 
-    <div>
-      <div class="stat-number">${attempts}</div>
-      <div class="stat-label">Soal</div>
+    <div class="materi-quick-meta">
+      <div>Dibaca <strong>${item.read_count || 0}x</strong></div>
+      <div>Winrate <strong>${winrate}%</strong></div>
     </div>
 
-    <div>
-      <div class="stat-number">${winrate}%</div>
-      <div class="stat-label">Winrate</div>
+    <div class="materi-detail">
+      <div class="materi-detail-grid">
+
+        <div class="materi-detail-item">
+          <span>Total Soal</span>
+          <strong>${attempts}x</strong>
+        </div>
+
+        <div class="materi-detail-item">
+          <span>Total Waktu</span>
+          <strong>${item.total_time_spent || 0}m</strong>
+        </div>
+
+        <div class="materi-detail-item">
+          <span>Rata-rata Speed</span>
+          <strong>${item.avg_time_per_question || 0}s</strong>
+        </div>
+
+        <div class="materi-detail-item">
+          <span>Cognitive Index</span>
+          <strong>${item.avg_cognitive_index || 0}</strong>
+        </div>
+
+      </div>
     </div>
-  </div>
-`;
+  `;
 
-      container.appendChild(div);
-    });
+  div.addEventListener('click', () => {
+    div.classList.toggle('expanded');
+  });
 
-  }
-};
+  container.appendChild(div);
+});
