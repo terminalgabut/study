@@ -29,15 +29,15 @@ BASE_SYSTEM_PROMPT = "Kamu adalah AI Mentalist profesional yang ahli dalam menyu
 
 def generate_quiz(messages, mode="qa"):
     client = OpenAI(
-    api_key=os.getenv("ATLASCLOUD_API_KEY"),
-    base_url="https://api.atlascloud.ai/v1",
-    timeout=60
-)
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url="https://openrouter.ai/api/v1",
+        timeout=60
+    )
 
     MODE_SETTINGS = {
         "qa": {
             "temperature": 0.2,
-            "max_tokens": 5000
+            "max_tokens": 1500
         },
         "creative": {
             "temperature": 0.9,
@@ -48,15 +48,19 @@ def generate_quiz(messages, mode="qa"):
     settings = MODE_SETTINGS.get(mode, MODE_SETTINGS["qa"])
 
     response = client.chat.completions.create(
-    model="openai/gpt-oss-120b",
-    messages=messages,
-    temperature=settings["temperature"],
-    max_tokens=settings["max_tokens"],
-    top_p=0.9,
-    
-)
+        model="openai/gpt-4o-mini",
+        messages=messages,
+        temperature=settings["temperature"],
+        max_tokens=settings["max_tokens"],
+        top_p=0.9,
+        response_format={"type": "json_object"},
+        extra_headers={
+            "HTTP-Referer": "https://terminalgabut.github.io",
+            "X-Title": "Terminal Gabut Quiz Engine"
+        }
+    )
 
-    return response.choices[0].message.content 
+    return response.choices[0].message.content
 
 def validate_quiz_structure(data: dict):
     if "questions" not in data:
@@ -64,8 +68,8 @@ def validate_quiz_structure(data: dict):
 
     questions = data["questions"]
 
-    if len(questions) != 5:
-        raise ValueError("Jumlah soal tidak 5")
+    if len(questions) != 10:
+        raise ValueError("Jumlah soal tidak 10")
 
     dimension_count = {}
 
@@ -110,24 +114,24 @@ async def quiz_generate(request: Request):
         logging.info(f"Generating quiz with explanations for: {category}")
 
         prompt_quiz = f"""
-Buatkan 5 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks materi berikut:
+Buatkan 10 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks materi berikut:
 {materi}
 
 ATURAN WAJIB:
 1. Struktur 10 Soal Berbasis Teks mengunakan 5 Dimension (Pemahaman Bacaan, Kosakata & Semantik, Penalaran Verbal, Hubungan Analogi, Memori Kerja Verbal) :
-   1.Dimension Pemahaman Bacaan (1 Soal):
+   1.Dimension Pemahaman Bacaan (2 Soal):
       Fokus: Mencari gagasan utama atau fakta tersurat.
       Contoh Pertanyaan: "Apa tujuan utama penulis dalam paragraf kedua?" atau "Berdasarkan teks, apa penyebab utama dari fenomena X?"
-   2.Dimension Kosakata & Semantik (1 Soal):
+   2.Dimension Kosakata & Semantik (2 Soal):
       Fokus: Menguji pemahaman kata sulit atau istilah teknis dalam materi.
       Contoh Pertanyaan: "Kata 'signifikan' pada baris ke-5 paling tepat digantikan dengan kata..." atau "Apa makna istilah [Istilah Teknis] menurut konteks bacaan tersebut?"
-   3.Dimension Penalaran Verbal (1 Soal):
+   3.Dimension Penalaran Verbal (2 Soal):
       Fokus: Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui".
       Contoh Pertanyaan: "Jika pernyataan di paragraf 3 benar, manakah kesimpulan berikut yang paling logis?" atau "Manakah asumsi yang mendasari argumen penulis di bagian akhir?"
-   4.Dimension Hubungan Analogi (1 Soal):
+   4.Dimension Hubungan Analogi (2 Soal):
       Fokus: Menghubungkan konsep dalam teks dengan konsep serupa.
       Contoh Pertanyaan: "Berdasarkan teks, hubungan antara A dan B serupa dengan hubungan antara..." atau "Jika [Konsep A] digambarkan sebagai [Sifat], maka [Konsep B] dalam teks digambarkan sebagai..."
-   5.Dimension Memori Kerja Verbal (1 Soal):
+   5.Dimension Memori Kerja Verbal (2 Soal):
       Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
       Contoh Pertanyaan: "Bagaimana pengaruh temuan di paragraf pertama terhadap teori yang dijelaskan di paragraf terakhir?" atau "Berdasarkan keseluruhan materi, urutan proses yang benar adalah..."
    Tips Agar Soal Terasa Seperti "Tes IQ":
@@ -150,8 +154,8 @@ ATURAN WAJIB:
   ]
 }}
 VALIDATION STEP (Internal, jangan ditampilkan):
-- Periksa jumlah soal = 5 soal
-- Periksa distribusi dimensi = 1 per dimension
+- Periksa jumlah soal = 10 soal
+- Periksa distribusi dimensi = 2 per dimension
 - Periksa semua correct_answer identik dengan salah satu options
 - Periksa JSON valid sebelum final output
 """
