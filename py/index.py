@@ -36,8 +36,8 @@ def generate_quiz(messages, mode="qa"):
 
     MODE_SETTINGS = {
         "qa": {
-            "temperature": 0.2,
-            "max_tokens": 1500
+            "temperature": 0.7,
+            "max_tokens": 5000
         },
         "creative": {
             "temperature": 0.9,
