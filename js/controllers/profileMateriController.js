@@ -39,11 +39,26 @@ export const profileMateriController = {
         : 0;
 
       div.innerHTML = `
-        <small>${item.category || 'Umum'}</small>
-        <h3>${item.bab_title || 'Materi'}</h3>
-        <p>Dibaca ${item.read_count || 0}x</p>
-        <p>Soal ${attempts}x • Winrate ${winrate}%</p>
-      `;
+  <div class="materi-category">${item.category}</div>
+  <div class="materi-title">${item.bab_title}</div>
+
+  <div class="materi-stats">
+    <div>
+      <div class="stat-number">${item.read_count || 0}</div>
+      <div class="stat-label">Dibaca</div>
+    </div>
+
+    <div>
+      <div class="stat-number">${attempts}</div>
+      <div class="stat-label">Soal</div>
+    </div>
+
+    <div>
+      <div class="stat-number">${winrate}%</div>
+      <div class="stat-label">Winrate</div>
+    </div>
+  </div>
+`;
 
       container.appendChild(div);
     });
