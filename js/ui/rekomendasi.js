@@ -35,7 +35,9 @@ export async function initRekomendasi() {
     }
 
     listEl.innerHTML = tigaSaran.map(m => {
-      const pathKat = m.category ? m.category.split(' ')[0].toLowerCase() : 'umum';
+      const pathKat = (m.category || 'umum')
+  .toLowerCase()
+  .replace(/\s+/g, '-');
       return `
         <li style="list-style:none; border-bottom:1px solid rgba(56, 189, 248, 0.15);">
   <a href="#materi/${pathKat}/${m.slug}" style="display:block; padding:12px 0; text-decoration:none;">
