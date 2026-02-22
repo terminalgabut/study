@@ -48,7 +48,7 @@ def generate_quiz(messages, mode="qa"):
     settings = MODE_SETTINGS.get(mode, MODE_SETTINGS["qa"])
 
     response = client.chat.completions.create(
-        model="openai/gpt-4o-mini",
+        model="openai/gpt-4.1-mini",
         messages=messages,
         temperature=settings["temperature"],
         max_tokens=settings["max_tokens"],
@@ -138,7 +138,7 @@ ATURAN WAJIB:
     Hindari Jawaban Langsung: Jangan buat jawaban yang bisa di-copy-paste langsung dari teks. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
     Pengecoh (Distractor): Buat pilihan jawaban yang terlihat benar jika pembaca hanya membaca sekilas, tetapi salah secara logika detail.
 2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat namun padat yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
-3. Kembalikan HANYA JSON VALID.
+3. Kembalikan HANYA JSON VALID, DILARANG (") GUNAKAN (').
 4. Struktur:
 {{
   "questions": [
@@ -158,6 +158,8 @@ VALIDATION STEP (Internal, jangan ditampilkan):
 - Periksa distribusi dimensi = 2 per dimension
 - Periksa semua correct_answer identik dengan salah satu options
 - Periksa JSON valid sebelum final output
+- DILARANG menggunakan tanda kutip ganda (") di dalam teks soal atau explanation.
+- Jika perlu tanda kutip, gunakan tanda kutip tunggal (').
 """
 
         messages = [
@@ -167,10 +169,22 @@ VALIDATION STEP (Internal, jangan ditampilkan):
 
         ai_reply = generate_quiz(messages, mode="qa")
         ai_reply = ai_reply.strip()
+
+# hapus markdown fence kalau ada
         if ai_reply.startswith("```"):
             ai_reply = re.sub(r"```json|```", "", ai_reply).strip()
 
-        parsed = json.loads(ai_reply)
+# ambil hanya bagian JSON object
+        start = ai_reply.find("{")
+        end = ai_reply.rfind("}") + 1
+        ai_reply = ai_reply[start:end]
+
+        try:
+            parsed = json.loads(ai_reply)
+        except json.JSONDecodeError as e:
+            logging.error("RAW AI RESPONSE:\n" + ai_reply)
+        raise ValueError(f"JSON Decode Error: {str(e)}")
+ 
         validate_quiz_structure(parsed)
 
         questions = parsed["questions"]
