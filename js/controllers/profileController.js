@@ -356,7 +356,7 @@ if (strengthProfile) {
 `,
       materiProfile: `
   <div class="materi-overview">
-    <div id="materiList"></div>
+    <div id="materiList" class="materi-list"></div>
   </div>
 `,
       statistikProfile: `
