@@ -34,6 +34,10 @@ export async function initHistoryPage() {
     container.innerHTML = historyRows.map(item => {
       const mat = materials?.find(m => m.slug === item.material_slug);
       const category = mat ? mat.category : 'Umum';
+
+      const safeCategory = category
+      .toLowerCase()
+      .replace(/\s+/g, '-');
       
       // Hitung menit belajar
       const minutes = Math.floor((item.duration_seconds || 0) / 60);
