@@ -45,7 +45,7 @@ export async function initHistoryPage() {
           <p class="highlight" style="font-size: 0.8em; opacity: 0.8;">Kategori: ${category}</p>
           <p style="font-size: 0.85em; margin: 5px 0;">Durasi Belajar: <b>${minutes} menit</b></p>
           <button class="primary-btn" 
-                  onclick="window.location.hash='#/materi/redirect/${item.material_slug}'" 
+                  onclick="window.location.hash='#/materi/${safeCategory}/${item.material_slug}'"
                   style="margin-top:10px; width:100%;">
             Lanjutkan Belajar
           </button>
