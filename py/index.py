@@ -138,7 +138,7 @@ ATURAN WAJIB:
     Hindari Jawaban Langsung: Jangan buat jawaban yang bisa di-copy-paste langsung dari teks. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
     Pengecoh (Distractor): Buat pilihan jawaban yang terlihat benar jika pembaca hanya membaca sekilas, tetapi salah secara logika detail.
 2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat namun padat yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
-3. Kembalikan HANYA JSON VALID, DILARANG (") GUNAKAN (').
+3. Kembalikan HANYA JSON VALID.
 4. Struktur:
 {{
   "questions": [
@@ -158,8 +158,7 @@ VALIDATION STEP (Internal, jangan ditampilkan):
 - Periksa distribusi dimensi = 2 per dimension
 - Periksa semua correct_answer identik dengan salah satu options
 - Periksa JSON valid sebelum final output
-- DILARANG menggunakan tanda kutip ganda (") di dalam teks soal atau explanation.
-- Jika perlu tanda kutip, gunakan tanda kutip tunggal (').
+- Jika di dalam teks soal atau explanation perlu tanda kutip, gunakan tanda kutip tunggal (') agar tidak merusak format JSON.
 """
 
         messages = [
@@ -183,7 +182,7 @@ VALIDATION STEP (Internal, jangan ditampilkan):
             parsed = json.loads(ai_reply)
         except json.JSONDecodeError as e:
             logging.error("RAW AI RESPONSE:\n" + ai_reply)
-        raise ValueError(f"JSON Decode Error: {str(e)}")
+            raise ValueError(f"JSON Decode Error: {str(e)}")
  
         validate_quiz_structure(parsed)
 
