@@ -1,6 +1,7 @@
-/* =========================================
-   MATERI PROFILE – FINAL SYSTEM CONSISTENT
-========================================= */
+/* =====================================================
+   MATERI PROFILE – MODERN DASHBOARD STYLE
+   Scoped aman ke #profileDynamicContent
+===================================================== */
 
 #profileDynamicContent .materi-overview {
   display: flex;
@@ -8,19 +9,19 @@
   gap: var(--space-lg);
 }
 
-/* =========================================
+/* =====================================================
    LIST CONTAINER
-========================================= */
+===================================================== */
 
 #profileDynamicContent .materi-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg); /* lebih lega antar card */
+  gap: var(--space-lg);
 }
 
-/* =========================================
-   MATERI CARD
-========================================= */
+/* =====================================================
+   CARD BASE
+===================================================== */
 
 #profileDynamicContent .materi-item {
   display: flex;
@@ -37,18 +38,25 @@
 
   cursor: pointer;
   transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Hover Elevation */
 #profileDynamicContent .materi-item:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: var(--accent);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
-/* =========================================
+/* Active Expanded */
+#profileDynamicContent .materi-item.expanded {
+  border-color: var(--accent);
+}
+
+/* =====================================================
    HEADER SECTION
-========================================= */
+===================================================== */
 
 #profileDynamicContent .materi-header {
   display: flex;
@@ -71,13 +79,15 @@
   color: var(--text);
 }
 
-/* =========================================
-   QUICK META (Modern Row Layout)
-========================================= */
+/* =====================================================
+   QUICK META ROW
+===================================================== */
 
 #profileDynamicContent .materi-quick-meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
   font-size: 13px;
   color: var(--text-muted);
 }
@@ -87,17 +97,55 @@
   font-weight: 600;
 }
 
-/* =========================================
-   EXPANDABLE DETAIL
-========================================= */
+/* =====================================================
+   WINRATE COLOR STATES
+===================================================== */
+
+#profileDynamicContent .winrate-low {
+  color: #ef4444;
+}
+
+#profileDynamicContent .winrate-mid {
+  color: #facc15;
+}
+
+#profileDynamicContent .winrate-high {
+  color: #22c55e;
+}
+
+/* =====================================================
+   OPTIONAL MINI PROGRESS BAR (WINRATE)
+===================================================== */
+
+#profileDynamicContent .materi-progress {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+#profileDynamicContent .materi-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* =====================================================
+   EXPANDABLE DETAIL SECTION
+===================================================== */
 
 #profileDynamicContent .materi-detail {
-  display: none;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
 
-  margin-top: var(--space-sm);
-  padding-top: var(--space-md);
+  transition: all 0.3s ease;
 
-  border-top: 1px solid var(--border);
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 1px solid transparent;
 
   font-size: 13px;
   line-height: 1.6;
@@ -105,12 +153,17 @@
 }
 
 #profileDynamicContent .materi-item.expanded .materi-detail {
-  display: block;
+  max-height: 500px;
+  opacity: 1;
+
+  margin-top: var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border);
 }
 
-/* =========================================
-   DETAIL GRID (lebih modern)
-========================================= */
+/* =====================================================
+   DETAIL GRID
+===================================================== */
 
 #profileDynamicContent .materi-detail-grid {
   display: grid;
@@ -127,16 +180,18 @@
 #profileDynamicContent .materi-detail-item span {
   font-size: 11px;
   color: var(--text-muted);
+  opacity: 0.8;
 }
 
 #profileDynamicContent .materi-detail-item strong {
   font-size: 13px;
+  font-weight: 600;
   color: var(--text);
 }
 
-/* =========================================
+/* =====================================================
    EMPTY STATE
-========================================= */
+===================================================== */
 
 #profileDynamicContent .materi-empty {
   padding: var(--space-xl);
@@ -149,17 +204,19 @@
   font-size: 14px;
 }
 
-/* =========================================
+/* =====================================================
    RESPONSIVE
-========================================= */
+===================================================== */
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+
   #profileDynamicContent .materi-detail-grid {
     grid-template-columns: 1fr;
   }
 
   #profileDynamicContent .materi-quick-meta {
     flex-direction: column;
+    align-items: flex-start;
     gap: var(--space-xs);
   }
 }
