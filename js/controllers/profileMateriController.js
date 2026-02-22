@@ -1,39 +1,40 @@
-import { supabase } from '../services/supabase.js';
-
 export const profileMateriController = {
 
-  async render(userId) {
+  async render() {
 
     const container = document.getElementById('materiList');
     if (!container) return;
 
-    container.innerHTML = 'Memuat...';
-
-    const { data, error } = await supabase
-      .from('study_progress')
-      .select('*')
-      .eq('user_id', userId)
-      .order('updated_at', { ascending: false });
-
-    if (error || !data || data.length === 0) {
-      container.innerHTML = 'Belum ada materi.';
-      return;
-    }
-
     container.innerHTML = '';
 
-    data.forEach(item => {
+    const dummyData = [
+      {
+        category: 'Logic',
+        bab_title: 'Fallacy Bagian 2',
+        read_count: 6,
+        winrate: 35,
+        attempts: 40,
+        time: 0,
+        speed: 0,
+        iq: 0
+      },
+      {
+        category: 'Bahasa',
+        bab_title: 'Bahasa Bab 1.1',
+        read_count: 6,
+        winrate: 70,
+        attempts: 32,
+        time: 0,
+        speed: 0,
+        iq: 0
+      }
+    ];
 
-      const attempts = item.attempts_count || 0;
-      const totalPoints = item.total_score_points || 0;
-
-      const winrate = attempts > 0
-        ? Math.round((totalPoints / attempts) * 100)
-        : 0;
+    dummyData.forEach(item => {
 
       let winrateClass = 'low';
-      if (winrate > 75) winrateClass = 'high';
-      else if (winrate > 50) winrateClass = 'mid';
+      if (item.winrate > 75) winrateClass = 'high';
+      else if (item.winrate > 50) winrateClass = 'mid';
 
       const div = document.createElement('div');
       div.className = 'materi-item';
@@ -45,35 +46,30 @@ export const profileMateriController = {
         </div>
 
         <div class="materi-quick-meta">
-          <div>Dibaca <strong>${item.read_count || 0}x</strong></div>
+          <div>Dibaca <strong>${item.read_count}x</strong></div>
           <div class="winrate ${winrateClass}">
-            Winrate <strong>${winrate}%</strong>
+            Winrate <strong>${item.winrate}%</strong>
           </div>
         </div>
 
         <div class="materi-detail">
           <div class="materi-detail-grid">
-
             <div class="materi-detail-item">
               <span>Total Soal</span>
-              <strong>${attempts}x</strong>
+              <strong>${item.attempts}x</strong>
             </div>
-
             <div class="materi-detail-item">
               <span>Total Waktu</span>
-              <strong>${item.total_time_spent || 0}m</strong>
+              <strong>${item.time}m</strong>
             </div>
-
             <div class="materi-detail-item">
               <span>Rata-rata Speed</span>
-              <strong>${item.avg_time_per_question || 0}s</strong>
+              <strong>${item.speed}s</strong>
             </div>
-
             <div class="materi-detail-item">
               <span>Cognitive Index</span>
-              <strong>${item.avg_cognitive_index || 0}</strong>
+              <strong>${item.iq}</strong>
             </div>
-
           </div>
         </div>
       `;
