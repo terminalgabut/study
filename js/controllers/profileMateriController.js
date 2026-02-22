@@ -5,11 +5,7 @@ export const profileMateriController = {
   async render(userId) {
 
     const container = document.getElementById('materiList');
-
-    if (!container) {
-      console.warn('materiList tidak ditemukan di DOM');
-      return;
-    }
+    if (!container) return;
 
     container.innerHTML = 'Memuat...';
 
@@ -20,16 +16,13 @@ export const profileMateriController = {
       .order('updated_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      container.innerHTML = '<div class="materi-empty">Belum ada materi.</div>';
+      container.innerHTML = 'Belum ada materi.';
       return;
     }
 
     container.innerHTML = '';
 
     data.forEach(item => {
-
-      const div = document.createElement('div');
-      div.className = 'materi-item';
 
       const attempts = item.attempts_count || 0;
       const totalPoints = item.total_score_points || 0;
@@ -38,26 +31,23 @@ export const profileMateriController = {
         ? Math.round((totalPoints / attempts) * 100)
         : 0;
 
-      // ✅ WINRATE COLOR LOGIC (DI DALAM LOOP)
-      let winrateClass = '';
+      let winrateClass = 'low';
+      if (winrate > 75) winrateClass = 'high';
+      else if (winrate > 50) winrateClass = 'mid';
 
-      if (winrate <= 50) winrateClass = 'winrate-low';
-      else if (winrate <= 75) winrateClass = 'winrate-mid';
-      else winrateClass = 'winrate-high';
+      const div = document.createElement('div');
+      div.className = 'materi-item';
 
       div.innerHTML = `
         <div class="materi-header">
-          <div class="materi-category">${item.category || '-'}</div>
-          <div class="materi-title">${item.bab_title || '-'}</div>
+          <div class="materi-category">${item.category}</div>
+          <div class="materi-title">${item.bab_title}</div>
         </div>
 
         <div class="materi-quick-meta">
           <div>Dibaca <strong>${item.read_count || 0}x</strong></div>
-          <div>
-            Winrate 
-            <strong class="${winrateClass}">
-              ${winrate}%
-            </strong>
+          <div class="winrate ${winrateClass}">
+            Winrate <strong>${winrate}%</strong>
           </div>
         </div>
 
