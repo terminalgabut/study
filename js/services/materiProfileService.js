@@ -1,11 +1,10 @@
 // js/services/materiProfileService.js
 
 import { supabase } from './supabase.js';
-import { buildStrengthProfile } from '../lib/strengthEngine.js';
-import { buildStrengthNarrative } from '../lib/strengthNarrative.js';
+
+const INVALID_CATEGORIES = ['redirect', 'materi'];
 
 export async function getMateriProfileSummary() {
-
   const { data, error } = await supabase
     .from('study_progress')
     .select(`
@@ -16,9 +15,9 @@ export async function getMateriProfileSummary() {
       total_score_points,
       total_reading_seconds,
       total_quiz_seconds,
-      avg_time_per_question,
-      avg_cognitive_index
+      updated_at
     `)
+    .not('category', 'in', `(${INVALID_CATEGORIES.map(c => `"${c}"`).join(',')})`)
     .order('updated_at', { ascending: false });
 
   if (error) {
@@ -26,50 +25,37 @@ export async function getMateriProfileSummary() {
     return [];
   }
 
-  return (data || []).map(row => {
-
+  return (data ?? []).map((row) => {
     const attempts = Number(row.attempts_count) || 0;
     const totalPoints = Number(row.total_score_points) || 0;
     const readCount = Number(row.read_count) || 0;
+    const readingSeconds = Number(row.total_reading_seconds) || 0;
+    const quizSeconds = Number(row.total_quiz_seconds) || 0;
 
     // ===== WINRATE =====
-    const winrate = attempts > 0
-      ? Math.round((totalPoints / attempts) * 100)
-      : 0;
+    const winrate =
+      attempts > 0
+        ? Math.round((totalPoints / attempts) * 100)
+        : 0;
 
-    // ===== TOTAL WAKTU (HOURS) =====
-    const totalSeconds =
-      (Number(row.total_reading_seconds) || 0) +
-      (Number(row.total_quiz_seconds) || 0);
+    // ===== TOTAL READING HOURS (2 decimal precision) =====
+    const totalReadingHours =
+      Number((readingSeconds / 3600).toFixed(2));
 
-    const totalHours = Math.round((totalSeconds / 3600) * 10) / 10;
-
-    // ===== SPEED =====
-    const avgSpeed = Math.round(Number(row.avg_time_per_question) || 0);
-
-    // ===== COGNITIVE =====
-    const cognitiveIndex = Math.round(Number(row.avg_cognitive_index) || 0);
-
-    // ===== STRENGTH ENGINE =====
-    const strengthProfile = buildStrengthProfile({
-      winrate,
-      cognitiveIndex,
-      avgSpeed
-    });
-
-    const narrative = buildStrengthNarrative(strengthProfile);
+    // ===== AVG SPEED (seconds per question) =====
+    const avgSpeed =
+      attempts > 0
+        ? Number((quizSeconds / attempts).toFixed(2))
+        : 0;
 
     return {
-      category: row.category || '-',
-      judul: row.bab_title || '-',
+      category: row.category ?? '-',
+      judul: row.bab_title ?? '-',
       dibaca: readCount,
-      total_baca_jam: totalHours,
+      total_baca_jam: totalReadingHours,
       soal_dikerjakan: attempts,
       winrate,
-      avg_speed: avgSpeed,
-      cognitive_index: cognitiveIndex,
-      strength: narrative.strength || '',
-      needs_work: narrative.needsWork || ''
+      avg_speed: avgSpeed
     };
   });
 }
