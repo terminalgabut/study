@@ -29,7 +29,7 @@ export async function initLastRead() {
     // 2. Ambil judul lengkap dari tabel materi [cite: 14]
     const { data: material, error: e2 } = await supabase
       .from('materials')
-      .select('title')
+      .select('title, category')
       .eq('slug', history.material_slug)
       .single();
 
@@ -45,9 +45,13 @@ export async function initLastRead() {
     }
 
     // Ubah fungsi klik tombol
-    btnEl.onclick = () => {
+    const safeCategory = (material.category || 'umum')
+  .toLowerCase()
+  .replace(/\s+/g, '-');
+
+btnEl.onclick = () => {
   window.location.hash =
-    `#/materi/${material.category}/${history.material_slug}`;
+    `#/materi/${safeCategory}/${history.material_slug}`;
 };
 
   } catch (err) {
