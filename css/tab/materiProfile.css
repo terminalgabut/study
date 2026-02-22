@@ -1,21 +1,11 @@
 /* =========================================
-   MATERI PROFILE – OVERVIEW (SCOPED SAFE)
+   MATERI PROFILE – CONSISTENT SYSTEM
 ========================================= */
 
 #profileDynamicContent .materi-overview {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg); /* konsisten dengan home-overview */
-}
-
-/* =========================================
-   HEADER CARD (pakai home-card default)
-========================================= */
-
-#profileDynamicContent .materi-overview .home-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-lg);
 }
 
 /* =========================================
@@ -29,7 +19,7 @@
 }
 
 /* =========================================
-   MATERI ITEM (Card Style)
+   MATERI ITEM (gunakan design system card)
 ========================================= */
 
 #profileDynamicContent .materi-item {
@@ -37,78 +27,58 @@
   flex-direction: column;
   gap: var(--space-sm);
 
-  padding: var(--space-md);
+  padding: var(--space-lg);
   border-radius: var(--radius-md);
-  background: var(--card-bg);
+  background: var(--card);
+  border: 1px solid var(--border);
 
   cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Hover elevation */
 #profileDynamicContent .materi-item:hover {
   transform: translateY(-2px);
-  background: rgba(255,255,255,0.04);
-}
-
-/* subtle divider line */
-#profileDynamicContent .materi-item::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: rgba(255,255,255,0.05);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
 /* =========================================
-   CONTENT TYPOGRAPHY
+   TYPOGRAPHY
 ========================================= */
 
 #profileDynamicContent .materi-category {
   font-size: 0.7rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 #profileDynamicContent .materi-item h4 {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.4;
   color: var(--text);
 }
 
 #profileDynamicContent .materi-meta {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
   line-height: 1.5;
+  color: var(--text-muted);
 }
 
 /* =========================================
-   COGNITIVE INDEX BADGE
+   COGNITIVE INDEX
 ========================================= */
 
 #profileDynamicContent .materi-index {
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   margin-top: 4px;
 }
 
-/* Index color states */
-#profileDynamicContent .index-high {
-  color: #22c55e; /* green */
-}
-
-#profileDynamicContent .index-mid {
-  color: #facc15; /* yellow */
-}
-
-#profileDynamicContent .index-low {
-  color: #ef4444; /* red */
-}
+#profileDynamicContent .index-high { color: #22c55e; }
+#profileDynamicContent .index-mid  { color: #eab308; }
+#profileDynamicContent .index-low  { color: #ef4444; }
 
 /* =========================================
    EXPANDABLE DETAIL
@@ -116,12 +86,13 @@
 
 #profileDynamicContent .materi-detail {
   display: none;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  line-height: 1.6;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
 
-  padding-top: var(--space-xs);
-  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-muted);
 }
 
 #profileDynamicContent .materi-item.expanded .materi-detail {
@@ -129,39 +100,8 @@
 }
 
 /* =========================================
-   ANIMATION (smooth expand feel)
-========================================= */
-
-#profileDynamicContent .materi-item {
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-/* =========================================
    EMPTY STATE
 ========================================= */
 
 #profileDynamicContent .materi-empty {
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  padding: var(--space-md);
-}
-
-/* =========================================
-   RESPONSIVE SAFE
-========================================= */
-
-@media (max-width: 480px) {
-
-  #profileDynamicContent .materi-item h4 {
-    font-size: 0.95rem;
-  }
-
-  #profileDynamicContent .materi-meta {
-    font-size: 0.7rem;
-  }
-
-  #profileDynamicContent .materi-index {
-    font-size: 0.75rem;
-  }
-}
+  padding: var(--space-lg);
