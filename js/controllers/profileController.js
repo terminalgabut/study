@@ -397,7 +397,7 @@ if (strengthProfile) {
       await profileStatsController.render(this.user.id);
 }
              if (tab === 'materiProfile') {
-  await profileMateriController.render(this.user.id);
+  await profileMateriController.render();
              }
   };
 
