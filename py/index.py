@@ -161,17 +161,15 @@ VALIDATION STEP (Internal, jangan ditampilkan):
 """
 
         messages = [
-    {"role": "system", "content": BASE_SYSTEM_PROMPT},
-    {"role": "user", "content": prompt_quiz}
-]
+            {"role": "system", "content": BASE_SYSTEM_PROMPT},
+            {"role": "user", "content": prompt_quiz}
+        ]
 
-ai_reply = generate_quiz(messages, mode="qa")
+        ai_reply = generate_quiz(messages, mode="qa")
+        parsed = json.loads(ai_reply)
+        validate_quiz_structure(parsed)
 
-parsed = json.loads(ai_reply)
-
-validate_quiz_structure(parsed)
-
-questions = parsed["questions"]
+        questions = parsed["questions"]
 
         for i, q in enumerate(questions, start=1):
             q["id"] = f"q{i}"
