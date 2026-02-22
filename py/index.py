@@ -52,7 +52,7 @@ def generate_quiz(messages, mode="qa"):
     messages=messages,
     temperature=settings["temperature"],
     max_tokens=settings["max_tokens"],
-    top_p=0.8,
+    top_p=0.9,
     
 )
 
@@ -64,8 +64,8 @@ def validate_quiz_structure(data: dict):
 
     questions = data["questions"]
 
-    if len(questions) != 10:
-        raise ValueError("Jumlah soal tidak 10")
+    if len(questions) != 5:
+        raise ValueError("Jumlah soal tidak 5")
 
     dimension_count = {}
 
@@ -110,24 +110,24 @@ async def quiz_generate(request: Request):
         logging.info(f"Generating quiz with explanations for: {category}")
 
         prompt_quiz = f"""
-Buatkan 10 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks materi berikut:
+Buatkan 5 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks materi berikut:
 {materi}
 
 ATURAN WAJIB:
 1. Struktur 10 Soal Berbasis Teks mengunakan 5 Dimension (Pemahaman Bacaan, Kosakata & Semantik, Penalaran Verbal, Hubungan Analogi, Memori Kerja Verbal) :
-   1.Dimension Pemahaman Bacaan (2 Soal):
+   1.Dimension Pemahaman Bacaan (1 Soal):
       Fokus: Mencari gagasan utama atau fakta tersurat.
       Contoh Pertanyaan: "Apa tujuan utama penulis dalam paragraf kedua?" atau "Berdasarkan teks, apa penyebab utama dari fenomena X?"
-   2.Dimension Kosakata & Semantik (2 Soal):
+   2.Dimension Kosakata & Semantik (1 Soal):
       Fokus: Menguji pemahaman kata sulit atau istilah teknis dalam materi.
       Contoh Pertanyaan: "Kata 'signifikan' pada baris ke-5 paling tepat digantikan dengan kata..." atau "Apa makna istilah [Istilah Teknis] menurut konteks bacaan tersebut?"
-   3.Dimension Penalaran Verbal (2 Soal):
+   3.Dimension Penalaran Verbal (1 Soal):
       Fokus: Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui".
       Contoh Pertanyaan: "Jika pernyataan di paragraf 3 benar, manakah kesimpulan berikut yang paling logis?" atau "Manakah asumsi yang mendasari argumen penulis di bagian akhir?"
-   4.Dimension Hubungan Analogi (2 Soal):
+   4.Dimension Hubungan Analogi (1 Soal):
       Fokus: Menghubungkan konsep dalam teks dengan konsep serupa.
       Contoh Pertanyaan: "Berdasarkan teks, hubungan antara A dan B serupa dengan hubungan antara..." atau "Jika [Konsep A] digambarkan sebagai [Sifat], maka [Konsep B] dalam teks digambarkan sebagai..."
-   5.Dimension Memori Kerja Verbal (2 Soal):
+   5.Dimension Memori Kerja Verbal (1 Soal):
       Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
       Contoh Pertanyaan: "Bagaimana pengaruh temuan di paragraf pertama terhadap teori yang dijelaskan di paragraf terakhir?" atau "Berdasarkan keseluruhan materi, urutan proses yang benar adalah..."
    Tips Agar Soal Terasa Seperti "Tes IQ":
@@ -150,8 +150,8 @@ ATURAN WAJIB:
   ]
 }}
 VALIDATION STEP (Internal, jangan ditampilkan):
-- Periksa jumlah soal = 10
-- Periksa distribusi dimensi = 2 per dimension
+- Periksa jumlah soal = 5 soal
+- Periksa distribusi dimensi = 1 per dimension
 - Periksa semua correct_answer identik dengan salah satu options
 - Periksa JSON valid sebelum final output
 """
