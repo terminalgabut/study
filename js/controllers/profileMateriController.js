@@ -11,6 +11,12 @@ export const profileMateriController = {
       return;
     }
 
+    let winrateClass = '';
+
+if (winrate <= 50) winrateClass = 'low';
+else if (winrate <= 75) winrateClass = 'mid';
+else winrateClass = 'high';
+
     container.innerHTML = 'Memuat...';
 
     const { data, error } = await supabase
