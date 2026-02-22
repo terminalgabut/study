@@ -114,26 +114,16 @@ Buatkan 5 soal test pilihan ganda yang kritis dan mendalam berdasarkan teks mate
 {materi}
 
 ATURAN WAJIB:
-1. Struktur 10 Soal Berbasis Teks mengunakan 5 Dimension (Pemahaman Bacaan, Kosakata & Semantik, Penalaran Verbal, Hubungan Analogi, Memori Kerja Verbal) :
-   1.Dimension Pemahaman Bacaan (1 Soal):
-      Fokus: Mencari gagasan utama atau fakta tersurat.
-      Contoh Pertanyaan: "Apa tujuan utama penulis dalam paragraf kedua?" atau "Berdasarkan teks, apa penyebab utama dari fenomena X?"
-   2.Dimension Kosakata & Semantik (1 Soal):
-      Fokus: Menguji pemahaman kata sulit atau istilah teknis dalam materi.
-      Contoh Pertanyaan: "Kata 'signifikan' pada baris ke-5 paling tepat digantikan dengan kata..." atau "Apa makna istilah [Istilah Teknis] menurut konteks bacaan tersebut?"
-   3.Dimension Penalaran Verbal (1 Soal):
-      Fokus: Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui".
-      Contoh Pertanyaan: "Jika pernyataan di paragraf 3 benar, manakah kesimpulan berikut yang paling logis?" atau "Manakah asumsi yang mendasari argumen penulis di bagian akhir?"
-   4.Dimension Hubungan Analogi (1 Soal):
-      Fokus: Menghubungkan konsep dalam teks dengan konsep serupa.
-      Contoh Pertanyaan: "Berdasarkan teks, hubungan antara A dan B serupa dengan hubungan antara..." atau "Jika [Konsep A] digambarkan sebagai [Sifat], maka [Konsep B] dalam teks digambarkan sebagai..."
-   5.Dimension Memori Kerja Verbal (1 Soal):
-      Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
-      Contoh Pertanyaan: "Bagaimana pengaruh temuan di paragraf pertama terhadap teori yang dijelaskan di paragraf terakhir?" atau "Berdasarkan keseluruhan materi, urutan proses yang benar adalah..."
-   Tips Agar Soal Terasa Seperti "Tes IQ":
-    Hindari Jawaban Langsung: Jangan buat jawaban yang bisa di-copy-paste langsung dari teks. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
+1. Struktur Soal Berbasis Teks mengunakan 5 Dimension (Pemahaman Bacaan, Kosakata & Semantik, Penalaran Verbal, Hubungan Analogi, Memori Kerja Verbal) :
+   Fokus: Mencari gagasan utama atau fakta tersurat,
+          Menguji pemahaman kata sulit atau istilah teknis dalam materi,
+          Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui,
+          Menghubungkan konsep dalam teks dengan konsep serupa,
+          Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis),
+    Agar Soal Terasa Seperti "Tes IQ":
+    Hindari Jawaban Langsung: Jangan buat jawaban yang bisa di-copy-paste langsung dari text. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
     Pengecoh (Distractor): Buat pilihan jawaban yang terlihat benar jika pembaca hanya membaca sekilas, tetapi salah secara logika detail.
-2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat namun padat yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
+2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat jawaban benar.
 3. Kembalikan HANYA JSON VALID.
 4. Struktur:
 {{
