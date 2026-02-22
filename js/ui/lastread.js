@@ -46,8 +46,9 @@ export async function initLastRead() {
 
     // Ubah fungsi klik tombol
     btnEl.onclick = () => {
-      window.location.hash = `#/materi/redirect/${history.material_slug}`;
-    };
+  window.location.hash =
+    `#/materi/${material.category}/${history.material_slug}`;
+};
 
   } catch (err) {
     console.error('Error initLastRead:', err);
