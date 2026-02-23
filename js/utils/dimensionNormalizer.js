@@ -18,7 +18,7 @@ export function normalizeDimension(input) {
   if (
     text.includes('kosakata_simantik') ||
     text.includes('kosakata & simantik') ||
-    text.includes('vocabulary') ||
+    text.includes('vocabulary & semantics') ||
     text.includes('semantics')
   ) {
     return 'vocabulary';
