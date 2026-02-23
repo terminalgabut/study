@@ -62,6 +62,14 @@ def generate_quiz(messages, mode="qa"):
 
     return response.choices[0].message.content
 
+ALLOWED_DIMENSIONS = {
+"reading comprehension", 
+"vocabulary & semantics", 
+"verbal reasoning", 
+"analogy", 
+"working memory"
+}
+
 def validate_quiz_structure(data: dict):
     if "questions" not in data:
         raise ValueError("Missing 'questions' field")
@@ -86,9 +94,20 @@ def validate_quiz_structure(data: dict):
         if q["correct_answer"] not in q["options"]:
             raise ValueError("Correct answer tidak cocok dengan options")
 
-        dim = q["dimension"]
+        dim = q["dimension"] 
+        if not isinstance(dim, str):
+            raise ValueError(f"Dimension harus string, dapat: {type(dim)}")
+            
+        dim = dim.strip().lower()
+        
+        if dim not in ALLOWED_DIMENSIONS:
+           raise ValueError(
+               f"Dimension tidak valid: '{dim}'. "
+               f"Harus salah satu dari {sorted(ALLOWED_DIMENSIONS)}")
+            
         dimension_count[dim] = dimension_count.get(dim, 0) + 1
-
+        q["dimension"] = dim
+        
     for dim, count in dimension_count.items():
         if count != 1:
             raise ValueError(f"Distribusi dimension salah: {dim} = {count}")
@@ -119,19 +138,19 @@ Buatkan 5 soal kritis berdasarkan teks materi berikut:
 
 ATURAN WAJIB:
 1. Struktur 5 Soal Berbasis Teks mengunakan 5 Dimension:
-   1.Dimension Pemahaman Bacaan:
+   - reading comprehension:
       Fokus: Mencari gagasan utama atau fakta tersurat.
-   2.Dimension Kosakata & Semantik:
+   - vocabulary & semantics:
       Fokus: Menguji pemahaman kata sulit atau istilah teknis dalam materi.
-   3.Dimension Penalaran Verbal:
+   - verbal reasoning:
       Fokus: Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui".
-   4.Dimension Hubungan Analogi:
+   - analogy:
       Fokus: Menghubungkan konsep dalam teks dengan konsep serupa.
-   5.Dimension Memori Kerja Verbal:
+   - working memory:
       Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
    Tips soal seperti "Tes IQ":
-    Jangan buat jawaban yang bisa di-copy-paste langsung dari teks. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
-    Pengecoh (Distractor): Buat pilihan jawaban yang terlihat benar jika pembaca hanya membaca sekilas, tetapi salah secara logika detail.
+      - Jangan buat jawaban yang bisa di-copy-paste langsung dari teks. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
+      -  Pengecoh (Distractor): Buat pilihan jawaban yang terlihat benar jika pembaca hanya membaca sekilas, tetapi salah secara logika detail.
 2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat namun padat yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
 3. Kembalikan HANYA JSON VALID.
 4. Struktur:
@@ -140,7 +159,7 @@ ATURAN WAJIB:
     {{
       "id": "q1",
       "category": "judul materi",
-      "dimension": "Memori Kerja Verbal",
+      "dimension": "vocabulary & semantics",
       "question": "teks soal",
       "options": ["opsi1", "opsi2", "opsi3", "opsi4"],
       "correct_answer": "teks jawaban yang persis sama dengan salah satu opsi",
@@ -149,6 +168,7 @@ ATURAN WAJIB:
   ]
 }}
 VALIDATION STEP (Internal, jangan ditampilkan):
+- Periksa 5 dimension reading comprehension, vocabulary & semantics, verbal reasoning, analogy, working memory
 - Periksa semua correct_answer identik dengan salah satu options
 - Periksa JSON valid sebelum final output
 - Jika di dalam teks soal atau explanation perlu tanda kutip, gunakan tanda kutip tunggal (') agar tidak merusak format JSON.
