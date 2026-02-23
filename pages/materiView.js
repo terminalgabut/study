@@ -25,6 +25,13 @@ export const materiView = `
       <p class="small">Pengenalan konsep cara berpikir Filsafat.</p>
     </a>
   </div>
+
+  <div class="home-card hero">
+    <a href="#/materi/tajwid" class="home-card">
+      <h3>Ilmu Tajwid</h3>
+      <p class="small">Pengenalan konsep dasar Ilmu Tajwid.</p>
+    </a>
+  </div>
   
 </section>
 `;
