@@ -6,7 +6,7 @@
 export function getIQInsight(summary) {
   if (!summary) return null;
 
-  const iq = Number(summary.iq_estimated) || 0;
+  const iq = Number(summary.iq_final ?? summary.iq_estimated ?? 0);
   const iqClass = summary.iq_class || "Unknown";
   const neuroType = summary.neuro_type || "Unknown";
   const confidence = Number(summary.iq_confidence) || 0;
