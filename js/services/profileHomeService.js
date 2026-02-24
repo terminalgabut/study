@@ -48,7 +48,7 @@ async function fetchXP(userId) {
 async function fetchRecentCognitiveSessions(userId) {
   const { data } = await supabase
     .from('user_cognitive_sessions')
-    .select('cognitive_index, session_at')
+    .select('iq_final, session_at')
     .eq('user_id', userId)
     .order('session_at', { ascending: false })
     .limit(2);
