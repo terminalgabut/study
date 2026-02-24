@@ -66,7 +66,7 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
 
   const iqTrend = recentSessions.map(s => ({
     date: s.date || s.session_at || null,
-    value: Number(s.iq_estimated) || 0
+    value: Number(s.iq_final) || 0
   }));
 
   const firstIQ = iqTrend[0]?.value || 0;
