@@ -141,6 +141,7 @@ export async function getCognitiveSummary(userId) {
       endurance_index,
       error_consistency,
       iq_estimated,
+      iq_final,
       iq_class,
       iq_confidence,
       neuro_type
@@ -163,6 +164,7 @@ export async function getCognitiveSummary(userId) {
   endurance_index: Number(data.endurance_index) || 0,
   error_consistency: Number(data.error_consistency) || 0,
   iq_estimated: Number(data.iq_estimated) || 0,
+  iq_final: Number(data.iq_final) || 0,  
   iq_class: data.iq_class || "Unknown",
   iq_confidence: Number(data.iq_confidence) || 0,
   neuro_type: data.neuro_type || "Unknown"
