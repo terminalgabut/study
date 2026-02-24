@@ -62,7 +62,7 @@ export async function getCognitiveHistory(userId, limit = 8) {
     .select(`
      session_at,
      cognitive_index,
-     iq_estimated,
+     iq_final,
      iq_confidence,
      iq_class,
      scores
@@ -82,7 +82,7 @@ export async function getCognitiveHistory(userId, limit = 8) {
 
   cognitive_index: Number(row.cognitive_index) || 0,
 
-  iq_estimated: Number(row.iq_estimated) || 0,
+  iq_final: Number(row.iq_final) || 0,
   iq_confidence: Number(row.iq_confidence) || 0,
 
   memory: Number(row.scores?.memory) || 0,
