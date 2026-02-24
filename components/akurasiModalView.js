@@ -44,7 +44,7 @@ export const akurasiModalView = {
                 </div>
             `;
         } else {
-            const isCritical = worstMateri.total_score_points < 60;
+            const isCritical = worstMateri.total_score_points < 30;
             body.innerHTML = `
                 <div class="mentor-card ${isCritical ? 'warning' : 'success'}">
                     <div class="mentor-header">
