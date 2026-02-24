@@ -3,7 +3,6 @@
 import { getProfileRadarStats, getCognitiveSummary } from '../services/profileService.js';
 import { renderProfileRadar, renderStabilityChart } from '../lib/chartsProfile.js'; 
 import { getIQInsight } from '../lib/profileInsights.js'; 
-import { buildTrendAnalysis } from '../lib/trendEngine.js'; 
 
 export const profileStatsController = {
 
