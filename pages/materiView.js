@@ -32,6 +32,13 @@ export const materiView = `
       <p class="small">Pengenalan konsep dasar Ilmu Tajwid.</p>
     </a>
   </div>
+
+  <div class="home-card hero">
+    <a href="#/materi/manipulasi" class="home-card">
+      <h3>Seni Manipulasi</h3>
+      <p class="small">Pengenalan Struktur, Taktik, Dan Perlawanan Manipulasi.</p>
+    </a>
+  </div>
   
 </section>
 `;
