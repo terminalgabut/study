@@ -25,7 +25,7 @@ export const profileStatsController = {
     const iqConfidence = document.getElementById('iqConfidence');
     const neuroType = document.getElementById('neuroType');
 
-    if (iqValue) iqValue.textContent = Math.round(summary.iq_estimated || 0);
+    if (iqValue) iqValue.textContent = Math.round(summary.iq_final || 0);
     if (iqClass) iqClass.textContent = summary.iq_class || '-';
     if (iqConfidence) iqConfidence.textContent = summary.iq_confidence || 0;
     if (neuroType) neuroType.textContent = summary.neuro_type || '-'; 
