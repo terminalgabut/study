@@ -46,12 +46,12 @@ export const profileHomeController = {
 
     if (sessions.length >= 2) {
       delta =
-        Number(sessions[0].cognitive_index || 0) -
-        Number(sessions[1].cognitive_index || 0);
+             Number(sessions[0].iq_final || 0) -
+             Number(sessions[1].iq_final || 0);
     }
 
     return {
-      index: Number(summary.cognitive_index || 0).toFixed(1),
+      index: Number(summary.iq_final || 0).toFixed(1),
       delta,
       stability: this.mapStability(summary.stability_index),
       neuroType: summary.neuro_type || "Unknown"
