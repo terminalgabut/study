@@ -42,41 +42,5 @@ if (insight) {
   if (descEl) descEl.textContent = insight.iqDescription + " " + insight.neuroDescription;
 }
 
-/* =========================================
-       📈 IQ TREND PREVIEW (PROFILE ANALYTICS)
-    ========================================= */
-
-    const sessions = await getCognitiveHistory(userId);
-
-    if (sessions && sessions.length >= 2) {
-      const trend = buildTrendAnalysis(sessions);
-
-      const container = document.getElementById('profileDynamicContent');
-      if (!container || !trend) return;
-
-      const deltaIcon = trend.delta >= 0 ? '📈' : '📉';
-      const deltaSign = trend.delta >= 0 ? '+' : '';
-
-      container.innerHTML = `
-        <div class="trend-summary">
-          <p><strong>IQ Trend</strong></p>
-          <p>${deltaSign}${trend.deltaPercent}% ${deltaIcon}</p>
-
-          <p><strong>Strength</strong>: ${trend.strength.name}
-            (${trend.strength.percent}%)
-          </p>
-
-          <p><strong>Needs Work</strong>: ${trend.weakness.name}
-            (${trend.weakness.percent}%)
-          </p>
-
-          ${trend.confidenceNote
-            ? `<p class="trend-note">${trend.confidenceNote}</p>`
-            : ''
-          }
-        </div>
-      `;
-    }
-    
   }
 };
