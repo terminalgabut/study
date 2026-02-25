@@ -141,7 +141,7 @@ const volatilityBadgeEl =
 
 if (volatilityBadgeEl) {
   const iqHistory = sessions
-    .map(s => s.cognitive_index)
+    .map(s => s.iq_final)
     .filter(v => typeof v === 'number');
 
   const volatility = analyzeVolatility(iqHistory);
@@ -296,7 +296,7 @@ if (strengthProfile) {
     <div class="home-card overview-hero">
       <div class="hero-main">
         <div class="hero-metric">
-          <span class="metric-label">Cognitive Index</span>
+          <span class="metric-label">Cognitive Poin</span>
           <span class="metric-value">...</span>
         </div>
 
@@ -317,15 +317,15 @@ if (strengthProfile) {
       <h4>Today</h4>
       <div class="daily-grid">
         <div class="daily-item">
-          <span class="daily-number">12</span>
+          <span class="daily-number">0</span>
           <span class="daily-label">Quiz Done</span>
         </div>
         <div class="daily-item">
-          <span class="daily-number">92</span>
+          <span class="daily-number">0</span>
           <span class="daily-label">Highest Score</span>
         </div>
         <div class="daily-item">
-          <span class="daily-number">+18 XP</span>
+          <span class="daily-number">+0 XP</span>
           <span class="daily-label">XP Gained</span>
         </div>
       </div>
@@ -344,8 +344,8 @@ if (strengthProfile) {
     <div class="home-card overview-target">
       <h4>Next Target</h4>
       <div class="target-row">
-        <span>Level 10 (Skilled)</span>
-        <span class="accent">132 XP needed</span>
+        <span>Level 0 (Unknown)</span>
+        <span class="accent">0 XP needed</span>
       </div>
       <div class="progress-bar">
         <div class="progress-fill" style="width: 64%"></div>
