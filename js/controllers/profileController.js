@@ -408,11 +408,14 @@ if (strengthProfile) {
     content.innerHTML = views[tab] || views.homeProfile;
 
     if (tab === 'homeProfile') {
-      await profileHomeController.render(this.user.id);  
-}
-    if (tab === 'statistikProfile') {
-      await profileStatsController.render(this.user.id);
-}
+      await profileHomeController.render(this.user.id); 
+    }
+             
+    if (tab === 'statistikProfile') { 
+             requestAnimationFrame(async () => { 
+                      await profileStatsController.render(this.user.id); 
+             });
+    }
              if (tab === 'materiProfile') {
   await profileMateriController.render();
              }
