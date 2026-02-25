@@ -38,7 +38,7 @@ export function renderProfileRadar(canvasId, data) {
   canvas.onmousemove = null;
 
   const ctx = canvas.getContext('2d');
-  const { width, height } = resizeBarCanvas(canvas);
+  const { width, height } = resizeToWrapper(canvas);
 
   const centerX = width / 2;
   const centerY = height / 2;
@@ -60,7 +60,7 @@ export function renderProfileRadar(canvasId, data) {
   const angleStep = (Math.PI * 2) / values.length;
   const points = [];
 
-  ctx.clearRect(0, 0, size, size);
+  ctx.clearRect(0, 0, width, height);
 
   const borderColor = getCssVar('--border');
   const textColor = getCssVar('--text');
@@ -176,11 +176,8 @@ if (!tooltip) {
 canvas.onclick = (e) => {
   const rect = canvas.getBoundingClientRect();
    
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-
-  const mouseX = (e.clientX - rect.left) * scaleX;
-  const mouseY = (e.clientY - rect.top) * scaleY;
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
 
   const hitRadius = 12;
 
@@ -253,6 +250,15 @@ canvas.onmousemove = (e) => {
     canvas.style.cursor = 'default';
   }
 };
+
+   // Auto re-render saat resize (responsif)
+canvas._resizeHandler = () => {
+  const latestData = canvas._lastData;
+  if (latestData) {
+    renderProfileRadar(canvasId, latestData);
+  }
+};
+canvas._lastData = data;
 }
 
 /* =========================================
@@ -279,10 +285,10 @@ export function renderStabilityChart(canvasId, summary) {
   const padding = 50;
   const gap = 20;
   const totalGap = gap * (data.length - 1);
-  const totalBarArea = size - padding * 2 - totalGap;
+  const totalBarArea = width - padding * 2 - totalGap;
   const barWidth = totalBarArea / data.length;
 
-  ctx.clearRect(0, 0, size, size);
+  ctx.clearRect(0, 0, width, height);
 
   const textColor = getCssVar('--text');
 
@@ -292,10 +298,10 @@ export function renderStabilityChart(canvasId, summary) {
 
   data.forEach((item, i) => {
     const value = item.value || 0;
-    const barHeight = (value / max) * (size - padding * 2);
+    const barHeight = (value / max) * (height - padding * 2);
 
     const x = padding + i * (barWidth + gap);
-    const y = size - padding - barHeight;
+    const y = height - padding - barHeight;
      bars.push ({ x, y,
                 width: barWidth, 
                  height: barHeight,
@@ -310,7 +316,7 @@ export function renderStabilityChart(canvasId, summary) {
     ctx.fillText(`${Math.round(value)}`, x + barWidth / 2, y - 5);
 
     // Label
-    ctx.fillText(item.label, x + barWidth / 2, size - padding + 15);
+    ctx.fillText(item.label, x + barWidth / 2, height - padding + 15);
 
     ctx.fillStyle = "#6366f1";
   });
@@ -423,4 +429,13 @@ canvas.onclick = (e) => {
     }
   }
 };
+
+   // Auto re-render saat resize (responsif)
+canvas._resizeHandler = () => {
+  const latestData = canvas._lastData;
+  if (latestData) {
+    renderStabilityChart(canvasId, latestData);
+  }
+};
+canvas._lastData = data;
 }
