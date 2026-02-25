@@ -61,14 +61,28 @@ async function fetchRecentCognitiveSessions(userId) {
 ========================= */
 
 async function fetchTodayAttempts(userId) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const now = new Date();
+
+  const start = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    0, 0, 0
+  );
+
+  const end = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    23, 59, 59
+  );
 
   const { data } = await supabase
     .from('study_attempts')
-    .select('score, duration_seconds, is_correct, submitted_at')
+    .select('score, duration_seconds, is_correct, submitted_at, session_id')
     .eq('user_id', userId)
-    .gte('submitted_at', today.toISOString());
+    .gte('submitted_at', start.toISOString())
+    .lte('submitted_at', end.toISOString());
 
   return data || [];
 }
