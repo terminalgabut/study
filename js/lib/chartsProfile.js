@@ -11,10 +11,13 @@ function getCssVar(name, fallback = '#ccc') {
 }
 
 function resizeSquareCanvas(canvas) {
-const size = canvas.parentElement.offsetWidth;
-canvas.width = size;
-canvas.height = size;
-return size;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const size = rect.width;
+
+  canvas.width = size;
+  canvas.height = size;
+
+  return size;
 }
 
 /* =========================================
