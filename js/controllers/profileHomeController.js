@@ -70,28 +70,32 @@ export const profileHomeController = {
 
   computeDaily(attempts = []) {
 
-    const quizDone = attempts.length;
+  // 🧠 kumpulkan skor per sesi
+  const sessionScores = {};
+  let correctCount = 0;
 
-    let highestScore = 0;
-    let correctCount = 0;
-
-    for (const a of attempts) {
+  for (const a of attempts) {
     const sid = a.session_id || 'unknown';
-      sessionScores[sid] =
-      (sessionScores[sid] || 0) + Number(a.score || 0); 
-      
-      if (a.is_correct)
-        correctCount++;
-    }
 
-    const highestScore =
-      Math.max(0, ...Object.values(sessionScores));
+    sessionScores[sid] =
+      (sessionScores[sid] || 0) + Number(a.score || 0);
 
-    return {
-      quizDone,
-      highestScore,
-      xpToday: correctCount
-    };
+    if (a.is_correct) correctCount++;
+  }
+
+  // 📊 jumlah kuis (jumlah sesi unik)
+  const quizDone = Object.keys(sessionScores).length;
+
+  // 🏆 skor tertinggi dari satu sesi
+  const scores = Object.values(sessionScores);
+  const highestScore =
+    scores.length > 0 ? Math.max(...scores) : 0;
+
+  return {
+    quizDone,
+    highestScore,
+    xpToday: correctCount
+  };
   },
 
   /* ==================================================
