@@ -524,7 +524,7 @@ box-shadow: var(--shadow-sm);
    DYNAMIC CONTENT AREA
 ========================================= */
 
-profileDynamicContent {
+#profileDynamicContent {
   margin-top: var(--space-md);
   display: grid;
   gap: var(--space-md);
