@@ -256,6 +256,7 @@ export function renderStabilityChart(canvasId, summary) {
 
   const ctx = canvas.getContext('2d');
   const size = resizeSquareCanvas(canvas);
+  const bars = [];
 
   const data = [
     { label: "Stability", value: summary.stability_index },
@@ -283,6 +284,11 @@ export function renderStabilityChart(canvasId, summary) {
 
     const x = padding + i * (barWidth + 20);
     const y = size - padding - barHeight;
+     bars.push ({ x, y,
+                width: barWidth, 
+                 height: barHeight,
+                 label: item.label, value 
+                });
 
     // Bar
     ctx.fillRect(x, y, barWidth, barHeight);
@@ -296,4 +302,22 @@ export function renderStabilityChart(canvasId, summary) {
 
     ctx.fillStyle = "#6366f1";
   });
+
+canvas.onclick = (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  for (const bar of bars) {
+    if (
+      mouseX >= bar.x &&
+      mouseX <= bar.x + bar.width &&
+      mouseY >= bar.y &&
+      mouseY <= bar.y + bar.height
+    ) {
+      console.log(`${bar.label}: ${Math.round(bar.value)}`);
+      break;
+    }
+  }
+};
 }
