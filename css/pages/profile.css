@@ -525,84 +525,17 @@ box-shadow: var(--shadow-sm);
 ========================================= */
 
 #profileDynamicContent {
+  margin-top: var(--space-md);
   display: grid;
-  gap: var(--space-xl); /* sebelumnya md */
+  gap: var(--space-md);
 }
 
 #profileDynamicContent .home-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 24px 20px;
+  padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
-}
-
-/* =========================================
-   CHART AREA
-========================================= */
-
-#profileDynamicContent .chart-wrapper {
-  position: relative;
-  width: 100%;
-  margin: 0 auto;
-}
-
-/* Radar = Square */
-#profileDynamicContent .overview-radar .chart-wrapper {
-  max-width: 360px;
-  aspect-ratio: 1 / 1;
-}
-
-/* Bar = Rectangle */
-#profileDynamicContent .overview-stability .chart-wrapper {
-  max-width: 480px;
-  aspect-ratio: 16 / 9;
-}
-
-/* Canvas Follow Wrapper */
-#profileDynamicContent .chart-wrapper canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* IQ spacing */
-#profileDynamicContent .overview-iq {
-  padding-top: var(--space-md);
-}
-
-
-/* =========================================
-   IQ SUMMARY
-========================================= */
-
-.iq-summary-card {
-  margin-top: var(--space-lg);
-  padding: var(--space-md);
-  border-radius: var(--radius-md);
-  background: linear-gradient(
-    180deg,
-    rgba(56,189,248,0.08),
-    rgba(56,189,248,0.03)
-  );
-  border: 1px solid var(--border);
-  display: grid;
-  gap: var(--space-xs);
-}
-
-.iq-summary-card p {
-  font-size: 0.95rem;
-  color: var(--text);
-}
-
-.iq-summary-card strong {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-#iqValue {
-  font-size: 1.3rem;
-  font-weight: 600;
 }
 
 /* =========================================
