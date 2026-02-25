@@ -360,21 +360,38 @@ if (strengthProfile) {
   </div>
 `,
       statistikProfile: `
-  <div class="home-card">
-    <h3>Statistik</h3>
+  <div class="home-overview">
 
-    <canvas id="profileRadar"></canvas>
-    <canvas id="stabilityChart"></canvas>
-
-    <div class="iq-summary-card">
-      <p><strong>Estimated Cognitive Poin:</strong> <span id="iqValue"></span></p>
-      <p><strong>Classification:</strong> <span id="iqClass"></span></p>
-      <p><strong>Confidence:</strong> <span id="iqConfidence"></span>%</p>
-      <p><strong>Neuro Type:</strong> <span id="neuroType"></span></p>
-      <div class="iq-insight">
-      <p id="iqDescription"></p>
+    <!-- RADAR -->
+    <div class="home-card overview-radar">
+      <h4>Cognitive Dimension</h4>
+      <div class="chart-wrapper">
+        <canvas id="profileRadar"></canvas>
       </div>
     </div>
+
+    <!-- STABILITY BAR -->
+    <div class="home-card overview-stability">
+      <h4>Stability Metrics</h4>
+      <div class="chart-wrapper">
+        <canvas id="stabilityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- IQ SUMMARY -->
+    <div class="home-card overview-iq">
+      <h4>Cognitive Summary</h4>
+      <div class="iq-summary-card">
+        <p><strong>Estimated Cognitive Poin:</strong> <span id="iqValue"></span></p>
+        <p><strong>Classification:</strong> <span id="iqClass"></span></p>
+        <p><strong>Confidence:</strong> <span id="iqConfidence"></span>%</p>
+        <p><strong>Neuro Type:</strong> <span id="neuroType"></span></p>
+        <div class="iq-insight">
+          <p id="iqDescription"></p>
+        </div>
+      </div>
+    </div>
+
   </div>
 `,
       settingProfile: `
