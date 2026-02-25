@@ -166,10 +166,14 @@ if (!tooltip) {
    // 🔴 ADD HERE: click detection
 canvas.onclick = (e) => {
   const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
+   
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
 
-  const hitRadius = 10;
+  const mouseX = (e.clientX - rect.left) * scaleX;
+  const mouseY = (e.clientY - rect.top) * scaleY;
+
+  const hitRadius = 12;
 
   for (const p of points) {
     const dx = mouseX - p.x;
@@ -184,8 +188,10 @@ canvas.onclick = (e) => {
 
 canvas.onmousemove = (e) => {
   const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mouseX = (e.clientX - rect.left) * scaleX;
+  const mouseY = (e.clientY - rect.top) * scaleY;
 
   let foundPoint = null;
 
