@@ -360,7 +360,7 @@ if (strengthProfile) {
   </div>
 `,
       statistikProfile: `
-  <div class="home-overview">
+  <div class="stats-overview">
 
     <!-- RADAR -->
     <div class="home-card overview-radar">
