@@ -70,10 +70,9 @@ export const profileHomeController = {
 
   computeDaily(attempts = []) {
 
-    const quizDone =
-    new Set(attempts.map(a => a.session_id)).size;
+    const quizDone = attempts.length;
 
-    const sessionScores = {};
+    let highestScore = 0;
     let correctCount = 0;
 
     for (const a of attempts) {
