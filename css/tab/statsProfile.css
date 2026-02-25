@@ -1,35 +1,47 @@
 /* =========================================
+   STATS PROFILE – OVERVIEW LAYOUT
+========================================= */
+
+#profileDynamicContent .stats-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+#profileDynamicContent .stats-overview .home-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+
+/* =========================================
    CHART AREA
 ========================================= */
 
-#profileDynamicContent .chart-wrapper {
+#profileDynamicContent .stats-overview .chart-wrapper {
   position: relative;
   width: 100%;
   margin: 0 auto;
 }
 
-/* Radar = Square */
+/* Radar Chart */
 #profileDynamicContent .overview-radar .chart-wrapper {
   max-width: 360px;
   aspect-ratio: 1 / 1;
 }
 
-/* Bar = Rectangle */
+/* Stability Chart */
 #profileDynamicContent .overview-stability .chart-wrapper {
   max-width: 480px;
   aspect-ratio: 16 / 9;
 }
 
-/* Canvas Follow Wrapper */
-#profileDynamicContent .chart-wrapper canvas {
-  width: 100%;
-  height: 100%;
+/* Canvas scaling */
+#profileDynamicContent .stats-overview canvas {
+  width: 100% !important;
+  height: 100% !important;
   display: block;
-}
-
-/* IQ spacing */
-#profileDynamicContent .overview-iq {
-  padding-top: var(--space-md);
 }
 
 
@@ -37,8 +49,12 @@
    IQ SUMMARY
 ========================================= */
 
-.iq-summary-card {
-  margin-top: var(--space-lg);
+#profileDynamicContent .overview-iq {
+  padding-top: var(--space-md);
+}
+
+#profileDynamicContent .iq-summary-card {
+  margin-top: var(--space-md);
   padding: var(--space-md);
   border-radius: var(--radius-md);
   background: linear-gradient(
@@ -51,17 +67,17 @@
   gap: var(--space-xs);
 }
 
-.iq-summary-card p {
+#profileDynamicContent .iq-summary-card p {
   font-size: 0.95rem;
   color: var(--text);
 }
 
-.iq-summary-card strong {
+#profileDynamicContent .iq-summary-card strong {
   color: var(--accent);
   font-weight: 600;
 }
 
-#iqValue {
+#profileDynamicContent #iqValue {
   font-size: 1.3rem;
   font-weight: 600;
 }
