@@ -306,6 +306,97 @@ export function renderStabilityChart(canvasId, summary) {
     ctx.fillStyle = "#6366f1";
   });
 
+   // pastikan parent relative
+const parent = canvas.parentElement;
+if (getComputedStyle(parent).position === 'static') {
+  parent.style.position = 'relative';
+}
+
+// buat tooltip jika belum ada
+let tooltip = parent.querySelector('.bar-tooltip');
+
+if (!tooltip) {
+  tooltip = document.createElement('div');
+  tooltip.className = 'bar-tooltip';
+
+  Object.assign(tooltip.style, {
+    position: 'absolute',
+    padding: '6px 10px',
+    background: '#0f172a',
+    color: '#fff',
+    fontSize: '12px',
+    borderRadius: '6px',
+    pointerEvents: 'none',
+    opacity: 0,
+    transition: 'opacity 0.15s ease',
+    transform: 'translateX(-50%)',
+    whiteSpace: 'nowrap',
+    zIndex: 10,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+  });
+
+  parent.appendChild(tooltip);
+}
+
+canvas.onmousemove = (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  let foundBar = null;
+
+  for (const bar of bars) {
+    if (
+      mouseX >= bar.x &&
+      mouseX <= bar.x + bar.width &&
+      mouseY >= bar.y &&
+      mouseY <= bar.y + bar.height
+    ) {
+      foundBar = bar;
+      break;
+    }
+  }
+
+  if (foundBar) {
+    tooltip.innerHTML = `
+      <strong>${foundBar.label}</strong><br/>
+      Score: ${Math.round(foundBar.value)}
+    `;
+
+    tooltip.style.opacity = 1;
+
+    const offset = 12;
+    let left = foundBar.x + foundBar.width / 2;
+    let top = foundBar.y - offset;
+
+    const tooltipWidth = tooltip.offsetWidth;
+    const canvasWidth = canvas.offsetWidth;
+
+    // clamp kanan
+    if (left + tooltipWidth / 2 > canvasWidth) {
+      left = canvasWidth - tooltipWidth / 2 - 8;
+    }
+
+    // clamp kiri
+    if (left - tooltipWidth / 2 < 0) {
+      left = tooltipWidth / 2 + 8;
+    }
+
+    // kalau terlalu atas
+    if (top < 0) {
+      top = foundBar.y + foundBar.height + 20;
+    }
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+
+    canvas.style.cursor = 'pointer';
+  } else {
+    tooltip.style.opacity = 0;
+    canvas.style.cursor = 'default';
+  }
+};
+
 canvas.onclick = (e) => {
   const rect = canvas.getBoundingClientRect();
   const mouseX = e.clientX - rect.left;
