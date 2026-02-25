@@ -368,20 +368,16 @@ if (strengthProfile) {
       statistikProfile: `
   <div class="stats-overview">
 
-    <!-- RADAR -->
+     <!-- RADAR -->
   <div class="home-card overview-radar">
     <h4>Cognitive Dimension</h4>
-    <div class="chart-wrapper">
-      <canvas id="profileRadar"></canvas>
-    </div>
+    <canvas id="profileRadar"></canvas>
   </div>
     
     <!-- STABILITY -->
   <div class="home-card overview-stability">
     <h4>Stability Metrics</h4>
-    <div class="chart-wrapper">
-      <canvas id="stabilityChart"></canvas>
-    </div>
+    <canvas id="stabilityChart"></canvas>
   </div>
 
     <!-- IQ SUMMARY -->
