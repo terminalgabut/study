@@ -261,7 +261,7 @@ canvas._lastData = data;
    if (!canvas._resizeBound) {
   window.addEventListener('resize', canvas._resizeHandler);
   canvas._resizeBound = true;
-   }
+}
 }
 
 /* =========================================
