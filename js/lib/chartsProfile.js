@@ -129,7 +129,8 @@ export function renderProfileRadar(canvasId, data) {
 
   /* ===== LABELS ===== */
   ctx.fillStyle = textColor;
-  ctx.font = "12px system-ui";
+ const fontSize = Math.max(10, width * 0.035);
+  ctx.font = `${fontSize}px system-ui`;
   ctx.textAlign = "center";
 
   labels.forEach((label, i) => {
@@ -146,6 +147,7 @@ if (getComputedStyle(parent).position === 'static') {
 }
 
 // buat tooltip jika belum ada
+parent.querySelector('.radar-tooltip')?.remove();
 let tooltip = parent.querySelector('.radar-tooltip');
 
 if (!tooltip) {
@@ -194,11 +196,8 @@ canvas.onclick = (e) => {
 
 canvas.onmousemove = (e) => {
   const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const mouseX = (e.clientX - rect.left) * scaleX;
-  const mouseY = (e.clientY - rect.top) * scaleY;
-
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
   let foundPoint = null;
 
   for (const p of points) {
@@ -259,6 +258,10 @@ canvas._resizeHandler = () => {
   }
 };
 canvas._lastData = data;
+   if (!canvas._resizeBound) {
+  window.addEventListener('resize', canvas._resizeHandler);
+  canvas._resizeBound = true;
+   }
 }
 
 /* =========================================
@@ -437,5 +440,10 @@ canvas._resizeHandler = () => {
     renderStabilityChart(canvasId, latestData);
   }
 };
-canvas._lastData = data;
+canvas._lastData = data; 
+   if (!canvas._resizeBound) {
+  window.addEventListener('resize', canvas._resizeHandler);
+  canvas._resizeBound = true;
+}
+   
 }
