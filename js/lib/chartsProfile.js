@@ -11,19 +11,10 @@ function getCssVar(name, fallback = '#ccc') {
 }
 
 function resizeSquareCanvas(canvas) {
-  const dpr = window.devicePixelRatio || 1;
-  const size = canvas.parentElement.offsetWidth;
-
-  canvas.width = size * dpr;
-  canvas.height = size * dpr;
-
-  canvas.style.width = size + 'px';
-  canvas.style.height = size + 'px';
-
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  return size;
+const size = canvas.parentElement.offsetWidth;
+canvas.width = size;
+canvas.height = size;
+return size;
 }
 
 /* =========================================
