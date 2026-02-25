@@ -16,32 +16,27 @@
 
 
 /* =========================================
-   CHART AREA
+   CHART AREA – DIRECT CANVAS
 ========================================= */
 
-#profileDynamicContent .stats-overview .chart-wrapper {
-  position: relative;
+#profileDynamicContent .stats-overview canvas {
   width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Radar Chart (square) */
+#profileDynamicContent .overview-radar canvas {
+  max-width: 360px;
+  aspect-ratio: 1 / 1;
   margin: 0 auto;
 }
 
-/* Radar Chart */
-#profileDynamicContent .overview-radar .chart-wrapper {
-  max-width: 360px;
-  aspect-ratio: 1 / 1;
-}
-
-/* Stability Chart */
-#profileDynamicContent .overview-stability .chart-wrapper {
+/* Stability Chart (wide) */
+#profileDynamicContent .overview-stability canvas {
   max-width: 480px;
   aspect-ratio: 16 / 9;
-}
-
-/* Canvas scaling */
-#profileDynamicContent .stats-overview canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
+  margin: 0 auto;
 }
 
 
