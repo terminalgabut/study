@@ -10,15 +10,20 @@ function getCssVar(name, fallback = '#ccc') {
   );
 }
 
-function resizeBarCanvas(canvas) {
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const width = rect.width;
-  const height = rect.width * 0.6; // 🔥 ini rasio ideal bar chart
+function resizeToWrapper(canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
 
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
 
-  return { width, height };
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  return {
+    width: rect.width,
+    height: rect.height
+  };
 }
 
 /* =========================================
@@ -35,9 +40,9 @@ export function renderProfileRadar(canvasId, data) {
   const ctx = canvas.getContext('2d');
   const { width, height } = resizeBarCanvas(canvas);
 
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = size * 0.35;
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const radius = Math.min(width, height) * 0.4;
 
   const labelsMap = {
     reading: "Reading",
@@ -259,7 +264,7 @@ export function renderStabilityChart(canvasId, summary) {
   if (!canvas || !summary) return;
 
   const ctx = canvas.getContext('2d');
-  const size = resizeSquareCanvas(canvas);
+  const { width, height } = resizeToWrapper(canvas);
   const bars = [];
 
   const data = [
