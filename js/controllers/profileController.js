@@ -289,7 +289,8 @@ if (strengthProfile) {
     const content = document.getElementById('profileDynamicContent');
     if (!tabs.length || !content) return;
 
-    const views = {
+    const views = { 
+             
       homeProfile: `
   <div class="home-overview">
 
@@ -354,30 +355,34 @@ if (strengthProfile) {
     </div>
 
   </div>
-`,
+`, 
+
+             
       materiProfile: `
   <div class="materi-overview">
     <div id="materiList" class="materi-list"></div>
   </div>
-`,
+`, 
+
+             
       statistikProfile: `
   <div class="stats-overview">
 
     <!-- RADAR -->
-    <div class="home-card overview-radar">
-      <h4>Cognitive Dimension</h4>
-      <div class="chart-wrapper">
-        <canvas id="profileRadar"></canvas>
-      </div>
+  <div class="home-card overview-radar">
+    <h4>Cognitive Dimension</h4>
+    <div class="chart-wrapper">
+      <canvas id="profileRadar"></canvas>
     </div>
-
-    <!-- STABILITY BAR -->
-    <div class="home-card overview-stability">
-      <h4>Stability Metrics</h4>
-      <div class="chart-wrapper">
-        <canvas id="stabilityChart"></canvas>
-      </div>
+  </div>
+    
+    <!-- STABILITY -->
+  <div class="home-card overview-stability">
+    <h4>Stability Metrics</h4>
+    <div class="chart-wrapper">
+      <canvas id="stabilityChart"></canvas>
     </div>
+  </div>
 
     <!-- IQ SUMMARY -->
     <div class="home-card overview-iq">
@@ -395,6 +400,8 @@ if (strengthProfile) {
 
   </div>
 `,
+
+             
       settingProfile: `
         <div class="home-card">
           <h3>Pengaturan</h3>
