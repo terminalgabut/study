@@ -4,7 +4,8 @@ import { supabase } from '../services/supabase.js';
 import { getProfile, 
          updateProfile, 
          getCognitiveHistory } from '../services/profileService.js';
-import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
+import { uploadAvatar, 
+        deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js'; 
 import { buildLevelProfile } from '../lib/levelEngine.js';
 import { buildTrendAnalysis } from '../lib/trendEngine.js';
