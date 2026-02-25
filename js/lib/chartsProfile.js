@@ -3,46 +3,47 @@
 ========================================= */
 
 function getCssVar(name, fallback = '#ccc') {
-  return (
-    getComputedStyle(document.documentElement)
-      .getPropertyValue(name)
-      .trim() || fallback
-  );
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim() || fallback;
 }
 
-function resizeToWrapper(canvas) {
-  const rect = canvas.getBoundingClientRect();
+function resizeCanvas(canvas) {
   const dpr = window.devicePixelRatio || 1;
-
+  const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
 
   const ctx = canvas.getContext('2d');
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  return {
-    width: rect.width,
-    height: rect.height
-  };
+  return rect;
+}
+
+function getOrCreateTooltip(parent, className) {
+  let tooltip = parent.querySelector(`.${className}`);
+  if (tooltip) return tooltip;
+
+  tooltip = document.createElement('div');
+  tooltip.className = className;
+  parent.appendChild(tooltip);
+  return tooltip;
 }
 
 /* =========================================
    RADAR CHART (Cognitive Dimension)
 ========================================= */
 
-export function renderProfileRadar(canvasId, data) { 
-  const canvas = document.getElementById(canvasId);
+export function renderProfileRadar(id, data) {
+  const canvas = document.getElementById(id);
   if (!canvas || !data?.length) return;
 
-  canvas.onclick = null;
-  canvas.onmousemove = null;
-
   const ctx = canvas.getContext('2d');
-  const { width, height } = resizeToWrapper(canvas);
+  const { width, height } = resizeCanvas(canvas);
 
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const radius = Math.min(width, height) * 0.4;
+  const center = { x: width / 2, y: height / 2 };
+  const radius = Math.min(width, height) * 0.38;
+  const angleStep = (Math.PI * 2) / data.length;
 
   const labelsMap = {
     reading: "Reading",
@@ -52,398 +53,126 @@ export function renderProfileRadar(canvasId, data) {
     memory: "Memory"
   };
 
-  const values = data.map(d => d.value || 0);
-  const labels = data.map(d => labelsMap[d.dimension] || d.dimension);
-
-  const maxValue = 100;
-  const levels = 5;
-  const angleStep = (Math.PI * 2) / values.length;
-  const points = [];
+  const points = data.map((d, i) => {
+    const val = d.value || 0;
+    const angle = i * angleStep - Math.PI / 2;
+    return {
+      label: labelsMap[d.dimension] || d.dimension,
+      value: val,
+      x: center.x + Math.cos(angle) * radius * (val / 100),
+      y: center.y + Math.sin(angle) * radius * (val / 100)
+    };
+  });
 
   ctx.clearRect(0, 0, width, height);
 
-  const borderColor = getCssVar('--border');
-  const textColor = getCssVar('--text');
+  drawRadarGrid(ctx, center, radius, data.length);
+  drawRadarShape(ctx, points);
+  drawRadarLabels(ctx, center, radius, points);
 
-  /* ===== GRID ===== */
-  ctx.strokeStyle = borderColor;
+  attachRadarInteraction(canvas, points);
+}
 
-  for (let level = 1; level <= levels; level++) {
-    const r = radius * (level / levels);
+  /* ===== DRAW HELPERS ===== */
+
+  function drawRadarGrid(ctx, c, r, count) {
+  const step = (Math.PI * 2) / count;
+  ctx.strokeStyle = getCssVar('--border');
+
+  for (let lvl = 1; lvl <= 5; lvl++) {
     ctx.beginPath();
-
-    values.forEach((_, i) => {
-      const angle = i * angleStep - Math.PI / 2;
-      const x = centerX + r * Math.cos(angle);
-      const y = centerY + r * Math.sin(angle); 
-       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-
+    for (let i = 0; i < count; i++) {
+      const angle = i * step - Math.PI / 2;
+      const x = c.x + Math.cos(angle) * r * (lvl / 5);
+      const y = c.y + Math.sin(angle) * r * (lvl / 5);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
     ctx.closePath();
     ctx.stroke();
   }
+}
 
-  /* ===== AXIS ===== */
-  values.forEach((_, i) => {
-    const angle = i * angleStep - Math.PI / 2;
-    const x = centerX + radius * Math.cos(angle);
-    const y = centerY + radius * Math.sin(angle);
-
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-  });
-
-  /* ===== DATA SHAPE ===== */
+function drawRadarShape(ctx, points) {
   ctx.beginPath();
-
-  values.forEach((val, i) => {
-    const percent = val / maxValue;
-    const r = radius * percent;
-    const angle = i * angleStep - Math.PI / 2;
-
-    const x = centerX + r * Math.cos(angle);
-    const y = centerY + r * Math.sin(angle); 
-     points.push({
-     x,
-     y,
-     label: labels[i],
-     value: val
-     });
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-
+  points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
   ctx.closePath();
-  ctx.fillStyle = "rgba(56, 189, 248, 0.25)";
+
+  ctx.fillStyle = "rgba(56,189,248,0.25)";
   ctx.strokeStyle = "#38bdf8";
   ctx.lineWidth = 2;
   ctx.fill();
-  ctx.stroke(); 
-   points.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-  ctx.fillStyle = "#38bdf8";
-  ctx.fill();
-});
+  ctx.stroke();
 
-  /* ===== LABELS ===== */
-  ctx.fillStyle = textColor;
- const fontSize = Math.max(10, width * 0.035);
-  ctx.font = `${fontSize}px system-ui`;
-  ctx.textAlign = "center";
-
-  labels.forEach((label, i) => {
-    const angle = i * angleStep - Math.PI / 2;
-    const x = centerX + (radius + 20) * Math.cos(angle);
-    const y = centerY + (radius + 20) * Math.sin(angle);
-    ctx.fillText(label, x, y);
+  points.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "#38bdf8";
+    ctx.fill();
   });
-
-   // pastikan parent punya position relative
-const parent = canvas.parentElement;
-if (getComputedStyle(parent).position === 'static') {
-  parent.style.position = 'relative';
 }
 
-// buat tooltip jika belum ada
-parent.querySelector('.radar-tooltip')?.remove();
-let tooltip = parent.querySelector('.radar-tooltip');
+function drawRadarLabels(ctx, c, r, points) {
+  ctx.fillStyle = getCssVar('--text');
+  ctx.font = '12px system-ui';
+  ctx.textAlign = 'center';
 
-if (!tooltip) {
-  tooltip = document.createElement('div');
-  tooltip.className = 'radar-tooltip';
-
-  // style langsung dari JS
-  Object.assign(tooltip.style, {
-    position: 'absolute',
-    padding: '6px 10px',
-    background: '#0f172a',
-    color: '#fff',
-    fontSize: '12px',
-    borderRadius: '6px',
-    pointerEvents: 'none',
-    opacity: 0,
-    transition: 'opacity 0.15s ease',
-    transform: 'translateX(-50%)',
-    whiteSpace: 'nowrap',
-    zIndex: 10,
-    boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+  points.forEach((p, i) => {
+    const angle = i * (Math.PI * 2 / points.length) - Math.PI / 2;
+    ctx.fillText(
+      p.label,
+      c.x + Math.cos(angle) * (r + 18),
+      c.y + Math.sin(angle) * (r + 18)
+    );
   });
-
-  parent.appendChild(tooltip);
 }
 
-   // 🔴 ADD HERE: click detection
-canvas.onclick = (e) => {
-  const rect = canvas.getBoundingClientRect();
-   
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
+  /* ===== INTERACTION ===== */
+function attachRadarInteraction(canvas, points) {
+  const parent = canvas.parentElement;
+  parent.style.position ||= 'relative';
 
-  const hitRadius = 12;
+  const tooltip = getOrCreateTooltip(parent, 'radar-tooltip');
 
-  for (const p of points) {
-    const dx = mouseX - p.x;
-    const dy = mouseY - p.y;
+  canvas.onmousemove = e => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    if (Math.sqrt(dx * dx + dy * dy) <= hitRadius) {
-      console.log(`${p.label}: ${Math.round(p.value)}`);
-      break;
-    }
-  }
-};
+    const hit = points.find(p => Math.hypot(x - p.x, y - p.y) < 10);
 
-canvas.onmousemove = (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-  let foundPoint = null;
+    if (!hit) return tooltip.style.opacity = 0;
 
-  for (const p of points) {
-    const dx = mouseX - p.x;
-    const dy = mouseY - p.y;
-
-    if (Math.sqrt(dx * dx + dy * dy) <= 10) {
-      foundPoint = p;
-      break;
-    }
-  }
-
-  if (foundPoint) {
-    tooltip.innerHTML = `
-      <strong>${foundPoint.label}</strong><br/>
-      Score: ${Math.round(foundPoint.value)}
-    `;
-
+    tooltip.innerHTML = `<b>${hit.label}</b><br/>${Math.round(hit.value)}`;
     tooltip.style.opacity = 1;
-
-    const offset = 14;
-    let left = foundPoint.x;
-    let top = foundPoint.y - offset;
-
-    const tooltipWidth = tooltip.offsetWidth;
-    const canvasWidth = canvas.offsetWidth;
-
-    // clamp kanan
-    if (left + tooltipWidth / 2 > canvasWidth) {
-      left = canvasWidth - tooltipWidth / 2 - 8;
-    }
-
-    // clamp kiri
-    if (left - tooltipWidth / 2 < 0) {
-      left = tooltipWidth / 2 + 8;
-    }
-
-     // clamp atas
-    if (top < 0) {
-       top = foundPoint.y + 20;
-    }
-
-    tooltip.style.left = `${left}px`;
-    tooltip.style.top = `${top}px`;
-
-    canvas.style.cursor = 'pointer';
-  } else {
-    tooltip.style.opacity = 0;
-    canvas.style.cursor = 'default';
-  }
-};
-
-   // Auto re-render saat resize (responsif)
-canvas._resizeHandler = () => {
-  const latestData = canvas._lastData;
-  if (latestData) {
-    renderProfileRadar(canvasId, latestData);
-  }
-};
-canvas._lastData = data;
-   if (!canvas._resizeBound) {
-  window.addEventListener('resize', canvas._resizeHandler);
-  canvas._resizeBound = true;
+    tooltip.style.left = `${hit.x}px`;
+    tooltip.style.top = `${hit.y - 14}px`;
+  };
 }
-}
+  
 
 /* =========================================
    STABILITY BAR CHART
 ========================================= */
 
-export function renderStabilityChart(canvasId, summary) {
-  const canvas = document.getElementById(canvasId);
+export function renderStabilityChart(id, summary) {
+  const canvas = document.getElementById(id);
   if (!canvas || !summary) return;
 
   const ctx = canvas.getContext('2d');
-  const { width, height } = resizeToWrapper(canvas);
-  const bars = [];
+  const { width, height } = resizeCanvas(canvas);
 
   const data = [
-    { label: "Stability", value: summary.stability_index },
-    { label: "Accuracy", value: summary.accuracy_stability },
-    { label: "Speed", value: summary.speed_stability },
-    { label: "Endurance", value: summary.endurance_index },
-    { label: "Consistency", value: summary.error_consistency }
+    ["Stability", summary.stability_index],
+    ["Accuracy", summary.accuracy_stability],
+    ["Speed", summary.speed_stability],
+    ["Endurance", summary.endurance_index],
+    ["Consistency", summary.error_consistency]
   ];
 
-  const max = 100;
-  const padding = 50;
-  const gap = 20;
-  const totalGap = gap * (data.length - 1);
-  const totalBarArea = width - padding * 2 - totalGap;
-  const barWidth = totalBarArea / data.length;
-
-  ctx.clearRect(0, 0, width, height);
-
-  const textColor = getCssVar('--text');
-
-  ctx.fillStyle = "#6366f1";
-  ctx.font = "12px system-ui";
-  ctx.textAlign = "center";
-
-  data.forEach((item, i) => {
-    const value = item.value || 0;
-    const barHeight = (value / max) * (height - padding * 2);
-
-    const x = padding + i * (barWidth + gap);
-    const y = height - padding - barHeight;
-     bars.push ({ x, y,
-                width: barWidth, 
-                 height: barHeight,
-                 label: item.label, value 
-                });
-
-    // Bar
-    ctx.fillRect(x, y, barWidth, barHeight);
-
-    // Value
-    ctx.fillStyle = textColor;
-    ctx.fillText(`${Math.round(value)}`, x + barWidth / 2, y - 5);
-
-    // Label
-    ctx.fillText(item.label, x + barWidth / 2, height - padding + 15);
-
-    ctx.fillStyle = "#6366f1";
-  });
-
-   // pastikan parent relative
-const parent = canvas.parentElement;
-if (getComputedStyle(parent).position === 'static') {
-  parent.style.position = 'relative';
+  drawBarChart(ctx, canvas, data, width, height);
 }
 
-// buat tooltip jika belum ada
-let tooltip = parent.querySelector('.bar-tooltip');
-
-if (!tooltip) {
-  tooltip = document.createElement('div');
-  tooltip.className = 'bar-tooltip';
-
-  Object.assign(tooltip.style, {
-    position: 'absolute',
-    padding: '6px 10px',
-    background: '#0f172a',
-    color: '#fff',
-    fontSize: '12px',
-    borderRadius: '6px',
-    pointerEvents: 'none',
-    opacity: 0,
-    transition: 'opacity 0.15s ease',
-    transform: 'translateX(-50%)',
-    whiteSpace: 'nowrap',
-    zIndex: 10,
-    boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
-  });
-
-  parent.appendChild(tooltip);
-}
-
-canvas.onmousemove = (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-
-  let foundBar = null;
-
-  for (const bar of bars) {
-    if (
-      mouseX >= bar.x &&
-      mouseX <= bar.x + bar.width &&
-      mouseY >= bar.y &&
-      mouseY <= bar.y + bar.height
-    ) {
-      foundBar = bar;
-      break;
-    }
-  }
-
-  if (foundBar) {
-    tooltip.innerHTML = `
-      <strong>${foundBar.label}</strong><br/>
-      Score: ${Math.round(foundBar.value)}
-    `;
-
-    tooltip.style.opacity = 1;
-
-    const offset = 12;
-    let left = foundBar.x + foundBar.width / 2;
-    let top = foundBar.y - offset;
-
-    const tooltipWidth = tooltip.offsetWidth;
-    const canvasWidth = canvas.offsetWidth;
-
-    // clamp kanan
-    if (left + tooltipWidth / 2 > canvasWidth) {
-      left = canvasWidth - tooltipWidth / 2 - 8;
-    }
-
-    // clamp kiri
-    if (left - tooltipWidth / 2 < 0) {
-      left = tooltipWidth / 2 + 8;
-    }
-
-    // kalau terlalu atas
-    if (top < 0) {
-      top = foundBar.y + foundBar.height + 20;
-    }
-
-    tooltip.style.left = `${left}px`;
-    tooltip.style.top = `${top}px`;
-
-    canvas.style.cursor = 'pointer';
-  } else {
-    tooltip.style.opacity = 0;
-    canvas.style.cursor = 'default';
-  }
-};
-
-canvas.onclick = (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-
-  for (const bar of bars) {
-    if (
-      mouseX >= bar.x &&
-      mouseX <= bar.x + bar.width &&
-      mouseY >= bar.y &&
-      mouseY <= bar.y + bar.height
-    ) {
-      console.log(`${bar.label}: ${Math.round(bar.value)}`);
-      break;
-    }
-  }
-};
-
-   // Auto re-render saat resize (responsif)
-canvas._resizeHandler = () => {
-  const latestData = canvas._lastData;
-  if (latestData) {
-    renderStabilityChart(canvasId, latestData);
-  }
-};
-canvas._lastData = data; 
-   if (!canvas._resizeBound) {
-  window.addEventListener('resize', canvas._resizeHandler);
-  canvas._resizeBound = true;
-}
+    /* ===== BAR DRAW ===== */
+    
    
 }
