@@ -12,8 +12,6 @@ export const profileStatsController = {
     // Radar Chart
     const radarData = await getProfileRadarStats(userId);
     renderProfileRadar('profileRadar', radarData);
-
-    const points = [];
     
 
     // Stability & IQ
