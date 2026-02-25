@@ -524,19 +524,18 @@ box-shadow: var(--shadow-sm);
    DYNAMIC CONTENT AREA
 ========================================= */
 
-#profileDynamicContent .home-overview {
+profileDynamicContent {
+  margin-top: var(--space-md);
   display: grid;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
-/* Card Title */
-#profileDynamicContent .home-card h4 {
-  margin-bottom: var(--space-md);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
-  text-align: center;
+#profileDynamicContent .home-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 /* =========================================
