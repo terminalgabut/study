@@ -10,11 +10,16 @@ export const profileStatsController = {
     if (!userId) return;
 
     // Radar Chart
-    const radarData = await getProfileRadarStats(userId);
-    renderProfileRadar('profileRadar', radarData);
+    const radarCanvas = document.getElementById('profileRadar'): 
+    if (radarCanvas && radarData) { 
+      renderProfileRadar('profileRadar', radarData); 
+    }
     
     // Stability & IQ
-    const summary = await getCognitiveSummary(userId);
+    const stabilityCanvas = document.getElementById('stabilityChart'); 
+    if (stabilityCanvas && summary) {
+      renderStabilityChart('stabilityChart', summary); 
+    }
 
     if (!summary) return;
 
