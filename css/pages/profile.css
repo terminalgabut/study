@@ -578,6 +578,15 @@ box-shadow: var(--shadow-sm);
   padding-top: var(--space-md);
 }
 
+.overview-radar .chart-wrapper {
+  max-width: 360px;
+}
+
+.overview-stability .chart-wrapper {
+  max-width: 480px;
+}
+
+
 /* =========================================
    IQ SUMMARY
 ========================================= */
