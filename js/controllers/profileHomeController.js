@@ -70,25 +70,28 @@ export const profileHomeController = {
 
   computeDaily(attempts = []) {
 
-    const quizDone = attempts.length;
+    const quizDone =
+    new Set(attempts.map(a => a.session_id)).size;
 
-    let highestScore = 0;
+    const sessionScores = {};
     let correctCount = 0;
 
     for (const a of attempts) {
-      const score = Number(a.score || 0);
-
-      if (score > highestScore)
-        highestScore = score;
-
+    const sid = a.session_id || 'unknown';
+      sessionScores[sid] =
+      (sessionScores[sid] || 0) + Number(a.score || 0); 
+      
       if (a.is_correct)
         correctCount++;
     }
 
+    const highestScore =
+      Math.max(0, ...Object.values(sessionScores));
+
     return {
       quizDone,
       highestScore,
-      xpToday: correctCount // rule XP = correct answers
+      xpToday: correctCount
     };
   },
 
