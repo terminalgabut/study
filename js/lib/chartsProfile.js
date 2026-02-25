@@ -25,9 +25,6 @@ export function renderProfileRadar(canvasId, data) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || !data?.length) return;
 
-   const tooltip = canvas.parentElement.querySelector('.radar-tooltip'); 
-   if (!tooltip) return;
-
   canvas.onclick = null;
   canvas.onmousemove = null;
 
@@ -225,6 +222,11 @@ canvas.onmousemove = (e) => {
     // clamp kiri
     if (left - tooltipWidth / 2 < 0) {
       left = tooltipWidth / 2 + 8;
+    }
+
+     // clamp atas
+    if (top < 0) {
+       top = foundPoint.y + 20;
     }
 
     tooltip.style.left = `${left}px`;
