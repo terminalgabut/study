@@ -173,6 +173,23 @@ export function renderStabilityChart(id, summary) {
 }
 
     /* ===== BAR DRAW ===== */
-    
-   
-}
+function drawBarChart(ctx, canvas, data, w, h) {
+  const padding = 40;
+  const gap = 16;
+  const barW = (w - padding * 2 - gap * (data.length - 1)) / data.length;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#6366f1";
+  ctx.textAlign = 'center';
+  ctx.font = '12px system-ui';
+
+  data.forEach(([label, val], i) => {
+    const barH = (val / 100) * (h - padding * 2);
+    const x = padding + i * (barW + gap);
+    const y = h - padding - barH;
+
+    ctx.fillRect(x, y, barW, barH);
+    ctx.fillText(Math.round(val), x + barW / 2, y - 6);
+    ctx.fillText(label, x + barW / 2, h - 14);
+  });
+}    
