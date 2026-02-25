@@ -13,6 +13,9 @@ export const profileStatsController = {
     const radarData = await getProfileRadarStats(userId);
     renderProfileRadar('profileRadar', radarData);
 
+    const points = [];
+    
+
     // Stability & IQ
     const summary = await getCognitiveSummary(userId);
 
