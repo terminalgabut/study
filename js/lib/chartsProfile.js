@@ -11,9 +11,18 @@ function getCssVar(name, fallback = '#ccc') {
 }
 
 function resizeSquareCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
   const size = canvas.parentElement.offsetWidth;
-  canvas.width = size;
-  canvas.height = size;
+
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
   return size;
 }
 
@@ -130,10 +139,14 @@ export function renderProfileRadar(canvasId, data) {
    // 🔴 ADD HERE: click detection
 canvas.onclick = (e) => {
   const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
 
-  const hitRadius = 8;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  const mouseX = (e.clientX - rect.left) * scaleX;
+  const mouseY = (e.clientY - rect.top) * scaleY;
+
+  const hitRadius = 10;
 
   for (const p of points) {
     const dx = mouseX - p.x;
@@ -145,6 +158,23 @@ canvas.onclick = (e) => {
       break;
     }
   }
+};
+
+canvas.onmousemove = (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  let hit = false;
+  for (const p of points) {
+    const dx = mouseX - p.x;
+    const dy = mouseY - p.y;
+    if (Math.sqrt(dx*dx + dy*dy) <= 8) {
+      hit = true;
+      break;
+    }
+  }
+  canvas.style.cursor = hit ? 'pointer' : 'default';
 };
 }
 
