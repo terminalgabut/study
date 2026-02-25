@@ -10,14 +10,15 @@ function getCssVar(name, fallback = '#ccc') {
   );
 }
 
-function resizeSquareCanvas(canvas) {
+function resizeBarCanvas(canvas) {
   const rect = canvas.parentElement.getBoundingClientRect();
-  const size = rect.width;
+  const width = rect.width;
+  const height = rect.width * 0.6; // 🔥 ini rasio ideal bar chart
 
-  canvas.width = size;
-  canvas.height = size;
+  canvas.width = width;
+  canvas.height = height;
 
-  return size;
+  return { width, height };
 }
 
 /* =========================================
@@ -32,7 +33,7 @@ export function renderProfileRadar(canvasId, data) {
   canvas.onmousemove = null;
 
   const ctx = canvas.getContext('2d');
-  const size = resizeSquareCanvas(canvas);
+  const { width, height } = resizeBarCanvas(canvas);
 
   const centerX = size / 2;
   const centerY = size / 2;
