@@ -268,7 +268,10 @@ export function renderStabilityChart(canvasId, summary) {
 
   const max = 100;
   const padding = 50;
-  const barWidth = (size - padding * 2) / data.length - 20;
+  const gap = 20;
+  const totalGap = gap * (data.length - 1);
+  const totalBarArea = size - padding * 2 - totalGap;
+  const barWidth = totalBarArea / data.length;
 
   ctx.clearRect(0, 0, size, size);
 
@@ -282,7 +285,7 @@ export function renderStabilityChart(canvasId, summary) {
     const value = item.value || 0;
     const barHeight = (value / max) * (size - padding * 2);
 
-    const x = padding + i * (barWidth + 20);
+    const x = padding + i * (barWidth + gap);
     const y = size - padding - barHeight;
      bars.push ({ x, y,
                 width: barWidth, 
