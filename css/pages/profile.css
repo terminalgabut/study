@@ -557,7 +557,7 @@ box-shadow: var(--shadow-sm);
 /* Bar = Rectangle */
 #profileDynamicContent .overview-stability .chart-wrapper {
   max-width: 480px;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
 }
 
 /* Canvas Follow Wrapper */
