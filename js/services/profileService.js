@@ -56,42 +56,44 @@ export async function upsertProfile(profile) {
    📈 COGNITIVE SESSIONS (FOR TREND ENGINE)
    ===================================================== */
 
-export async function getCognitiveHistory(userId, limit = 8) {
+export async function getCognitiveHistory(userId, days = 7) {
+  const since = new Date(
+    Date.now() - days * 24 * 60 * 60 * 1000
+  ).toISOString();
+
   const { data, error } = await supabase
     .from('user_cognitive_sessions')
     .select(`
-     session_at,
-     cognitive_index,
-     iq_final,
-     iq_confidence,
-     iq_class,
-     scores
-   `)
+      session_at,
+      iq_final,
+      iq_confidence,
+      iq_class,
+      cognitive_index,
+      scores
+    `)
     .eq('user_id', userId)
-    .order('session_at', { ascending: true })
-    .limit(limit);
+    .gte('session_at', since)
+    .order('session_at', { ascending: true });
 
   if (error) {
     console.error('getCognitiveHistory error:', error);
     return [];
   }
 
-  // normalize ke format trendEngine
   return (data || []).map(row => ({
-  date: row.session_at,
+    date: row.session_at,
+    iq_final: Number(row.iq_final) || 0,
+    iq_confidence: Number(row.iq_confidence) || 0,
+    cognitive_index: Number(row.cognitive_index) || 0,
 
-  cognitive_index: Number(row.cognitive_index) || 0,
+    memory: Number(row.scores?.memory) || 0,
+    reading: Number(row.scores?.reading) || 0,
+    reasoning: Number(row.scores?.reasoning) || 0,
+    analogy: Number(row.scores?.analogy) || 0,
+    vocabulary: Number(row.scores?.vocabulary) || 0
+  }));
+     }
 
-  iq_final: Number(row.iq_final) || 0,
-  iq_confidence: Number(row.iq_confidence) || 0,
-
-  memory: Number(row.scores?.memory) || 0,
-  reading: Number(row.scores?.reading) || 0,
-  reasoning: Number(row.scores?.reasoning) || 0,
-  analogy: Number(row.scores?.analogy) || 0,
-  vocabulary: Number(row.scores?.vocabulary) || 0
-}));
-}
 
 /* =====================================================
    📊 RADAR STATS PROFILE
