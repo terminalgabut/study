@@ -34,6 +34,9 @@ export function renderProfileRadar(canvasId, data) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || !data?.length) return;
 
+   const tooltip = canvas.parentElement.querySelector('.radar-tooltip'); 
+   if (!tooltip) return;
+
   canvas.onclick = null;
   canvas.onmousemove = null;
 
@@ -139,6 +142,39 @@ export function renderProfileRadar(canvasId, data) {
     ctx.fillText(label, x, y);
   });
 
+   // pastikan parent punya position relative
+const parent = canvas.parentElement;
+if (getComputedStyle(parent).position === 'static') {
+  parent.style.position = 'relative';
+}
+
+// buat tooltip jika belum ada
+let tooltip = parent.querySelector('.radar-tooltip');
+
+if (!tooltip) {
+  tooltip = document.createElement('div');
+  tooltip.className = 'radar-tooltip';
+
+  // style langsung dari JS
+  Object.assign(tooltip.style, {
+    position: 'absolute',
+    padding: '6px 10px',
+    background: '#0f172a',
+    color: '#fff',
+    fontSize: '12px',
+    borderRadius: '6px',
+    pointerEvents: 'none',
+    opacity: 0,
+    transition: 'opacity 0.15s ease',
+    transform: 'translateX(-50%)',
+    whiteSpace: 'nowrap',
+    zIndex: 10,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+  });
+
+  parent.appendChild(tooltip);
+}
+
    // 🔴 ADD HERE: click detection
 canvas.onclick = (e) => {
   const rect = canvas.getBoundingClientRect();
@@ -163,19 +199,51 @@ canvas.onmousemove = (e) => {
   const mouseX = e.clientX - rect.left;
   const mouseY = e.clientY - rect.top;
 
-  let hit = false;
+  let foundPoint = null;
 
   for (const p of points) {
     const dx = mouseX - p.x;
     const dy = mouseY - p.y;
 
-    if (Math.sqrt(dx * dx + dy * dy) <= 8) {
-      hit = true;
+    if (Math.sqrt(dx * dx + dy * dy) <= 10) {
+      foundPoint = p;
       break;
     }
   }
 
-  canvas.style.cursor = hit ? 'pointer' : 'default';
+  if (foundPoint) {
+    tooltip.innerHTML = `
+      <strong>${foundPoint.label}</strong><br/>
+      Score: ${Math.round(foundPoint.value)}
+    `;
+
+    tooltip.style.opacity = 1;
+
+    const offset = 14;
+    let left = foundPoint.x;
+    let top = foundPoint.y - offset;
+
+    const tooltipWidth = tooltip.offsetWidth;
+    const canvasWidth = canvas.offsetWidth;
+
+    // clamp kanan
+    if (left + tooltipWidth / 2 > canvasWidth) {
+      left = canvasWidth - tooltipWidth / 2 - 8;
+    }
+
+    // clamp kiri
+    if (left - tooltipWidth / 2 < 0) {
+      left = tooltipWidth / 2 + 8;
+    }
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+
+    canvas.style.cursor = 'pointer';
+  } else {
+    tooltip.style.opacity = 0;
+    canvas.style.cursor = 'default';
+  }
 };
 }
 
