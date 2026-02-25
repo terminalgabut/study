@@ -144,9 +144,13 @@ function attachRadarInteraction(canvas, points) {
 
     tooltip.innerHTML = `<b>${hit.label}</b><br/>${Math.round(hit.value)}`;
     tooltip.style.opacity = 1;
-    tooltip.style.left = `${hit.x}px`;
+
+    tooltip.style.left = `${Math.min(
+    canvas.offsetWidth - 20,
+    Math.max(20, hit.x) 
+    )}px`;
     tooltip.style.top = `${hit.y - 14}px`;
-  };
+}
 }
   
 
