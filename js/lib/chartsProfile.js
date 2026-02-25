@@ -46,6 +46,7 @@ export function renderProfileRadar(canvasId, data) {
   const maxValue = 100;
   const levels = 5;
   const angleStep = (Math.PI * 2) / values.length;
+  const points = []
 
   ctx.clearRect(0, 0, size, size);
 
@@ -62,8 +63,8 @@ export function renderProfileRadar(canvasId, data) {
     values.forEach((_, i) => {
       const angle = i * angleStep - Math.PI / 2;
       const x = centerX + r * Math.cos(angle);
-      const y = centerY + r * Math.sin(angle);
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      const y = centerY + r * Math.sin(angle); 
+       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     });
 
     ctx.closePath();
@@ -91,8 +92,13 @@ export function renderProfileRadar(canvasId, data) {
     const angle = i * angleStep - Math.PI / 2;
 
     const x = centerX + r * Math.cos(angle);
-    const y = centerY + r * Math.sin(angle);
-
+    const y = centerY + r * Math.sin(angle); 
+     points.push({
+     x,
+     y,
+     label: labels[i],
+     value: val
+     });
     i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
   });
 
@@ -101,7 +107,13 @@ export function renderProfileRadar(canvasId, data) {
   ctx.strokeStyle = "#38bdf8";
   ctx.lineWidth = 2;
   ctx.fill();
-  ctx.stroke();
+  ctx.stroke(); 
+   points.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+  ctx.fillStyle = "#38bdf8";
+  ctx.fill();
+});
 
   /* ===== LABELS ===== */
   ctx.fillStyle = textColor;
@@ -114,6 +126,26 @@ export function renderProfileRadar(canvasId, data) {
     const y = centerY + (radius + 20) * Math.sin(angle);
     ctx.fillText(label, x, y);
   });
+
+   // 🔴 ADD HERE: click detection
+canvas.onclick = (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  const hitRadius = 8;
+
+  for (const p of points) {
+    const dx = mouseX - p.x;
+    const dy = mouseY - p.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist <= hitRadius) {
+      alert(`${p.label}: ${Math.round(p.value)}`);
+      break;
+    }
+  }
+};
 }
 
 /* =========================================
