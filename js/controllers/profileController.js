@@ -122,6 +122,20 @@ const levelData = buildLevelProfile(profile.xp || 0);
   document.getElementById('weaknessText').textContent =
     trend.weakness || '-';
   }
+
+        /* =========================
+ * EVENTS
+ * ========================= */
+bindEvents() {
+  this.editBtn?.addEventListener('click', () => {
+    this.openEditModal();
+  });
+
+  this.avatarEl?.addEventListener('click', () => {
+    this.openAvatarModal();
+  });
+},
+        
   /* =========================
    * INTERNAL PROFILE TABS
    * ========================= */
