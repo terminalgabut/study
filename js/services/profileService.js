@@ -1,3 +1,5 @@
+// root/js/services/profileService.js
+
 export async function getProfileHeader(userId) {
   const { data, error } = await supabase
     .rpc('profile_header_overview', {
