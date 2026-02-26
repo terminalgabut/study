@@ -11,5 +11,7 @@ export async function getProfileHeader(userId) {
     return null;
   }
 
-  return data;
+  if (!data || !data.length) return null;
+
+  return data[0].profile_header_overview;
 }
