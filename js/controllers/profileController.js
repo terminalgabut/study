@@ -18,7 +18,6 @@ export const profileController = {
   async init() {
     this.cacheDom();
     await this.loadProfile();
-    await this.loadIQTrendPreview();
     this.bindEvents();
     this.initProfileTabs();
   },
@@ -40,66 +39,89 @@ export const profileController = {
    * LOAD PROFILE
    * ========================= */
   async loadProfile() {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error || !user) return;
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) return;
 
-    this.user = user;
+  this.user = user;
 
-    const profile = await getProfile(user.id);
-    if (!profile) return;
+  const header = await getProfileHeader(user.id);
+  if (!header) return;
 
-    this.profile = profile;
+  const profile = header.profile;
+  const trend = header.trend_preview;
 
-    this.emailEl && (this.emailEl.textContent = user.email);
-    this.usernameEl && (this.usernameEl.textContent = profile.username || '-');
-    this.fullNameEl && (this.fullNameEl.textContent = profile.full_name || '-');
-    if (this.uuidEl) {
+  this.profile = profile;
+
+  /* ===============================
+     BASIC INFO
+  =============================== */
+
+  this.emailEl && (this.emailEl.textContent = user.email);
+  this.usernameEl && (this.usernameEl.textContent = profile.username || '-');
+  this.fullNameEl && (this.fullNameEl.textContent = profile.full_name || '-');
+
+  if (this.uuidEl) {
     this.uuidEl.textContent =
-  profile.uuid || this.user.id.slice(0, 8);
-           }
-    this.bioEl && (this.bioEl.textContent = profile.bio || 'Belum ada bio.'); 
+      profile.id?.slice(0, 8) || '-';
+  }
 
-    if (this.avatarEl) {
-      this.avatarEl.src =
-        profile.avatar_url || '/img/avatar-default.png';
-    } 
+  if (this.avatarEl) {
+    this.avatarEl.src =
+      profile.avatar_url || '/img/avatar-default.png';
+  }
            
 /* ===============================
    LEVEL ENGINE
 =============================== */
+const levelData = buildLevelProfile(profile.xp || 0);
 
-const levelData = buildLevelProfile(profile.xp);
-
-const levelEl = document.getElementById('userLevel');
-const xpEl = document.getElementById('userXP');
-const nextXpEl = document.getElementById('nextLevelXP');
-const xpFillEl = document.getElementById('xpFill');
-const badgeEl = document.getElementById('levelBadge');
-
-if (levelEl) {
-  levelEl.textContent = levelData.level;
-}
-
-if (xpEl) {
-  xpEl.textContent =
+  document.getElementById('userLevel').textContent = levelData.level;
+  document.getElementById('userXP').textContent =
     levelData.xp - levelData.currentLevelXP;
-}
-
-if (nextXpEl) {
-  nextXpEl.textContent =
+  document.getElementById('nextLevelXP').textContent =
     levelData.nextLevelXP - levelData.currentLevelXP;
-}
-
-if (xpFillEl) {
-  xpFillEl.style.width =
+  document.getElementById('xpFill').style.width =
     `${levelData.progressPercent}%`;
-}
 
-if (badgeEl) {
+  const badgeEl = document.getElementById('levelBadge');
   badgeEl.textContent = levelData.badge.name;
-  badgeEl.className =
-    `badge ${levelData.badge.className}`;
-}
+  badgeEl.className = `badge ${levelData.badge.className}`;
+
+  const avatarWrapper =
+    document.querySelector('.profile-avatar');
+  if (avatarWrapper) {
+    avatarWrapper.className =
+      `profile-avatar ${levelData.badge.className}`;
+  }
+
+  /* ===============================
+     TREND PREVIEW (DARI RPC)
+  =============================== */
+
+  if (trend?.iq_values?.length) {
+    renderIQTrendPreview('iqTrendPreview', trend.iq_values);
+  }
+
+  const deltaEl = document.getElementById('iqTrendDelta');
+  if (deltaEl) {
+    const delta = trend.delta ?? 0;
+    deltaEl.textContent =
+      delta >= 0 ? `+${delta}` : delta;
+  }
+
+  const volatilityBadgeEl =
+    document.getElementById('volatilityBadge');
+  if (volatilityBadgeEl) {
+    volatilityBadgeEl.textContent =
+      trend.volatility_score?.toFixed(0) || '-';
+  }
+
+  document.getElementById('strengthText').textContent =
+    trend.strength || '-';
+
+  document.getElementById('weaknessText').textContent =
+    trend.weakness || '-';
+  }
            
 /* ===============================
    APPLY BADGE TO AVATAR
@@ -118,42 +140,13 @@ if (avatarWrapper) {
   /* =========================
  * IQ TREND PREVIEW (HEADER)
  * ========================= */
-async loadIQTrendPreview() {
-  if (!this.user) return;
 
-  try {
-    const sessions = await getCognitiveHistory(this.user.id, 8);
-    if (!sessions || !sessions.length) return;
-
-    const analysis = buildTrendAnalysis(sessions);
-    if (!analysis) return;
 
 /* ===============================
    VOLATILITY BADGE
 ================================ */
 
-const volatilityBadgeEl =
-  document.getElementById('volatilityBadge');
 
-if (volatilityBadgeEl) {
-  const iqHistory = sessions
-    .map(s => s.iq_final)
-    .filter(v => typeof v === 'number');
-
-  const volatility = analyzeVolatility(iqHistory);
-
-  volatilityBadgeEl.textContent = volatility.label;
-
-  volatilityBadgeEl.classList.remove(
-    'volatility-stable',
-    'volatility-moderate',
-    'volatility-high'
-  );
-
-  volatilityBadgeEl.classList.add(
-    volatility.className
-  );
-}
 
     /* ===============================
        1️⃣ RENDER CHART
