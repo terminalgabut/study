@@ -1,7 +1,7 @@
 // js/services/profileHomeService.js
 
 import { supabase } from './supabase.js';
-import { getCognitiveSummary } from './profileService.js';
+
 
 export async function getProfileHomeData(userId) {
   const [
