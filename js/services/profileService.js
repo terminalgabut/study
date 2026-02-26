@@ -33,7 +33,7 @@ export async function getProfile(userId) {
 
   const { data, error } = await supabase
     .from('profile')
-    .select('id, full_name, username, avatar_url, role')
+    .select('id, full_name, username, avatar_url')
     .eq('id', userId)
     .maybeSingle()
 
@@ -51,7 +51,7 @@ export async function updateProfile(userId, payload) {
     .from('profile')
     .update(payload)
     .eq('id', userId)
-    .select('id, full_name, username, avatar_url, role')
+    .select('id, full_name, username, avatar_url')
     .maybeSingle()
 
   if (error) {
@@ -67,7 +67,7 @@ export async function upsertProfile(profile) {
   const { data, error } = await supabase
     .from('profile')
     .upsert(profile)
-    .select('id, full_name, username, avatar_url, role')
+    .select('id, full_name, username, avatar_url')
     .maybeSingle()
 
   if (error) {
