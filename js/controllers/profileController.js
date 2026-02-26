@@ -121,7 +121,7 @@ const levelData = buildLevelProfile(profile.xp || 0);
 
   document.getElementById('weaknessText').textContent =
     trend.weakness || '-';
-  }
+  },
 
         /* =========================
  * EVENTS
