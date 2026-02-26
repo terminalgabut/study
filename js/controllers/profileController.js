@@ -9,9 +9,9 @@ import { compressImage } from '../lib/imageCompressor.js';
 import { buildLevelProfile } from '../lib/levelEngine.js';
 import { renderIQTrendPreview } from '../lib/iqTrendPreview.js';
 import { avatarModalView } from '../../components/avatarModalView.js'; 
-import { profileHomeController } from './profileHomeController.js';
-import { profileStatsController } from './profileStatsController.js'; 
-import { profileMateriController } from './profileMateriController.js'; 
+//import { profileHomeController } from './profileHomeController.js';
+//import { profileStatsController } from './profileStatsController.js'; 
+//import { profileMateriController } from './profileMateriController.js'; 
 
 export const profileController = {
 
