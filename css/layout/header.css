@@ -124,6 +124,11 @@
   display: block;
 }
 
+  .logo {
+  height: 40px;
+  width: auto;
+  }
+
 /* RESPONSIVE */
 @media (min-width: 768px) {
   .menu-btn {
