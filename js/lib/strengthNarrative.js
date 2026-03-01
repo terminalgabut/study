@@ -1,4 +1,7 @@
-// root/js/lib/strengthNarrative.js
+ /* =========================================
+   INTERACTIVE STRENGTH NARRATIVE
+   Safe, contextual, non-contradicting
+========================================= */
 
 const domainLabel = {
   memory: "Memory",
@@ -8,47 +11,83 @@ const domainLabel = {
   vocabulary: "Vocabulary"
 };
 
+const isHighLevel = level => level === "elite" || level === "strong";
+
+/* =========================================
+   STRENGTH NARRATIVE
+========================================= */
+
 function strengthMessage(domain, level) {
+  const label = domainLabel[domain];
+
   switch (level) {
     case "elite":
-      return `Kemampuan ${domainLabel[domain]} kamu berada di level sangat tinggi. Ini menjadi fondasi kognitif utama kamu.`;
+      return `Di area ${label}, kamu berada di level sangat tinggi. Ini jelas menjadi fondasi kognitif utama yang bisa kamu andalkan.`;
     case "strong":
-      return `Kamu menunjukkan performa kuat di area ${domainLabel[domain]}. Ini salah satu aset terbaikmu.`;
+      return `Performa kamu di ${label} tergolong kuat. Ini salah satu domain yang memberi keunggulan nyata dalam proses berpikir kamu.`;
     case "moderate":
-      return `Area ${domainLabel[domain]} cukup stabil, tetapi masih bisa ditingkatkan ke level berikutnya.`;
+      return `Kemampuan ${label} kamu cukup stabil. Dengan sedikit dorongan, area ini berpotensi naik ke level yang lebih solid.`;
     case "developing":
-      return `Kemampuan ${domainLabel[domain]} sedang berkembang dan masih perlu penguatan terstruktur.`;
+      return `${label} sedang berkembang. Progresnya ada, tapi masih butuh latihan yang lebih terarah agar terasa konsisten.`;
     default:
-      return `Area ${domainLabel[domain]} membutuhkan perhatian lebih agar tidak tertinggal dari domain lain.`;
+      return `${label} saat ini belum menjadi kekuatan utama, namun tetap punya potensi untuk dibangun secara bertahap.`;
   }
 }
 
-function weaknessMessage(domain, level, strongestDomain) {
+/* =========================================
+   WEAKNESS / FOCUS NARRATIVE
+========================================= */
+
+function weaknessMessage(domain, level, strongestDomain, strongestLevel) {
+  const label = domainLabel[domain];
+
+  // Jika weakest masih lemah / berkembang
   if (level === "weak" || level === "developing") {
-    return `Disarankan fokus latihan pada ${domainLabel[domain]} agar tidak tertinggal jauh dari ${domainLabel[strongestDomain]}.`;
+    // Kalau ada domain kuat yang layak jadi pembanding
+    if (strongestDomain && isHighLevel(strongestLevel)) {
+      return `Fokus latihan di ${label} akan membantu menutup jarak dengan kekuatan utama kamu di ${domainLabel[strongestDomain]}. Mulai dari latihan kecil tapi rutin.`;
+    }
+
+    // Kalau belum ada domain yang benar-benar dominan
+    return `Saat ini, ${label} perlu perhatian lebih. Memperkuat area ini akan membantu membangun fondasi kognitif yang lebih seimbang.`;
   }
-  return `Area ${domainLabel[domain]} masih memiliki ruang peningkatan untuk menyamai domain terkuatmu.`;
+
+  // Jika weakest sebenarnya tidak terlalu lemah
+  return `Area ${label} bukan kelemahan utama, tetapi masih bisa diasah agar kontribusinya lebih terasa dalam keseluruhan profil kognitif kamu.`;
 }
+
+/* =========================================
+   FINAL BUILDER
+========================================= */
 
 export function buildStrengthNarrative(profile) {
   if (!profile) return null;
 
   const { strongest, weakest, imbalanceDetected } = profile;
 
+  // Guard: strongest hanya dipakai jika level-nya layak
+  const validStrongest = isHighLevel(strongest.level)
+    ? strongest
+    : null;
+
   return {
     strengthTitle: `Strength: ${domainLabel[strongest.name]}`,
-    strengthText: strengthMessage(strongest.name, strongest.level),
+    strengthText: strengthMessage(
+      strongest.name,
+      strongest.level
+    ),
 
     weaknessTitle: `Needs Work: ${domainLabel[weakest.name]}`,
     weaknessText: weaknessMessage(
-  weakest.name,
-  weakest.level,
-  strongest.name
-),
+      weakest.name,
+      weakest.level,
+      validStrongest?.name || null,
+      validStrongest?.level || null
+    ),
 
     imbalanceDetected,
     balanceNote: imbalanceDetected
-      ? "Terdapat ketimpangan performa antar domain yang cukup signifikan."
-      : "Profil kognitif kamu relatif seimbang."
+      ? "Terlihat adanya ketimpangan antar domain. Memperkuat area terlemah akan memberi dampak paling signifikan."
+      : "Profil kognitif kamu relatif seimbang. Tinggal mempertahankan ritme dan konsistensi latihan."
   };
 }
