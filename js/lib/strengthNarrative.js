@@ -40,7 +40,11 @@ export function buildStrengthNarrative(profile) {
     strengthText: strengthMessage(strongest.name, strongest.level),
 
     weaknessTitle: `Needs Work: ${domainLabel[weakest.name]}`,
-    weaknessText: weaknessMessage(weakest.name, weakest.level),
+    weaknessText: weaknessMessage(
+  weakest.name,
+  weakest.level,
+  strongest.name
+),
 
     imbalanceDetected,
     balanceNote: imbalanceDetected
