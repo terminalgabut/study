@@ -6,7 +6,7 @@ export const headerView = `
   <div class="header-left">
     <button id="menuBtn" class="menu-btn" aria-label="Toggle sidebar">☰</button>
     <h1 class="app-title">
-  <img src="./components/20260301_202351.png" alt="Logo" class="logo">
+  <img src="./components/IMG_20260301_211807.png" alt="Logo" class="logo">
 </h1>
   </div>
 
