@@ -5,7 +5,6 @@ export const headerView = `
 <header class="app-header">
   <div class="header-left">
     <button id="menuBtn" class="menu-btn" aria-label="Toggle sidebar">☰</button>
-    <h1 class="app-title">Study App</h1>
     <h1 class="app-title">
   <img src="./components/20260301_202351.png" alt="Logo" class="logo">
 </h1>
