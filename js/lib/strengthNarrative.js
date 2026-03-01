@@ -23,9 +23,9 @@ function strengthMessage(domain, level) {
   }
 }
 
-function weaknessMessage(domain, level) {
+function weaknessMessage(domain, level, strongestDomain) {
   if (level === "weak" || level === "developing") {
-    return `Disarankan fokus latihan pada ${domainLabel[domain]} untuk meningkatkan keseimbangan kognitif kamu.`;
+    return `Disarankan fokus latihan pada ${domainLabel[domain]} agar tidak tertinggal jauh dari ${domainLabel[strongestDomain]}.`;
   }
   return `Area ${domainLabel[domain]} masih memiliki ruang peningkatan untuk menyamai domain terkuatmu.`;
 }
