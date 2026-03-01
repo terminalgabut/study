@@ -157,7 +157,7 @@ ATURAN WAJIB:
       Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
       Contoh Soal: "Bagaimana pengaruh temuan di paragraf pertama terhadap teori yang dijelaskan di paragraf terakhir?"
    Tips soal seperti "Tes IQ":
-      - Jangan buat jawaban langsung dari materi, Gunakan kata yang berbeda namun maknanya sama.
+      - Jangan buat soal atau jawaban langsung dari materi, Gunakan kata yang berbeda namun maknanya sama.
       - Buat pilihan jawaban yang terlihat benar.
 2. Setiap soal WAJIB menyertakan 'explanation' singkat, yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
 3. Kembalikan HANYA JSON VALID.
