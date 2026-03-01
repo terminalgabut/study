@@ -65,10 +65,15 @@ export function buildStrengthNarrative(profile) {
 
   const { strongest, weakest, imbalanceDetected } = profile;
 
-  // Guard: strongest hanya dipakai jika level-nya layak
-  const validStrongest = isHighLevel(strongest.level)
-    ? strongest
-    : null;
+  // strongest hanya valid jika benar-benar kuat
+  const validStrongest =
+    strongest && (strongest.level === "elite" || strongest.level === "strong")
+      ? strongest
+      : null;
+
+  // 🔒 SINGLE SOURCE OF TRUTH
+  const focusDomain = weakest?.name || strongest?.name;
+  const focusLevel = weakest?.level || strongest?.level;
 
   return {
     strengthTitle: `Strength: ${domainLabel[strongest.name]}`,
@@ -77,10 +82,11 @@ export function buildStrengthNarrative(profile) {
       strongest.level
     ),
 
-    weaknessTitle: `Needs Work: ${domainLabel[weakest.name]}`,
+    // ✅ judul & isi pakai domain yang sama
+    weaknessTitle: `Needs Work: ${domainLabel[focusDomain]}`,
     weaknessText: weaknessMessage(
-      weakest.name,
-      weakest.level,
+      focusDomain,
+      focusLevel,
       validStrongest?.name || null,
       validStrongest?.level || null
     ),
@@ -88,6 +94,7 @@ export function buildStrengthNarrative(profile) {
     imbalanceDetected,
     balanceNote: imbalanceDetected
       ? "Terlihat adanya ketimpangan antar domain. Memperkuat area terlemah akan memberi dampak paling signifikan."
-      : "Profil kognitif kamu relatif seimbang. Tinggal mempertahankan ritme dan konsistensi latihan."
+      : "Profil kognitif kamu relatif seimbang. Tinggal menjaga konsistensi latihan."
   };
-}
+},
+  
