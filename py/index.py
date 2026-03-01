@@ -25,7 +25,7 @@ app.add_middleware(
 
 app.include_router(cognitive_router)
 
-BASE_SYSTEM_PROMPT = "Kamu adalah Mentalist profesional yang ahli dalam menyusun soal test iQ kritis gunakan 5 dimension di aturan wajib. Kamu HARUS mematuhi struktur JSON yang diminta."
+BASE_SYSTEM_PROMPT = "Kamu adalah ahli menyusun soal test iQ kritis gunakan 5 dimension di aturan wajib. Kamu HARUS mematuhi struktur JSON yang diminta."
 
 def generate_quiz(messages, mode="qa"):
     client = OpenAI(
@@ -140,18 +140,26 @@ ATURAN WAJIB:
 1. Struktur 5 Soal Berbasis Teks mengunakan 5 Dimension:
    - reading comprehension:
       Fokus: Mencari gagasan utama atau fakta tersurat.
+      Contoh Soal: "Apa tujuan utama penulis dalam paragraf kedua?" 
+                   "Berdasarkan teks, apa penyebab utama dari fenomena X?"
    - vocabulary & semantics:
       Fokus: Menguji pemahaman kata sulit atau istilah teknis dalam materi.
+      Contoh soal: "Kata 'signifikan' pada baris ke-5 paling tepat digantikan dengan kata..."
+                   "Apa makna istilah [Istilah Teknis] menurut konteks bacaan tersebut?"
    - verbal reasoning:
       Fokus: Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui".
+      Contoh soal: "Jika pernyataan di paragraf 3 benar, manakah kesimpulan berikut yang paling logis?"
+                   "Manakah asumsi yang mendasari argumen penulis di bagian akhir?"
    - analogy:
       Fokus: Menghubungkan konsep dalam teks dengan konsep serupa.
+      Contoh soal: "Jika [Konsep kaki] digambarkan sebagai [Sifat], maka [Konsep tangan] dalam teks digambarkan sebagai..."
    - working memory:
       Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
+      Contoh Soal: "Bagaimana pengaruh temuan di paragraf pertama terhadap teori yang dijelaskan di paragraf terakhir?"
    Tips soal seperti "Tes IQ":
-      - Jangan buat jawaban yang bisa di-copy-paste langsung dari teks. Gunakan parafrase (penggunaan kata yang berbeda namun maknanya sama).
-      -  Pengecoh (Distractor): Buat pilihan jawaban yang terlihat benar jika pembaca hanya membaca sekilas, tetapi salah secara logika detail.
-2. Setiap soal WAJIB menyertakan 'explanation' (penjelasan) singkat namun padat yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
+      - Jangan buat jawaban langsung dari materi, Gunakan kata yang berbeda namun maknanya sama.
+      - Buat pilihan jawaban yang terlihat benar.
+2. Setiap soal WAJIB menyertakan 'explanation' singkat, yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
 3. Kembalikan HANYA JSON VALID.
 4. Struktur:
 {{
