@@ -96,5 +96,5 @@ export function buildStrengthNarrative(profile) {
       ? "Terlihat adanya ketimpangan antar domain. Memperkuat area terlemah akan memberi dampak paling signifikan."
       : "Profil kognitif kamu relatif seimbang. Tinggal menjaga konsistensi latihan."
   };
-},
+}
   
