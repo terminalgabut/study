@@ -138,7 +138,11 @@ async loadIQTrendPreview() {
 const volatilityBadgeEl =
   document.getElementById('volatilityBadge');
 
+const toolkitEl =
+  document.getElementById('volatilityToolkit');
+
 if (volatilityBadgeEl) {
+
   const iqHistory = sessions
     .map(s => s.iq_final)
     .filter(v => typeof v === 'number');
@@ -157,24 +161,26 @@ if (volatilityBadgeEl) {
     volatility.className
   );
 
-        // 🔥 TOOLKIT RENDER DI SINI
+  // 🔥 TOOLKIT RENDER
   if (toolkitEl && volatility.toolkit) {
     toolkitEl.innerHTML = volatility.toolkit
       .map(line => `<div>${line}</div>`)
       .join('');
-}
+  }
 
-        if (volatilityBadgeEl && toolkitEl) {
-  volatilityBadgeEl.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toolkitEl.classList.toggle('hidden');
-  });
+  // 🔥 TOGGLE CLICK
+  if (toolkitEl) {
+    volatilityBadgeEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toolkitEl.classList.toggle('hidden');
+    });
 
-  document.addEventListener('click', () => {
-    toolkitEl.classList.add('hidden');
-  });
-        }
+    document.addEventListener('click', () => {
+      toolkitEl.classList.add('hidden');
+    });
+  }
 
+} // ✅ WAJIB ADA PENUTUP INI
     /* ===============================
        1️⃣ RENDER CHART
     =============================== */
