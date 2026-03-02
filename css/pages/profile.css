@@ -417,6 +417,34 @@
   color: #ef4444;
 }
 
+/* =========================
+   VOLATILITY TOOLKIT
+========================= */
+
+.volatility-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+#volatilityToolkit {
+  position: absolute;
+  top: 24px;
+  right: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  box-shadow: var(--shadow-sm);
+  z-index: 20;
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none;
+}
+
 .chart-wrapper {
   position: relative;
   width: 100%;
