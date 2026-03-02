@@ -111,8 +111,8 @@ options: {
       }  
     },  
     y: {  
-      suggestedMin: min - 5,  
-      suggestedMax: max + 5,  
+      beginAtZero: false,
+      grace: '10%', // ✅ padding otomatis (Chart.js v3+)
       ticks: {  
         color: '#64748b',  
         font: { size: 10 }  
