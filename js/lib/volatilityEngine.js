@@ -78,22 +78,22 @@ export function analyzeVolatility(values = []) {
   const min = Math.min(...values);
   const max = Math.max(...values);
 
+  let insight = "";
+
+  if (level === "stable") {
+    insight = "Performa kamu konsisten di setiap sesi.";
+  } else if (level === "moderate") {
+    insight = "Ada variasi ringan dalam performa.";
+  } else {
+    insight = "Performa masih naik-turun cukup besar.";
+  }
+
   return {
     value: Number(value.toFixed(1)),
     level,
     ...meta,
 
-    // 🔥 Toolkit kecil, mirip tooltip chart
-    let insight = "";
-
-if (level === "stable") {
-  insight = "Performa kamu konsisten di setiap sesi.";
-} else if (level === "moderate") {
-  insight = "Ada variasi ringan dalam performa.";
-} else {
-  insight = "Performa masih naik-turun cukup besar.";
-}
-
+    // 🔥 Toolkit kecil, mirip tooltip chart 
 toolkit: [
   `Stability Deviation (σ): ${value.toFixed(1)}`,
   `Berdasarkan ${values.length} sesi terbaru`,
