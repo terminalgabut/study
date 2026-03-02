@@ -1,5 +1,5 @@
 /* =========================================
-   INTERACTIVE STRENGTH NARRATIVE (REFACTORED)
+   INTERACTIVE STRENGTH NARRATIVE (REFINED)
 ========================================= */
 
 const domainLabel = {
@@ -12,7 +12,8 @@ const domainLabel = {
 
 const HIGH_LEVELS = new Set(["elite", "strong"]);
 
-const getLabel = (domain) => domainLabel[domain] || domain || "Unknown";
+const getLabel = (domain) =>
+  domainLabel[domain] || domain || "Unknown";
 
 /* =========================================
    STRENGTH MESSAGE
@@ -20,22 +21,23 @@ const getLabel = (domain) => domainLabel[domain] || domain || "Unknown";
 
 function strengthMessage({ domain, level, score }) {
   const label = getLabel(domain);
+  const roundedScore = Math.round(score || 0);
 
   switch (level) {
     case "elite":
-      return `Di area ${label}, performa kamu berada di level sangat tinggi (${score}). Ini menunjukkan stabilitas dan kedalaman kemampuan yang bisa menjadi keunggulan utama dalam pemecahan masalah.`;
+      return `Kemampuan ${label} kamu berada di level sangat tinggi (${roundedScore}). Ini merupakan salah satu kekuatan utama yang menunjukkan kedalaman dan stabilitas berpikir.`;
 
     case "strong":
-      return `${label} termasuk domain kuat (${score}). Ini memberi keunggulan nyata dalam proses berpikir dan pengambilan keputusan.`;
+      return `${label} termasuk domain kuat (${roundedScore}). Area ini memberi keunggulan nyata dalam proses analisis dan pengambilan keputusan.`;
 
     case "moderate":
-      return `${label} berada di level cukup stabil (${score}). Dengan peningkatan terarah, domain ini berpotensi menjadi salah satu kekuatan utama kamu.`;
+      return `${label} berada di level cukup stabil (${roundedScore}). Dengan latihan terarah, domain ini berpotensi naik menjadi kekuatan utama.`;
 
     case "developing":
-      return `${label} masih dalam tahap berkembang (${score}). Konsistensi latihan akan sangat berpengaruh terhadap peningkatan di area ini.`;
+      return `${label} masih dalam tahap berkembang (${roundedScore}). Konsistensi latihan akan sangat berpengaruh terhadap peningkatan performa.`;
 
     default:
-      return `${label} saat ini belum menjadi kekuatan dominan (${score}), namun tetap memiliki potensi untuk ditingkatkan secara bertahap.`;
+      return `${label} belum menjadi kekuatan dominan (${roundedScore}), namun tetap memiliki potensi untuk ditingkatkan secara bertahap.`;
   }
 }
 
@@ -51,11 +53,12 @@ function weaknessMessage({
   gap
 }) {
   const label = getLabel(domain);
+  const strongestLabel = getLabel(strongestDomain);
+  const roundedGap = Math.round(gap || 0);
 
   if (level === "weak" || level === "developing") {
-
     if (strongestDomain && HIGH_LEVELS.has(strongestLevel)) {
-      return `Terdapat jarak performa yang cukup signifikan antara ${label} dan ${getLabel(strongestDomain)} (gap ${gap}). Memperkuat area ini akan memberi dampak terbesar terhadap keseimbangan profil kamu.`;
+      return `Terdapat jarak performa yang cukup terasa antara ${label} dan ${strongestLabel} (sekitar ${roundedGap} poin). Memperkuat area ini akan memberi dampak terbesar terhadap keseimbangan profil kamu.`;
     }
 
     return `${label} saat ini memerlukan perhatian lebih. Latihan bertahap dan konsisten akan membantu meningkatkan kestabilan performa keseluruhan.`;
@@ -65,11 +68,13 @@ function weaknessMessage({
 }
 
 /* =========================================
-   BALANCE NOTE
+   BALANCE NOTE (SYNC WITH ENGINE)
 ========================================= */
 
 function buildBalanceNote(profile) {
-  const gap = profile.imbalanceScore;
+  if (!profile) return null;
+
+  const gap = Math.round(profile.imbalanceScore || 0);
 
   if (profile.imbalanceDetected && gap > 50) {
     return "Terdapat ketimpangan signifikan antar domain. Fokus pada area terlemah akan memberikan peningkatan paling drastis.";
@@ -83,7 +88,7 @@ function buildBalanceNote(profile) {
 }
 
 /* =========================================
-   FINAL BUILDER (SAFE VERSION)
+   FINAL BUILDER (SAFE & STABLE)
 ========================================= */
 
 export function buildStrengthNarrative(profile) {
@@ -92,7 +97,8 @@ export function buildStrengthNarrative(profile) {
   const strongest = profile.strongest;
   const weakest = profile.weakest;
 
-  const focus = weakest?.name || strongest?.name;
+  const sameDomain = strongest.name === weakest.name;
+  const focusDomain = !sameDomain ? weakest.name : null;
 
   return {
     strengthTitle: `Strength: ${getLabel(strongest.name)}`,
@@ -102,16 +108,21 @@ export function buildStrengthNarrative(profile) {
       score: strongest.score
     }),
 
-    weaknessTitle: `Needs Work: ${getLabel(focus)}`,
-    weaknessText: weaknessMessage({
-      domain: focus,
-      level: weakest?.level || strongest?.level,
-      strongestDomain: strongest.name,
-      strongestLevel: strongest.level,
-      gap: profile.imbalanceScore
-    }),
+    weaknessTitle: focusDomain
+      ? `Needs Work: ${getLabel(focusDomain)}`
+      : "Profile Insight",
+
+    weaknessText: focusDomain
+      ? weaknessMessage({
+          domain: focusDomain,
+          level: weakest.level,
+          strongestDomain: strongest.name,
+          strongestLevel: strongest.level,
+          gap: profile.imbalanceScore
+        })
+      : "Belum terlihat perbedaan signifikan antar domain. Fokus pada konsistensi latihan untuk menjaga stabilitas performa.",
 
     imbalanceDetected: profile.imbalanceDetected,
-    balanceNote: buildBalanceNote(profile.imbalanceScore)
+    balanceNote: buildBalanceNote(profile)
   };
 }
