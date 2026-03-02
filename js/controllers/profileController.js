@@ -1,11 +1,9 @@
 // root/js/controllers/profileController.js
 
 import { supabase } from '../services/supabase.js';
-import { getProfile, 
-         updateProfile, 
-         getCognitiveHistory } from '../services/profileService.js';
-import { uploadAvatar, 
-        deleteAvatar } from '../services/avatarService.js';
+import { getProfile, updateProfile, getCognitiveHistory, 
+        getCognitiveHistoryParsed } from '../services/profileService.js';
+import { uploadAvatar, deleteAvatar } from '../services/avatarService.js';
 import { compressImage } from '../lib/imageCompressor.js'; 
 import { buildLevelProfile } from '../lib/levelEngine.js';
 import { buildTrendAnalysis } from '../lib/trendEngine.js';
@@ -213,14 +211,17 @@ if (weaknessEl) {
 }
 
 /* ===============================
-   3️⃣b STRENGTH NARRATIVE
+   3️⃣b STRENGTH NARRATIVE (PARSED HISTORY)
 =============================== */
 
 const strengthDescEl = document.getElementById('strengthDescription');
 const weaknessDescEl = document.getElementById('weaknessDescription');
 const balanceNoteEl = document.getElementById('balanceNote');
 
-const strengthProfile = buildStrengthProfile(sessions);
+// 🔥 Ambil parsed history khusus strength engine
+const parsedSessions = await getCognitiveHistoryParsed(this.user.id, 30);
+
+const strengthProfile = buildStrengthProfile(parsedSessions);
 
 if (strengthProfile) {
   const narrative = buildStrengthNarrative(strengthProfile);
@@ -237,6 +238,7 @@ if (strengthProfile) {
     balanceNoteEl.textContent = narrative.balanceNote;
   }
 }
+
 
     /* ===============================
        4️⃣ STABILITY SCORE
