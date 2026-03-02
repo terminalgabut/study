@@ -58,18 +58,24 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
     strengthMode = "personal_best" // or "average"
   } = options;
 
-  /* ===============================
-     1️⃣ IQ TREND
-  =============================== */
+ /* ===============================
+   1️⃣ IQ TREND (7 DAYS WINDOW)
+=============================== */
 
-  /* ===============================
-   1️⃣ IQ TREND (PER DAY - 7 DAYS)
-================================ */
+// 🔥 Filter hanya 7 hari terakhir
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
 
+const filteredSessions = sessions.filter(s => {
+  const d = new Date(s.session_at);
+  return d >= sevenDaysAgo;
+});
+
+// 🔥 Group per hari
 const mapByDay = {};
 
-sessions.forEach(s => {
-  const rawDate = s.session_at || s.date;
+filteredSessions.forEach(s => {
+  const rawDate = s.session_at;
   if (!rawDate) return;
 
   const day = new Date(rawDate)
@@ -83,24 +89,13 @@ sessions.forEach(s => {
   mapByDay[day].push(Number(s.iq_final) || 0);
 });
 
+// 🔥 Convert ke array + rata-rata per hari
 const iqTrend = Object.keys(mapByDay)
   .sort()
   .map(day => ({
     date: day,
     value: average(mapByDay[day])
-  }))
-  .slice(-7); // 🔥 7 hari terakhir
-
-  const firstIQ = iqTrend[0]?.value || 0;
-  const lastIQ = iqTrend[iqTrend.length - 1]?.value || 0;
-
-  const delta = lastIQ - firstIQ;
-  const deltaPercent = percentChange(firstIQ, lastIQ);
-  const trendStatus = classifyTrend(delta);
-
-  const stabilityScore = calculateStability(
-    iqTrend.map(i => i.value)
-  );
+  }));
 
   /* ===============================
      2️⃣ DOMAIN STRENGTH / WEAKNESS
@@ -131,6 +126,17 @@ const iqTrend = Object.keys(mapByDay)
       percent
     };
   });
+
+const firstIQ = iqTrend[0]?.value || 0;
+const lastIQ = iqTrend[iqTrend.length - 1]?.value || 0;
+
+const delta = lastIQ - firstIQ;
+const deltaPercent = percentChange(firstIQ, lastIQ);
+const trendStatus = classifyTrend(delta);
+
+const stabilityScore = calculateStability(
+  iqTrend.map(i => i.value)
+);
 
   domainStats.sort((a, b) => b.percent - a.percent);
 
