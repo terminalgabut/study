@@ -15,7 +15,6 @@ canvas.height ||= 220;
 if (chartInstances[canvasId]) {
   chartInstances[canvasId].destroy();
 }
-}
 
 const values = iqTrend.map(item => item.value);
 
