@@ -165,7 +165,7 @@ if (volatilityBadgeEl) {
     =============================== */
 
     const iqValues = analysis.iqTrend.map(p => p.value);
-    renderIQTrendPreview('iqTrendPreview', iqValues);
+    renderIQTrendPreview('iqTrendPreview', analysis.iqTrend);
 
     /* ===============================
        2️⃣ DELTA DISPLAY
