@@ -5,6 +5,11 @@ const chartInstances = {};
 export function renderIQTrendPreview(canvasId, iqTrend = []) {
 const canvas = document.getElementById(canvasId);
 if (!canvas || !Array.isArray(iqTrend) || iqTrend.length === 0) return;
+  
+if (typeof iqTrend[0] === 'number') { 
+  console.warn("iqTrend expects objects with {date, value}"); 
+  return; 
+}
 
 const ctx = canvas.getContext('2d');
 
