@@ -31,22 +31,22 @@ export function getVolatilityLevel(volatility) {
 export function getVolatilityMeta(level) {
   switch (level) {
     case "stable":
-      return {
-        label: "🟢 Stabil",
-        className: "volatility-stable",
-      };
+  return {
+    label: "🟢 Konsisten",
+    className: "volatility-stable",
+  };
 
-    case "moderate":
-      return {
-        label: "🟡 Fluktuatif",
-        className: "volatility-moderate",
-      };
+case "moderate":
+  return {
+    label: "🟡 Variasi Wajar",
+    className: "volatility-moderate",
+  };
 
-    case "high":
-      return {
-        label: "🔴 Tidak Stabil",
-        className: "volatility-high",
-      };
+case "high":
+  return {
+    label: "🔴 Fluktuasi Tinggi",
+    className: "volatility-high",
+  };
 
     default:
       return {
@@ -84,10 +84,21 @@ export function analyzeVolatility(values = []) {
     ...meta,
 
     // 🔥 Toolkit kecil, mirip tooltip chart
-    toolkit: [
-      `Vol: ${value.toFixed(1)}`,
-      `Win: ${values.length}`,
-      `Range: ${min}–${max}`,
-    ],
+    let insight = "";
+
+if (level === "stable") {
+  insight = "Performa kamu konsisten di setiap sesi.";
+} else if (level === "moderate") {
+  insight = "Ada variasi ringan dalam performa.";
+} else {
+  insight = "Performa masih naik-turun cukup besar.";
+}
+
+toolkit: [
+  `Stability Deviation (σ): ${value.toFixed(1)}`,
+  `Berdasarkan ${values.length} sesi terbaru`,
+  `Rentang skor: ${min}–${max}`,
+  insight
+],
   };
 }
