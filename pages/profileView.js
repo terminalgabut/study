@@ -85,6 +85,13 @@ export const profileView = `
     <span id="weaknessText">-</span>
   </p>
   <p class="weakness-desc" id="weaknessDescription"></p>
+
+  <p class="strength-desc" id="strengthDescription"></p>
+
+  <p>
+    <strong>Balance Note:</strong> 
+    <span id="balance-noteText">-</span>
+  </p>
   <p class="balance-note" id="balanceNote"></p>
 </div>
 
