@@ -8,6 +8,9 @@ if (!canvas || !Array.isArray(iqTrend) || iqTrend.length === 0) return;
 
 const ctx = canvas.getContext('2d');
 
+// 🔴 FIX INI (WAJIB)
+canvas.height ||= 220;
+
 // Destroy existing chart instance
 if (chartInstances[canvasId]) {
 chartInstances[canvasId].destroy();
