@@ -40,22 +40,33 @@ export function renderIQTrendPreview(canvasId, iqTrend = []) {
   );
 
   chartInstances[canvasId] = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: iqTrend.map((_, i) => `D${i + 1}`),
-      datasets: [
-        {
-          label: 'CP Trend (7 Hari Terakhir)',
-          data: iqTrend,
-          borderColor: lineColor,
-          backgroundColor: gradient,
-          fill: true,
-          tension: 0.45,       // smooth curve
-          pointRadius: 0,
-          borderWidth: 2
-        }
-      ]
-    },
+  type: 'line',
+  data: {
+    labels: iqTrend.map((item, i) => {
+      if (item.date) {
+        const d = new Date(item.date);
+        return d.toLocaleDateString('id-ID', { 
+          day: 'numeric', 
+          month: 'short' 
+        });
+      }
+      return `S${i + 1}`;
+    }),
+    
+    datasets: [
+      {
+        label: 'CP Trend',
+        data: iqTrend.map(item => item.value),  // ✅ Ambil .value nya!
+        borderColor: lineColor,
+        backgroundColor: gradient,
+        fill: true,
+        tension: 0.45,
+        pointRadius: 0,
+        borderWidth: 2
+      }
+    ]
+  },
+    
     options: {
       responsive: true,
       maintainAspectRatio: false,
