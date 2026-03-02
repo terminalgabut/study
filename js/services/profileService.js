@@ -123,6 +123,7 @@ export async function getCognitiveHistory(userId, days = 7) {
     analogy: Number(row.scores?.analogy) || 0,
     vocabulary: Number(row.scores?.vocabulary) || 0
   }))
+   console.log("MAPPED HISTORY:", result)
 
   setCache(key, result, 60 * 1000) // 1 menit (frequent refresh)
   return result
