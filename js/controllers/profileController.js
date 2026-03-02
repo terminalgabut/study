@@ -196,12 +196,16 @@ if (volatilityBadgeEl) {
     }
     
 /* ===============================
-   3️⃣ STRENGTH / WEAKNESS (SYNCED)
+   3️⃣ STRENGTH / WEAKNESS
 =============================== */
 
 const strengthEl = document.getElementById('strengthText');
 const weaknessEl = document.getElementById('weaknessText');
+const strengthDescEl = document.getElementById('strengthDescription');
+const weaknessDescEl = document.getElementById('weaknessDescription');
+const balanceNoteEl = document.getElementById('balanceNote');
 
+// 🔥 Ambil parsed history sekali saja
 const parsedSessions = await getCognitiveHistoryParsed(this.user.id, 30);
 const strengthProfile = buildStrengthProfile(parsedSessions);
 
@@ -214,17 +218,12 @@ if (strengthProfile) {
   }
 
   if (weaknessEl) {
-    strengthEl.textContent = strengthProfile.strongest.name;
     weaknessEl.textContent =
       strengthProfile.weakest.name !== strengthProfile.strongest.name
         ? strengthProfile.weakest.name
         : "-";
   }
 
-  const strengthDescEl = document.getElementById('strengthDescription');
-  const weaknessDescEl = document.getElementById('weaknessDescription');
-  const balanceNoteEl = document.getElementById('balanceNote');
-
   if (strengthDescEl) {
     strengthDescEl.textContent = narrative.strengthText;
   }
@@ -237,36 +236,6 @@ if (strengthProfile) {
     balanceNoteEl.textContent = narrative.balanceNote;
   }
 }
-
-/* ===============================
-   3️⃣b STRENGTH NARRATIVE (PARSED HISTORY)
-=============================== */
-
-const strengthDescEl = document.getElementById('strengthDescription');
-const weaknessDescEl = document.getElementById('weaknessDescription');
-const balanceNoteEl = document.getElementById('balanceNote');
-
-// 🔥 Ambil parsed history khusus strength engine
-const parsedSessions = await getCognitiveHistoryParsed(this.user.id, 30);
-
-const strengthProfile = buildStrengthProfile(parsedSessions);
-
-if (strengthProfile) {
-  const narrative = buildStrengthNarrative(strengthProfile);
-
-  if (strengthDescEl) {
-    strengthDescEl.textContent = narrative.strengthText;
-  }
-
-  if (weaknessDescEl) {
-    weaknessDescEl.textContent = narrative.weaknessText;
-  }
-
-  if (balanceNoteEl) {
-    balanceNoteEl.textContent = narrative.balanceNote;
-  }
-}
-
 
     /* ===============================
        4️⃣ STABILITY SCORE
