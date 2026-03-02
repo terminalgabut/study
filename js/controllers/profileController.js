@@ -195,19 +195,47 @@ if (volatilityBadgeEl) {
       }
     }
     
- /* ===============================
-   3️⃣ STRENGTH / WEAKNESS
+/* ===============================
+   3️⃣ STRENGTH / WEAKNESS (SYNCED)
 =============================== */
 
 const strengthEl = document.getElementById('strengthText');
 const weaknessEl = document.getElementById('weaknessText');
 
-if (strengthEl) {
-  strengthEl.textContent = analysis.strength.name;
-}
+const parsedSessions = await getCognitiveHistoryParsed(this.user.id, 30);
+const strengthProfile = buildStrengthProfile(parsedSessions);
 
-if (weaknessEl) {
-  weaknessEl.textContent = analysis.weakness.name;
+if (strengthProfile) {
+
+  const narrative = buildStrengthNarrative(strengthProfile);
+
+  if (strengthEl) {
+    strengthEl.textContent = strengthProfile.strongest.name;
+  }
+
+  if (weaknessEl) {
+    strengthEl.textContent = strengthProfile.strongest.name;
+    weaknessEl.textContent =
+      strengthProfile.weakest.name !== strengthProfile.strongest.name
+        ? strengthProfile.weakest.name
+        : "-";
+  }
+
+  const strengthDescEl = document.getElementById('strengthDescription');
+  const weaknessDescEl = document.getElementById('weaknessDescription');
+  const balanceNoteEl = document.getElementById('balanceNote');
+
+  if (strengthDescEl) {
+    strengthDescEl.textContent = narrative.strengthText;
+  }
+
+  if (weaknessDescEl) {
+    weaknessDescEl.textContent = narrative.weaknessText;
+  }
+
+  if (balanceNoteEl) {
+    balanceNoteEl.textContent = narrative.balanceNote;
+  }
 }
 
 /* ===============================
