@@ -67,7 +67,7 @@ const sevenDaysAgo = new Date();
 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
 
 const filteredSessions = sessions.filter(s => {
-  const d = new Date(s.session_at);
+  const d = new Date(s.date);
   return d >= sevenDaysAgo;
 });
 
@@ -75,7 +75,7 @@ const filteredSessions = sessions.filter(s => {
 const mapByDay = {};
 
 filteredSessions.forEach(s => {
-  const rawDate = s.session_at;
+  const rawDate = s.date;
   if (!rawDate) return;
 
   const day = new Date(rawDate)
@@ -96,6 +96,7 @@ const iqTrend = Object.keys(mapByDay)
     date: day,
     value: average(mapByDay[day])
   }));
+   console.log("IQ TREND:", iqTrend)
 
   /* ===============================
      2️⃣ DOMAIN STRENGTH / WEAKNESS
