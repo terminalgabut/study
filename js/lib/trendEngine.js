@@ -62,12 +62,34 @@ export function buildTrendAnalysis(sessions = [], options = {}) {
      1️⃣ IQ TREND
   =============================== */
 
-  const recentSessions = sessions.slice(-trendWindow);
+  /* ===============================
+   1️⃣ IQ TREND (PER DAY - 7 DAYS)
+================================ */
 
-  const iqTrend = recentSessions.map(s => ({
-    date: s.date || s.session_at || null,
-    value: Number(s.iq_final) || 0
-  }));
+const mapByDay = {};
+
+sessions.forEach(s => {
+  const rawDate = s.session_at || s.date;
+  if (!rawDate) return;
+
+  const day = new Date(rawDate)
+    .toISOString()
+    .split("T")[0];
+
+  if (!mapByDay[day]) {
+    mapByDay[day] = [];
+  }
+
+  mapByDay[day].push(Number(s.iq_final) || 0);
+});
+
+const iqTrend = Object.keys(mapByDay)
+  .sort()
+  .map(day => ({
+    date: day,
+    value: average(mapByDay[day])
+  }))
+  .slice(-7); // 🔥 7 hari terakhir
 
   const firstIQ = iqTrend[0]?.value || 0;
   const lastIQ = iqTrend[iqTrend.length - 1]?.value || 0;
