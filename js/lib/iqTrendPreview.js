@@ -66,9 +66,9 @@ datasets: [
     backgroundColor: gradient,  
     fill: true,  
     tension: 0.45,  
-    pointRadius: 0,
-    pointHoverRadius: 4,   // ✅ hover tetap bisa
-    borderWidth: 2  
+    pointRadius: 2,        // ✅ kecil tapi ADA
+    pointHoverRadius: 6,   // ✅ hover jelas
+    pointHitRadius: 12,
   }  
 ]
 
@@ -77,10 +77,14 @@ datasets: [
 options: {  
   responsive: true,  
   maintainAspectRatio: false,  
-  interaction: {  
-    intersect: false,  
-    mode: 'index'  
-  },  
+  interaction: {
+  mode: 'nearest',
+  intersect: false
+},
+hover: {
+  mode: 'nearest',
+  intersect: false
+},  
   animation: {  
     duration: 800,  
     easing: 'easeOutQuart'  
