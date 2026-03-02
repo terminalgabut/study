@@ -156,6 +156,12 @@ if (volatilityBadgeEl) {
   volatilityBadgeEl.classList.add(
     volatility.className
   );
+
+        // 🔥 TOOLKIT RENDER DI SINI
+  if (toolkitEl && volatility.toolkit) {
+    toolkitEl.innerHTML = volatility.toolkit
+      .map(line => `<div>${line}</div>`)
+      .join('');
 }
 
     /* ===============================
