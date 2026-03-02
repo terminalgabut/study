@@ -110,6 +110,7 @@ export async function getCognitiveHistory(userId, days = 7) {
     return []
   }
    console.log("Cognitive RAW:", data)
+   console.log("SINCE DATE:", since)
 
   const result = (data || []).map(row => ({
     date: row.session_at,
