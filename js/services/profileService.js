@@ -217,6 +217,67 @@ export async function getCognitiveSummary(userId) {
   return result
 }
 
+export async function getCognitiveHistoryParsed(userId, days = 7) {
+  const key = `cognitive-history-parsed:${userId}:${days}`
+  const cached = getCache(key)
+  if (cached) return cached
+
+  const since = new Date(
+    Date.now() - days * 24 * 60 * 60 * 1000
+  ).toISOString()
+
+  const { data, error } = await supabase
+    .from('user_cognitive_sessions')
+    .select(`
+      session_at,
+      iq_final,
+      iq_confidence,
+      cognitive_index,
+      scores
+    `)
+    .eq('user_id', userId)
+    .gte('session_at', since)
+    .order('session_at', { ascending: true })
+
+  if (error) {
+    console.error('getCognitiveHistoryParsed error:', error)
+    return []
+  }
+
+  const result = (data || []).map(row => {
+
+    let parsedScores = {}
+
+    if (row.scores) {
+      if (typeof row.scores === "string") {
+        try {
+          parsedScores = JSON.parse(row.scores)
+        } catch (e) {
+          console.warn("Invalid scores JSON", e)
+        }
+      } else {
+        parsedScores = row.scores
+      }
+    }
+
+    return {
+      date: row.session_at,
+      iq_final: Number(row.iq_final) || 0,
+      iq_confidence: Number(row.iq_confidence) || 0,
+      cognitive_index: Number(row.cognitive_index) || 0,
+
+      memory: Number(parsedScores.memory) || 0,
+      reading: Number(parsedScores.reading) || 0,
+      reasoning: Number(parsedScores.reasoning) || 0,
+      analogy: Number(parsedScores.analogy) || 0,
+      vocabulary: Number(parsedScores.vocabulary) || 0
+    }
+  })
+
+  setCache(key, result, 60 * 1000)
+  return result
+}
+
 /* =========================================
    CACHE CONTROL (OPTIONAL API)
 ========================================= */
