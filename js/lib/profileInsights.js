@@ -1,7 +1,46 @@
 // root/js/lib/profileInsights.js
 /* =========================================
-   IQ INTERPRETATION – ADVANCED
+   IQ INTERPRETATION – ADVANCED REFACTORED
 ========================================= */
+
+function interpretIndex(value, label) {
+  if (value >= 75) return `${label} sangat kuat dan stabil.`;
+  if (value >= 55) return `${label} cukup stabil dengan sedikit variasi.`;
+  if (value >= 40) return `${label} masih berkembang dan belum sepenuhnya konsisten.`;
+  return `${label} masih perlu penguatan signifikan.`;
+}
+
+function detectCognitivePattern(speed, accuracy) {
+  if (speed > 70 && accuracy < 50) {
+    return "Terlihat pola impulsif: kecepatan tinggi namun akurasi belum stabil.";
+  }
+
+  if (accuracy > 70 && speed < 50) {
+    return "Pola reflektif: akurasi kuat namun tempo relatif lambat.";
+  }
+
+  if (speed > 65 && accuracy > 65) {
+    return "Kombinasi optimal antara kecepatan dan akurasi.";
+  }
+
+  return "";
+}
+
+function buildGrowthAdvice({ stability, accuracy, speed, endurance }) {
+  if (stability < 50 && endurance < 50) {
+    return "Disarankan fokus pada sesi latihan lebih panjang untuk meningkatkan stabilitas dan daya tahan.";
+  }
+
+  if (speed < 50) {
+    return "Latihan berbasis time-pressure dapat membantu meningkatkan respons kognitif.";
+  }
+
+  if (accuracy < 50) {
+    return "Latihan presisi dan evaluasi kesalahan akan membantu meningkatkan konsistensi akurasi.";
+  }
+
+  return "";
+}
 
 export function getIQInsight(summary) {
   if (!summary) return null;
@@ -17,30 +56,28 @@ export function getIQInsight(summary) {
   const endurance = Number(summary.endurance_index) || 0;
   const consistency = Number(summary.error_consistency) || 0;
 
-  let iqDescription = "";
-  let neuroDescription = "";
-  let reasons = [];
-
   /* =====================================
      IQ LEVEL INTERPRETATION
   ===================================== */
 
+  let iqDescription = "";
+
   if (confidence < 30) {
     iqDescription =
-      "Estimasi Conitive Poin masih sangat awal dan memiliki tingkat kepastian rendah. Skor dapat berubah seiring bertambahnya data latihan.";
+      "Estimasi Cognitive Poin masih awal dan memiliki tingkat kepastian rendah.";
   } else {
     switch (iqClass) {
       case "Below Average":
         iqDescription =
-          "Skor menunjukkan performa kognitif masih di bawah rata-rata saat ini.";
+          "Performa kognitif saat ini berada di bawah rata-rata.";
         break;
       case "Average":
         iqDescription =
-          "Skor menunjukkan kemampuan berada dalam rentang rata-rata.";
+          "Kemampuan kognitif berada dalam rentang rata-rata.";
         break;
       case "Above Average":
         iqDescription =
-          "Skor menunjukkan performa kognitif di atas rata-rata.";
+          "Performa kognitif berada di atas rata-rata.";
         break;
       default:
         iqDescription = "Profil kognitif sedang dianalisis.";
@@ -48,53 +85,79 @@ export function getIQInsight(summary) {
   }
 
   /* =====================================
-     CAUSAL ANALYSIS (WHY THIS SCORE)
+     DIMENSION INTERPRETATION
   ===================================== */
 
-  if (stability < 40)
-    reasons.push("Performa belum stabil antar sesi.");
-
-  if (accuracy < 40)
-    reasons.push("Tingkat akurasi masih fluktuatif.");
-
-  if (speed < 40)
-    reasons.push("Kecepatan belum konsisten.");
-
-  if (endurance < 40)
-    reasons.push("Daya tahan kognitif masih rendah dalam sesi panjang.");
-
-  if (consistency < 40)
-    reasons.push("Tingkat kesalahan belum konsisten.");
-
-  if (confidence < 30)
-    reasons.push("Data latihan masih sedikit sehingga estimasi belum solid.");
+  const dimensionInsights = [
+    interpretIndex(stability, "Stabilitas performa"),
+    interpretIndex(accuracy, "Akurasi"),
+    interpretIndex(speed, "Kecepatan"),
+    interpretIndex(endurance, "Daya tahan kognitif"),
+    interpretIndex(consistency, "Konsistensi kesalahan"),
+  ];
 
   /* =====================================
-     NEURO TYPE INTERPRETATION
+     PATTERN DETECTION
   ===================================== */
+
+  const cognitivePattern = detectCognitivePattern(speed, accuracy);
+
+  /* =====================================
+     GROWTH RECOMMENDATION
+  ===================================== */
+
+  const growthAdvice = buildGrowthAdvice({
+    stability,
+    accuracy,
+    speed,
+    endurance,
+  });
+
+  /* =====================================
+     CONFIDENCE NOTE
+  ===================================== */
+
+  let confidenceNote = "";
+
+  if (confidence < 30) {
+    confidenceNote =
+      " Interpretasi ini bersifat sementara karena data masih terbatas.";
+  } else if (confidence < 60) {
+    confidenceNote =
+      " Interpretasi memiliki tingkat kepastian menengah dan akan semakin presisi seiring tambahan sesi.";
+  }
+
+  /* =====================================
+     NEURO TYPE
+  ===================================== */
+
+  let neuroDescription = "";
 
   if (neuroType === "Balanced") {
     neuroDescription =
       "Profil menunjukkan keseimbangan antara kecepatan dan akurasi.";
   } else if (neuroType === "Speed Dominant") {
     neuroDescription =
-      "Cenderung cepat dalam menjawab, namun perlu menjaga stabilitas akurasi.";
+      "Cenderung cepat dalam menjawab, perlu menjaga stabilitas akurasi.";
   } else if (neuroType === "Accuracy Dominant") {
     neuroDescription =
-      "Cenderung berhati-hati dan presisi, dengan tempo lebih terkontrol.";
+      "Cenderung presisi dan reflektif dengan tempo lebih terkontrol.";
   }
-
-  const causalExplanation =
-    reasons.length > 0
-      ? " Faktor yang memengaruhi skor saat ini: " + reasons.join(" ")
-      : "";
 
   return {
     iq,
     iqClass,
     confidence,
     neuroType,
-    iqDescription: iqDescription + causalExplanation,
-    neuroDescription
+    iqDescription:
+      iqDescription +
+      " " +
+      dimensionInsights.join(" ") +
+      " " +
+      cognitivePattern +
+      " " +
+      growthAdvice +
+      confidenceNote,
+    neuroDescription,
   };
-}
+  }
