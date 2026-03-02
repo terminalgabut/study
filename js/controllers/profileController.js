@@ -164,6 +164,17 @@ if (volatilityBadgeEl) {
       .join('');
 }
 
+        if (volatilityBadgeEl && toolkitEl) {
+  volatilityBadgeEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toolkitEl.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => {
+    toolkitEl.classList.add('hidden');
+  });
+        }
+
     /* ===============================
        1️⃣ RENDER CHART
     =============================== */
