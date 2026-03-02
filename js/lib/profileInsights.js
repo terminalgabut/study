@@ -42,6 +42,20 @@ function buildGrowthAdvice({ stability, accuracy, speed, endurance }) {
   return "";
 }
 
+function detectBurnout({ endurance, speed, stability, confidence }) {
+  if (confidence < 40) return "";
+
+  if (endurance < 45 && speed < 45 && stability < 50) {
+    return "Terlihat indikasi kelelahan kognitif. Performa menurun pada sesi panjang dan tempo respons ikut melambat.";
+  }
+
+  if (endurance < 40 && speed < 50) {
+    return "Daya tahan kognitif menurun dan dapat memengaruhi konsistensi performa.";
+  }
+
+  return "";
+}
+
 export function getIQInsight(summary) {
   if (!summary) return null;
 
@@ -113,6 +127,13 @@ export function getIQInsight(summary) {
     endurance,
   });
 
+  const burnoutSignal = detectBurnout({
+  endurance,
+  speed,
+  stability,
+  confidence,
+});
+
   /* =====================================
      CONFIDENCE NOTE
   ===================================== */
@@ -145,19 +166,21 @@ export function getIQInsight(summary) {
   }
 
   return {
-    iq,
-    iqClass,
-    confidence,
-    neuroType,
-    iqDescription:
-      iqDescription +
-      " " +
-      dimensionInsights.join(" ") +
-      " " +
-      cognitivePattern +
-      " " +
-      growthAdvice +
-      confidenceNote,
-    neuroDescription,
-  };
+  iq,
+  iqClass,
+  confidence,
+  neuroType,
+  iqDescription:
+    iqDescription +
+    " " +
+    dimensionInsights.join(" ") +
+    " " +
+    cognitivePattern +
+    " " +
+    burnoutSignal +
+    " " +
+    growthAdvice +
+    confidenceNote,
+  neuroDescription,
+};
   }
