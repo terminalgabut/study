@@ -13,11 +13,13 @@ if (chartInstances[canvasId]) {
 chartInstances[canvasId].destroy();
 }
 
-const min = Math.min(...iqTrend);
-const max = Math.max(...iqTrend);
+const values = iqTrend.map(item => item.value);
 
-const first = iqTrend[0];
-const last = iqTrend[iqTrend.length - 1];
+const min = Math.min(...values);
+const max = Math.max(...values);
+
+const first = values[0];
+const last = values[values.length - 1];
 
 const isUptrend = last >= first;
 
@@ -50,7 +52,7 @@ day: 'numeric',
 month: 'short'
 });
 }
-return S${i + 1};
+return `S${i + 1}`;
 }),
 
 datasets: [  
