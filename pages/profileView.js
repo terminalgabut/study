@@ -66,6 +66,7 @@ export const profileView = `
           <div class="trend-meta">
            <span id="iqTrendDelta"></span>
            <span id="volatilityBadge" class="volatility-badge"></span>
+           <div id="volatilityToolkit" class="hidden"></div>
           </div>
         </div>
 
