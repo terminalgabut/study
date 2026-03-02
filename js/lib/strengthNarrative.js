@@ -68,12 +68,14 @@ function weaknessMessage({
    BALANCE NOTE
 ========================================= */
 
-function buildBalanceNote(gap) {
-  if (gap > 60) {
+function buildBalanceNote(profile) {
+  const gap = profile.imbalanceScore;
+
+  if (profile.imbalanceDetected && gap > 50) {
     return "Terdapat ketimpangan signifikan antar domain. Fokus pada area terlemah akan memberikan peningkatan paling drastis.";
   }
 
-  if (gap > 30) {
+  if (profile.imbalanceDetected) {
     return "Profil menunjukkan perbedaan performa antar domain. Penyesuaian latihan akan membantu menstabilkan keseimbangan.";
   }
 
