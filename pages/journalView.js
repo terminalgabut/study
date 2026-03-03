@@ -1,21 +1,21 @@
-// js/views/journalView.js
+// pages/journalView.js
 
 export const journalView = `
 <section class="home fade-in">
   <div class="home-card hero">
-    <h1>📘 Cognitive Journal</h1>
+    <h1>📔 Journal Mingguan</h1>
     <p class="subtitle">
-      Ringkasan performa dan perkembangan kognitif mingguan kamu.
+      Ringkasan performa belajar kamu setiap minggu.
     </p>
     <p class="desc">
-      Insight ini dihasilkan otomatis berdasarkan aktivitas belajar dan latihan kamu.
+      Insight otomatis berdasarkan aktivitas dan progres belajarmu.
     </p>
   </div>
 
   <div id="journalListContainer" class="home-grid">
     <div class="home-card">
-      <p>Memuat jurnal mingguan...</p>
+      <p>Memuat journal...</p>
     </div>
   </div>
 </section>
-`;
+`
