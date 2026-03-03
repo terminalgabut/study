@@ -7,32 +7,21 @@ export async function initJournalPage() {
   const container = document.getElementById('journalListContainer')
   if (!container) return
 
-  container.innerHTML = `
-    <div class="home-card">
-      <p>Memuat journal mingguan...</p>
-    </div>
-  `
+  renderMessage(container, 'Memuat journal mingguan...')
 
   try {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data, error: authError } = await supabase.auth.getUser()
 
-    if (!user) {
-      container.innerHTML = `
-        <div class="home-card">
-          <p>Kamu harus login untuk melihat journal.</p>
-        </div>
-      `
+    if (authError || !data?.user) {
+      renderMessage(container, 'Kamu harus login untuk melihat journal.')
       return
     }
 
+    const user = data.user
     const snapshots = await getWeeklySnapshots(user.id)
 
     if (!snapshots.length) {
-      container.innerHTML = `
-        <div class="home-card">
-          <p>Belum ada journal mingguan tersedia.</p>
-        </div>
-      `
+      renderMessage(container, 'Belum ada journal mingguan tersedia.')
       return
     }
 
@@ -42,12 +31,7 @@ export async function initJournalPage() {
 
   } catch (err) {
     console.error('Journal init error:', err)
-
-    container.innerHTML = `
-      <div class="home-card">
-        <p>Terjadi kesalahan saat memuat journal.</p>
-      </div>
-    `
+    renderMessage(container, 'Terjadi kesalahan saat memuat journal.')
   }
 }
 
@@ -60,8 +44,7 @@ function createJournalCard(snapshot) {
   const end = formatDate(snapshot.week_end)
 
   const totalSeconds = Number(snapshot.total_study_seconds) || 0
-  const hours = Math.floor(totalSeconds / 3600)
-  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const timeString = formatDuration(totalSeconds)
 
   const insight = parseInsight(snapshot.insight)
 
@@ -72,7 +55,7 @@ function createJournalCard(snapshot) {
       <div class="journal-stats">
         <p><strong>🎯 Attempts:</strong> ${snapshot.total_quiz_attempts || 0}</p>
         <p><strong>📊 Avg Score:</strong> ${snapshot.avg_score || 0}%</p>
-        <p><strong>⏱ Study Time:</strong> ${hours}j ${minutes}m</p>
+        <p><strong>⏱ Study Time:</strong> ${timeString}</p>
         <p><strong>🏷 Kategori Aktif:</strong> ${snapshot.most_active_category || '-'}</p>
       </div>
 
@@ -86,7 +69,30 @@ function createJournalCard(snapshot) {
 }
 
 /* =====================================================
-   INSIGHT PARSER (SAFE JSON)
+   UTIL HELPERS
+===================================================== */
+
+function renderMessage(container, message) {
+  container.innerHTML = `
+    <div class="home-card">
+      <p>${message}</p>
+    </div>
+  `
+}
+
+function formatDuration(seconds) {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+
+  if (hours > 0) {
+    return minutes > 0 ? `${hours}j ${minutes}m` : `${hours}j`
+  }
+
+  return `${minutes}m`
+}
+
+/* =====================================================
+   INSIGHT PARSER
 ===================================================== */
 
 function parseInsight(raw) {
