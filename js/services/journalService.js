@@ -1,5 +1,24 @@
 // root/js/services/journalService.js
 
+// js/services/journalService.js
+
+import { supabase } from './supabase.js'
+
+export async function getWeeklySnapshots(userId) {
+  const { data, error } = await supabase
+    .from('weekly_journal_snapshot')
+    .select('*')
+    .eq('user_id', userId)
+    .order('week_start', { ascending: false })
+
+  if (error) {
+    console.error('getWeeklySnapshots error:', error)
+    return []
+  }
+
+  return data || []
+}
+
 export async function generateWeeklySnapshot(userId, startDate, endDate) {
 
   // 1️⃣ Ambil attempt minggu ini
