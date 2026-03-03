@@ -99,39 +99,48 @@ async function generateWeeklySnapshot(userId, startDate, endDate) {
 
   function calculateMetrics(attempts, sessions) {
 
-  const totalQuizAttempts = attempts.length
+  // =============================
+  // QUIZ METRICS (RAW ATTEMPTS)
+  // =============================
 
-  const totalQuizScore = attempts.reduce(
+  const totalQuestions = attempts.length
+
+  const totalCorrect = attempts.reduce(
     (sum, a) => sum + (Number(a.score) || 0),
     0
   )
 
   const avgScore =
-    totalQuizAttempts > 0
-      ? Math.round(totalQuizScore / totalQuizAttempts)
+    totalQuestions > 0
+      ? Math.round((totalCorrect / totalQuestions) * 100)
       : 0
+
+
+  // =============================
+  // STUDY TIME (READING ONLY)
+  // =============================
 
   const totalReadingSeconds = sessions.reduce(
     (sum, s) => sum + (Number(s.reading_seconds) || 0),
     0
   )
 
-  const totalQuizSeconds = sessions.reduce(
-    (sum, s) => sum + (Number(s.quiz_seconds) || 0),
-    0
-  )
+  const totalStudySeconds = totalReadingSeconds
 
-  const totalStudySeconds =
-    totalReadingSeconds + totalQuizSeconds
+
+  // =============================
+  // CATEGORY
+  // =============================
 
   const mostActiveCategory = getMostActiveCategory(attempts)
 
+
   return {
-    total_quiz_attempts: totalQuizAttempts,
-    total_quiz_score: totalQuizScore,
-    avg_score: avgScore,
+    total_quiz_attempts: totalQuestions,   // jumlah soal
+    total_quiz_score: totalCorrect,        // jumlah benar
+    avg_score: avgScore,                   // persen akurasi
     total_reading_seconds: totalReadingSeconds,
-    total_quiz_seconds: totalQuizSeconds,
+    total_quiz_seconds: 0,                 // disable dulu
     total_study_seconds: totalStudySeconds,
     most_active_category: mostActiveCategory
   }
