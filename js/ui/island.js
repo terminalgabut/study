@@ -88,16 +88,15 @@ class IslandView {
                </svg>`,
 
         robot: `
-               <svg class="island-icon" xmlns="http://www.w3.org/2000/svg" 
+               <svg class="island-icon" xmlns="http://www.w3.org/2000/svg"
                width="18" height="18" viewBox="0 0 24 24"
                fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-               <path d="M12 3v6"></path>
-               <path d="M12 15v6"></path>
-               <path d="M3 12h6"></path>
-               <path d="M15 12h6"></path>
-               <circle cx="12" cy="12" r="3"></circle>
-               </svg>` 
+               <circle cx="12" cy="12" r="10"></circle>
+               <circle cx="9" cy="10" r="1"></circle>
+               <circle cx="15" cy="10" r="1"></circle>
+               <path d="M8 15s1.5 2 4 2 4-2 4-2"></path>
+               </svg>`
     };
 
     return icons[type] || '';
