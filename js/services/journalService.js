@@ -32,17 +32,10 @@ export async function getWeeklySnapshots(userId) {
 async function ensureCurrentWeekSnapshot(userId) {
   const { start, end } = getCurrentWeekRange()
 
-  const { data } = await supabase
-    .from('weekly_journal_snapshot')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('week_start', toDateOnly(start))
-    .maybeSingle()
-
-  if (!data) {
-    await generateWeeklySnapshot(userId, start, end)
-  }
+  // Selalu regenerate minggu berjalan
+  await generateWeeklySnapshot(userId, start, end)
 }
+
 /* =====================================================
    GENERATE SNAPSHOT (Cleaner)
 ===================================================== */
