@@ -131,7 +131,17 @@ const routes = {
     ]);
     content.innerHTML = profileView;
     profileController.init();
-  }
+  },
+
+  journal: async (content) => {
+  const [{ journalView }, { initJournalPage }] = await Promise.all([
+    import('../../pages/journalView.js'),
+    import('../controllers/journalController.js')
+  ])
+
+  content.innerHTML = journalView
+  initJournalPage()
+}
 };
 
 /* =========================================
