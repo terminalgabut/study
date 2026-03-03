@@ -19,7 +19,7 @@ export async function getWeeklySnapshots(userId) {
   return data || []
 }
 
-export async function generateWeeklySnapshot(userId, startDate, endDate) {
+async function generateWeeklySnapshot(userId, startDate, endDate) {
 
   // 1️⃣ Ambil attempt minggu ini
   const { data: attempts } = await supabase
