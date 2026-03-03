@@ -20,9 +20,9 @@ export const performaService = {
       // 2. INJEKSI FILTER TANGGAL (Jika ada input dari kalender)
       if (startDate && endDate) {
         // Gunakan toISOString() untuk format yang dimengerti Supabase
-        progressQuery = progressQuery
-          .gte('updated_at', startDate.toISOString())
-          .lte('updated_at', endDate.toISOString());
+        filteredQuery = filteredQuery
+  .gte('updated_at', startDate.toISOString())
+  .lte('updated_at', endDate.toISOString());
           
         window.__DEBUG__.log(`[Service] Memfilter data: ${startDate.toDateString()} s/d ${endDate.toDateString()}`);
       }
