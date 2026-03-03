@@ -18,7 +18,7 @@ export async function initJournalPage() {
     return
   }
 
-  const snapshots = await getWeeklySnapshots(user.id)
+  const snapshots = await getWeeklySnapshots()
 
   if (!snapshots.length) {
     container.innerHTML = `
