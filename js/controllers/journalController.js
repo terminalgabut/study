@@ -26,6 +26,17 @@ export async function initJournalPage() {
         <p>Belum ada journal mingguan tersedia.</p>
       </div>
     `
+    let snapshots = []
+
+try {
+  snapshots = await getWeeklySnapshots()
+} catch (err) {
+  container.innerHTML = `
+    <div class="home-card">
+      <p>Terjadi kesalahan saat memuat journal.</p>
+    </div>
+  `
+}
     return
   }
 
