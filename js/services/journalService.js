@@ -43,8 +43,8 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
 
   const [attemptRes, sessionRes] = await Promise.all([
     supabase
-      .from('study_attempts')
-      .select('score, category')
+      .from('study_attempts') 
+      .select('score, category, duration_seconds, submitted_at')
       .eq('user_id', userId)
       .gte('submitted_at', startISO)
       .lt('submitted_at', endISO),
@@ -121,20 +121,48 @@ const totalQuizSeconds = sessions.reduce(
 
 const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
 
+// =============================
+// AVG SPEED
+// =============================
+
+const totalDurationSeconds = attempts.reduce(
+  (sum, a) => sum + (Number(a.duration_seconds) || 0),
+  0
+)
+
+const avgSpeed =
+  totalQuestions > 0
+    ? Number((totalDurationSeconds / totalQuestions).toFixed(1))
+    : 0
+
   // =============================
   // CATEGORY
   // =============================
 
   const mostActiveCategory = getMostActiveCategory(attempts)
+  const mostActiveHour = getMostActiveHour(attempts)
 
+// =============================
+// UNIQUE CATEGORY COUNT
+// =============================
+
+const uniqueCategoryCount = new Set(
+  attempts.map(a => a.category).filter(Boolean)
+).size
 
   return {
   total_quiz_attempts: totalQuestions,
   total_quiz_score: totalCorrect,
   avg_score: avgScore,
+
   total_reading_seconds: totalReadingSeconds,
-  total_quiz_seconds: totalQuizSeconds, 
+  total_quiz_seconds: totalQuizSeconds,
   total_study_seconds: totalStudySeconds,
+
+  avg_speed_seconds: avgSpeed,
+  most_active_hour: mostActiveHour,
+  unique_category_count: uniqueCategoryCount,
+
   most_active_category: mostActiveCategory
 }
   }
@@ -154,6 +182,20 @@ const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
   return Object.entries(counter)
     .sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
   }
+
+function getMostActiveHour(attempts) {
+  const counter = {}
+
+  attempts.forEach(a => {
+    if (!a.submitted_at) return
+
+    const hour = new Date(a.submitted_at).getHours()
+    counter[hour] = (counter[hour] || 0) + 1
+  })
+
+  return Object.entries(counter)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
+}
 
   /* =============================
      INSIGHT ENGINE (Lebih Smart)
