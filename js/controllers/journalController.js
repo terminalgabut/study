@@ -53,11 +53,14 @@ function createJournalCard(snapshot) {
       <h3>🗓 ${start} – ${end}</h3>
 
       <div class="journal-stats">
-        <p><strong>🎯 Attempts:</strong> ${snapshot.total_quiz_attempts || 0}</p>
-        <p><strong>📊 Avg Score:</strong> ${snapshot.avg_score || 0}%</p>
-        <p><strong>⏱ Study Time:</strong> ${timeString}</p>
-        <p><strong>🏷 Kategori Aktif:</strong> ${snapshot.most_active_category || '-'}</p>
-      </div>
+  <p><strong>🎯 Attempts:</strong> ${snapshot.total_quiz_attempts || 0}</p>
+  <p><strong>📊 Avg Score:</strong> ${snapshot.avg_score || 0}%</p>
+  <p><strong>⏱ Study Time:</strong> ${timeString}</p>
+  <p><strong>⚡ Avg Speed:</strong> ${snapshot.avg_speed_seconds || 0}s / soal</p>
+  <p><strong>🕒 Jam Aktif:</strong> ${formatHour(snapshot.most_active_hour)}</p>
+  <p><strong>📚 Kategori Dieksplor:</strong> ${snapshot.unique_category_count || 0}</p>
+  <p><strong>🏷 Kategori Aktif:</strong> ${snapshot.most_active_category || '-'}</p>
+</div>
 
       <div class="journal-insight">
         <p>${insight.summary}</p>
@@ -89,6 +92,11 @@ function formatDuration(seconds) {
   }
 
   return `${minutes}m`
+}
+
+function formatHour(hour) {
+  if (hour === null || hour === undefined) return '-'
+  return `${String(hour).padStart(2, '0')}:00`
 }
 
 /* =====================================================
