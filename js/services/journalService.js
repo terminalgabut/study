@@ -205,10 +205,15 @@ const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
   function getCurrentWeekRange() {
   const now = new Date()
 
-  const day = now.getDay() || 7 // Minggu = 7
+  // Paksa pakai timezone Indonesia (anti UTC shift)
+  const local = new Date(
+    now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
+  )
 
-  const monday = new Date(now)
-  monday.setDate(now.getDate() - day + 1)
+  const day = local.getDay() || 7 // Minggu = 7
+
+  const monday = new Date(local)
+  monday.setDate(local.getDate() - day + 1)
   monday.setHours(0, 0, 0, 0)
 
   const nextMonday = new Date(monday)
@@ -216,9 +221,7 @@ const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
 
   return {
     startISO: monday.toISOString(),
-    endISO: nextMonday.toISOString(),
-    startDisplay: monday.toLocaleDateString('id-ID'),
-    endDisplay: new Date(nextMonday.getTime() - 1).toLocaleDateString('id-ID')
+    endISO: nextMonday.toISOString()
   }
   }
 
