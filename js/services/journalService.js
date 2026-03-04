@@ -133,14 +133,14 @@ const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
 
 
   return {
-    total_quiz_attempts: totalQuestions,   // jumlah soal
-    total_quiz_score: totalCorrect,        // jumlah benar
-    avg_score: avgScore,                   // persen akurasi
-    total_reading_seconds: totalReadingSeconds,
-    total_quiz_seconds: totalQuizSeconds,  // disable dulu
-    total_study_seconds: totalStudySeconds,
-    most_active_category: mostActiveCategory
-  }
+  total_quiz_attempts: totalQuestions,
+  total_quiz_score: totalCorrect,
+  avg_score: avgScore,
+  total_reading_seconds: totalReadingSeconds,
+  total_quiz_seconds: totalQuizSeconds, 
+  total_study_seconds: totalStudySeconds,
+  most_active_category: mostActiveCategory
+}
   }
 
   /* =============================
