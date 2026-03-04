@@ -30,20 +30,16 @@ export async function getWeeklySnapshots(userId) {
 ===================================================== */
 
 async function ensureCurrentWeekSnapshot(userId) {
-  const { start, end } = getCurrentWeekRange()
+  const { startISO, endISO } = getCurrentWeekRange()
 
-  // Selalu regenerate minggu berjalan
-  await generateWeeklySnapshot(userId, start, end)
+  await generateWeeklySnapshot(userId, startISO, endISO)
 }
 
 /* =====================================================
    GENERATE SNAPSHOT (Cleaner)
 ===================================================== */
 
-async function generateWeeklySnapshot(userId, startDate, endDate) {
-
-  const startISO = startDate.toISOString()
-  const endISO = endDate.toISOString()
+async function generateWeeklySnapshot(userId, startISO, endISO) {
 
   const [attemptRes, sessionRes] = await Promise.all([
     supabase
@@ -51,14 +47,14 @@ async function generateWeeklySnapshot(userId, startDate, endDate) {
       .select('score, category')
       .eq('user_id', userId)
       .gte('submitted_at', startISO)
-      .lte('submitted_at', endISO),
+      .lt('submitted_at', endISO),
 
     supabase
       .from('learning_sessions')
       .select('reading_seconds, quiz_seconds')
       .eq('user_id', userId)
       .gte('created_at', startISO)
-      .lte('created_at', endISO)
+      .lt('created_at', endISO)
   ])
 
   if (attemptRes.error || sessionRes.error) {
