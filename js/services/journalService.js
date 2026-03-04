@@ -109,17 +109,21 @@ async function generateWeeklySnapshot(userId, startDate, endDate) {
       : 0
 
 
-  // =============================
-  // STUDY TIME (READING ONLY)
-  // =============================
+// =============================
+// STUDY TIME (READING + QUIZ)
+// =============================
 
-  const totalReadingSeconds = sessions.reduce(
-    (sum, s) => sum + (Number(s.reading_seconds) || 0),
-    0
-  )
+const totalReadingSeconds = sessions.reduce(
+  (sum, s) => sum + (Number(s.reading_seconds) || 0),
+  0
+)
 
-  const totalStudySeconds = totalReadingSeconds
+const totalQuizSeconds = sessions.reduce(
+  (sum, s) => sum + (Number(s.quiz_seconds) || 0),
+  0
+)
 
+const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
 
   // =============================
   // CATEGORY
@@ -133,7 +137,7 @@ async function generateWeeklySnapshot(userId, startDate, endDate) {
     total_quiz_score: totalCorrect,        // jumlah benar
     avg_score: avgScore,                   // persen akurasi
     total_reading_seconds: totalReadingSeconds,
-    total_quiz_seconds: 0,                 // disable dulu
+    total_quiz_seconds: totalQuizSeconds,  // disable dulu
     total_study_seconds: totalStudySeconds,
     most_active_category: mostActiveCategory
   }
@@ -165,7 +169,7 @@ async function generateWeeklySnapshot(userId, startDate, endDate) {
   total_quiz_attempts
 }) {
 
-  const hours = total_study_seconds / 3600
+  const minutes = total_study_seconds / 60
 
   let summary = ''
   let strength = '-'
@@ -191,9 +195,9 @@ async function generateWeeklySnapshot(userId, startDate, endDate) {
     improvement = 'Perlu review materi dasar.'
   }
 
-  if (hours < 2) {
-    improvement += ' Tambahkan durasi belajar agar lebih optimal.'
-  }
+ if (minutes < 90) {
+  improvement += ' Tambahkan durasi belajar agar lebih optimal.'
+}
 
   return { summary, strength, improvement }
   }
