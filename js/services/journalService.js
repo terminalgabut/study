@@ -209,18 +209,19 @@ const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
   function getCurrentWeekRange() {
   const now = new Date()
 
-  const day = now.getDay() || 7
+  const day = now.getDay() || 7 // Minggu = 7
+
   const monday = new Date(now)
   monday.setDate(now.getDate() - day + 1)
   monday.setHours(0, 0, 0, 0)
 
-  const sunday = new Date(monday)
-  sunday.setDate(monday.getDate() + 6)
-  sunday.setHours(23, 59, 59, 999)
+  const nextMonday = new Date(monday)
+  nextMonday.setDate(monday.getDate() + 7)
 
-  return { start: monday, end: sunday }
-}
-
-function toDateOnly(date) {
-  return date.toISOString().split('T')[0]
-}
+  return {
+    startISO: monday.toISOString(),
+    endISO: nextMonday.toISOString(),
+    startDisplay: monday.toLocaleDateString('id-ID'),
+    endDisplay: new Date(nextMonday.getTime() - 1).toLocaleDateString('id-ID')
+  }
+  }
