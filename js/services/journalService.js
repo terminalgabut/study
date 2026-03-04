@@ -70,16 +70,16 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
   const insight = generateInsight(metrics)
 
   await supabase
-    .from('weekly_journal_snapshot')
-    .upsert({
-      user_id: userId,
-      week_start: toDateOnly(startDate),
-      week_end: toDateOnly(endDate),
-      ...metrics,
-      insight
-    }, {
-      onConflict: 'user_id,week_start'
-    })
+  .from('weekly_journal_snapshot')
+  .upsert({
+    user_id: userId,
+    week_start: toDateOnly(startISO),
+    week_end: toDateOnly(endISO),
+    ...metrics,
+    insight
+  }, {
+    onConflict: 'user_id,week_start'
+  })
 }
 
   /* =============================
@@ -221,3 +221,7 @@ const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
     endDisplay: new Date(nextMonday.getTime() - 1).toLocaleDateString('id-ID')
   }
   }
+
+function toDateOnly(isoString) {
+  return isoString.split('T')[0]
+}
