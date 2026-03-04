@@ -205,15 +205,10 @@ const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
   function getCurrentWeekRange() {
   const now = new Date()
 
-  // Paksa pakai timezone Indonesia (anti UTC shift)
-  const local = new Date(
-    now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
-  )
+  const day = now.getDay() || 7 // Minggu = 7
 
-  const day = local.getDay() || 7 // Minggu = 7
-
-  const monday = new Date(local)
-  monday.setDate(local.getDate() - day + 1)
+  const monday = new Date(now)
+  monday.setDate(now.getDate() - day + 1)
   monday.setHours(0, 0, 0, 0)
 
   const nextMonday = new Date(monday)
