@@ -50,8 +50,8 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
       .lt('submitted_at', endISO),
 
     supabase
-      .from('learning_sessions')
-      .select('reading_seconds, quiz_seconds')
+  .from('learning_sessions')
+  .select('reading_seconds')
       .eq('user_id', userId)
       .gte('created_at', startISO)
       .lt('created_at', endISO)
@@ -114,8 +114,8 @@ const totalReadingSeconds = sessions.reduce(
   0
 )
 
-const totalQuizSeconds = sessions.reduce(
-  (sum, s) => sum + (Number(s.quiz_seconds) || 0),
+const totalQuizSeconds = attempts.reduce(
+  (sum, a) => sum + (Number(a.duration_seconds) || 0),
   0
 )
 
