@@ -44,7 +44,7 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
   const [attemptRes, sessionRes] = await Promise.all([
     supabase 
      .from('study_attempts') 
-     .select('score, duration_seconds')
+     .select('score, duration_seconds, submitted_at')
      .eq('user_id', userId)
      .gte('submitted_at', startISO)
      .lt('submitted_at', endISO),
@@ -158,7 +158,7 @@ function calculateMetrics(attempts, sessions) {
 
     /* bab */
 
-    if (s.bab_title) {
+    if (s.bab_title && s.bab_title.trim() !== '') {
 
       babCounter[s.bab_title] =
         (babCounter[s.bab_title] || 0) + 1
@@ -220,7 +220,7 @@ function calculateMetrics(attempts, sessions) {
   }
 
   let dominantBab = null
-  let maxDuration = 0
+  let maxDuration = -1
 
   for (const b in babDurations) {
     if (babDurations[b] > maxDuration) {
@@ -246,7 +246,8 @@ function calculateMetrics(attempts, sessions) {
     total_study_seconds: totalStudySeconds,
 
     most_active_hour:
-      mostActiveHour ? `${mostActiveHour}:00` : null,
+      most_active_hour:
+      mostActiveHour ? `${mostActiveHour}:00` : '00:00',
 
     unique_category_count: uniqueCategoryCount,
     most_active_category: mostActiveCategory,
