@@ -158,8 +158,8 @@ const normalizeTitle = (str) =>
 // PHASE 2: BAB ANALYTICS (WEEKLY)
 // =============================
 
+const babDurations = {}
 
-// Reading duration per bab
 sessions.forEach(s => {
   const title = normalizeTitle(s.bab_title)
 
@@ -171,16 +171,14 @@ sessions.forEach(s => {
   babDurations[title] = (babDurations[title] || 0) + total
 })
 
-// Unique bab count (weekly)
 const uniqueBabCount = Object.keys(babDurations).length
 
-// Review detection (weekly raw attempts)
 const questionTracker = {}
 const reviewedBabSet = new Set()
 
 attempts.forEach(a => {
   const qid = a.question_id
- const title = normalizeTitle(a.title)
+  const title = normalizeTitle(a.title)
 
   if (!qid) return
 
@@ -194,7 +192,6 @@ attempts.forEach(a => {
 
 const reviewBabCount = reviewedBabSet.size
 
-// Bab paling dominan (berdasarkan total durasi)
 const dominantBab =
   Object.entries(babDurations)
     .sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
