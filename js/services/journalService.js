@@ -221,9 +221,25 @@ const dominantBab =
   }
   }
 
-  /* =============================
-     CATEGORY HELPER
-  ============================== */
+/* =============================
+   CATEGORY HELPER
+============================= */
+
+function getMostActiveCategory(attempts) {
+  const counter = {}
+
+  attempts.forEach(a => {
+    if (!a.category) return
+    counter[a.category] = (counter[a.category] || 0) + 1
+  })
+
+  const result =
+    Object.entries(counter)
+      .sort((a, b) => b[1] - a[1])[0]?.[0]
+
+  return result ?? null
+}
+
 function getMostActiveHour(attempts) {
   const counter = {}
 
@@ -246,6 +262,7 @@ function getMostActiveHour(attempts) {
 
   return result ? `${result}:00` : null
 }
+
 
   /* =============================
      INSIGHT ENGINE (Lebih Smart)
