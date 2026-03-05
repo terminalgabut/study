@@ -134,14 +134,14 @@ const routes = {
   },
 
   journal: async (content) => {
-  const [{ journalView }, { initJournalPage }] = await Promise.all([
-    import('../../pages/journalView.js'),
-    import('../controllers/journalController.js')
-  ])
+    const [{ journalView }, { journalController }] = await Promise.all([
+      import('../../pages/journalView.js'),
+      import('../controllers/journalController.js')
+    ]);
 
-  content.innerHTML = journalView
-  initJournalPage()
-}
+    content.innerHTML = journalView;
+    journalController.init(); // Memanggil method init dari object controller
+  }
 };
 
 /* =========================================
