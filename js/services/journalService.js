@@ -228,31 +228,27 @@ const dominantBab =
   /* =============================
      CATEGORY HELPER
   ============================== */
-
-  function getMostActiveCategory(attempts) {
-  const counter = {}
-
-  attempts.forEach(a => {
-    if (!a.category) return
-    counter[a.category] = (counter[a.category] || 0) + 1
-  })
-
-  return Object.entries(counter)
-    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
-  }
-
 function getMostActiveHour(attempts) {
   const counter = {}
 
   attempts.forEach(a => {
     if (!a.submitted_at) return
 
-    const hour = new Date(a.submitted_at).getHours()
+    const hour = new Date(a.submitted_at)
+      .toLocaleString('id-ID', {
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit',
+        hour12: false
+      })
+
     counter[hour] = (counter[hour] || 0) + 1
   })
 
-  return Object.entries(counter)
-    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
+  const result =
+    Object.entries(counter)
+      .sort((a, b) => b[1] - a[1])[0]?.[0]
+
+  return result ? `${result}:00` : null
 }
 
   /* =============================
