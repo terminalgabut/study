@@ -34,54 +34,54 @@ export const journalController = {
   },
 
   createJournalCard(s) {
-    const readTime = this.formatDuration(s.total_reading_seconds ?? 0);
-    const quizTime = this.formatDuration(s.total_quiz_seconds ?? 0);
-    
-    return `
-      <div class="home-card journal-card">
-        <div class="journal-header">
-          <div class="journal-date">
-            <span class="icon">🗓</span>
-            <h3>${this.formatDate(s.week_start)} - ${this.formatDate(s.week_end)}</h3>
-          </div>
-          <span class="badge-active">${s.most_active_category ?? 'Umum'}</span>
+  const readTime = this.formatDuration(s.total_reading_seconds ?? 0);
+  const quizTime = this.formatDuration(s.total_quiz_seconds ?? 0);
+  
+  return `
+    <div class="home-card journal-card">
+      <div class="journal-header">
+        <div class="journal-date">
+          <small class="text-muted">Laporan Mingguan</small>
+          <h3>${this.formatDate(s.week_start)} — ${this.formatDate(s.week_end)}</h3>
         </div>
+        <span class="badge-active">${s.most_active_category ?? 'Umum'}</span>
+      </div>
 
-        <div class="journal-grid">
-          <div class="stat-item">
-            <span class="label">🏆 Kuis</span>
-            <span class="value">${s.total_quiz_attempts || 0} Selesai</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">📊 Akurasi</span>
-            <span class="value">${Math.round(s.avg_score || 0)}%</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">📖 Membaca</span>
-            <span class="value">${readTime}</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">⚔️ Kuis</span>
-            <span class="value">${quizTime}</span>
-          </div>
+      <div class="journal-grid">
+        <div class="stat-item">
+          <span class="label">🏆 Kuis</span>
+          <span class="value">${s.total_quiz_attempts || 0} Selesai</span>
         </div>
-
-        <div class="journal-highlight">
-          <div class="highlight-item">
-            <span class="icon">👑</span>
-            <span><strong>Bab Teraktif:</strong> ${s.most_active_bab || '-'}</span>
-          </div>
-          <div class="highlight-item">
-            <span class="icon">🕒</span>
-            <span><strong>Jam Produktif:</strong> ${s.most_active_hour ? s.most_active_hour + ':00' : '-'}</span>
-          </div>
+        <div class="stat-item">
+          <span class="label">📊 Akurasi</span>
+          <span class="value">${Math.round(s.avg_score || 0)}%</span>
         </div>
-
-        <div class="journal-insight">
-          <p>${s.insight?.summary || 'Terus pertahankan ritme belajarmu untuk hasil maksimal!'}</p>
+        <div class="stat-item">
+          <span class="label">📖 Membaca</span>
+          <span class="value">${readTime}</span>
+        </div>
+        <div class="stat-item">
+          <span class="label">⚔️ Kuis</span>
+          <span class="value">${quizTime}</span>
         </div>
       </div>
-    `;
+
+      <div class="journal-highlight">
+        <div class="highlight-item">
+          <span class="icon">👑</span>
+          <span>Bab Teraktif: <strong>${s.most_active_bab || '-'}</strong></span>
+        </div>
+        <div class="highlight-item">
+          <span class="icon">🕒</span>
+          <span>Jam Produktif: <strong>${s.most_active_hour ? s.most_active_hour + ':00 WIB' : '-'}</strong></span>
+        </div>
+      </div>
+
+      <div class="journal-insight">
+        <p>"${s.insight?.summary || 'Analisis mingguan Anda menunjukkan konsistensi yang baik. Pertahankan!'}"</p>
+      </div>
+    </div>
+  `;
   },
 
   // --- HELPER FUNCTIONS ---
