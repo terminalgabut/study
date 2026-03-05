@@ -34,29 +34,30 @@ export const journalController = {
   },
 
   createJournalCard(s) {
-  // Helper untuk durasi
-  const readTime = this.formatDuration(s.total_reading_seconds ?? 0);
-  const quizTime = this.formatDuration(s.total_quiz_seconds ?? 0);
-  
-  // Data Phase 3 (Cognitive & Stability) - Default values jika null
+  // Parsing data JSONB
   const cog = s.cognitive_profile || {};
-  const stability = s.stability_metrics || { stability: 0, consistency: 0, endurance: 0 };
-  const summary = s.cognitive_summary || { classification: 'N/A', neuro_type: 'Analytical' };
+  const stab = s.stability_metrics || {};
+  const summ = s.cognitive_summary || {};
+  
+  // Format Durasi & Metrik Dasar
+  const totalStudyTime = this.formatDuration(s.total_study_seconds ?? 0);
+  const avgSpeed = parseFloat(s.avg_speed_seconds || s.avg_speed || 0).toFixed(1);
 
   return `
     <div class="home-card journal-card">
       <div class="journal-header">
         <div class="journal-date">
-          <small class="text-accent">📘 Jurnal Mingguan</small>
+          <small style="color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">📘 Jurnal Mingguan</small>
           <h3>${this.formatDate(s.week_start)} – ${this.formatDate(s.week_end)}</h3>
         </div>
-        <div class="journal-brief">
-          <p>Selama 7 hari terakhir, kamu mempelajari <strong>${s.total_bab_unid || 0} bab</strong> dengan total waktu <strong>${readTime}</strong>.</p>
+        <div class="journal-brief" style="margin-top: 8px; font-size: 13px; line-height: 1.5;">
+          <p>Selama 7 hari terakhir, kamu mempelajari <strong>${s.unique_bab_count || 0} bab</strong> dari <strong>${s.unique_category_count || 0} kategori</strong> dengan total waktu belajar <strong>${totalStudyTime}</strong>.</p>
+          <p style="margin-top: 4px;">Pola belajar menunjukkan kamu paling fokus pada pukul <strong>${s.most_active_hour ? s.most_active_hour + ':00' : '-'}</strong>.</p>
         </div>
       </div>
 
       <div class="journal-section">
-        <h4>🧪 Aktivitas Latihan</h4>
+        <h4 style="color: var(--accent); font-size: 12px; margin-bottom: 10px;">🧪 Aktivitas Latihan</h4>
         <div class="journal-grid">
           <div class="stat-item">
             <span class="label">🎯 Akurasi</span>
@@ -64,56 +65,75 @@ export const journalController = {
           </div>
           <div class="stat-item">
             <span class="label">⚡ Avg Speed</span>
-            <span class="value">${s.avg_speed || 0}s</span>
+            <span class="value">${avgSpeed}s</span>
           </div>
           <div class="stat-item">
-            <span class="label">🕒 Jam Fokus</span>
-            <span class="value">${s.most_active_hour ? s.most_active_hour + ':00' : '-'}</span>
+            <span class="label">🏆 Kuis</span>
+            <span class="value">${s.total_quiz_attempts || 0} Selesai</span>
           </div>
           <div class="stat-item">
-            <span class="label">🏆 Selesai</span>
-            <span class="value">${s.total_quiz_attempts || 0} Kuis</span>
+            <span class="label">🔄 Review</span>
+            <span class="value">${s.review_bab_count || 0} Materi</span>
           </div>
         </div>
       </div>
 
       <div class="journal-section">
-        <h4>📊 Nilai Dimensi Kognitif</h4>
+        <h4 style="color: var(--accent); font-size: 12px; margin-bottom: 10px;">📊 Nilai Dimensi Kognitif</h4>
         <div class="dimensi-table">
           <div class="table-row header"><span>Dimensi</span> <span>Skor</span></div>
-          <div class="table-row"><span>Memory</span> <span>${cog.memory || 0}</span></div>
-          <div class="table-row"><span>Reasoning</span> <span>${cog.reasoning || 0}</span></div>
-          <div class="table-row"><span>Analogi</span> <span>${cog.analogi || 0}</span></div>
+          <div class="table-row"><span>Memory</span> <span>${Math.round(cog.memory || 0)}</span></div>
+          <div class="table-row"><span>Reasoning</span> <span>${Math.round(cog.reasoning || 0)}</span></div>
+          <div class="table-row"><span>Analogi</span> <span>${Math.round(cog.analogy || 0)}</span></div>
+          <div class="table-row"><span>Reading</span> <span>${Math.round(cog.reading || 0)}</span></div>
+          <div class="table-row"><span>Vocabulary</span> <span>${Math.round(cog.vocabulary || 0)}</span></div>
         </div>
       </div>
 
       <div class="journal-section">
-        <h4>📈 Stability Metrics</h4>
+        <h4 style="color: var(--accent); font-size: 12px; margin-bottom: 10px;">📈 Stability Metrics</h4>
         <div class="dimensi-table">
           <div class="table-row header"><span>Metric</span> <span>Nilai</span></div>
-          <div class="table-row"><span>Stability</span> <span>${stability.stability || 0}</span></div>
-          <div class="table-row"><span>Konsistensi</span> <span>${stability.consistency || 90}</span></div>
-          <div class="table-row"><span>Endurance</span> <span>${stability.endurance || 0}</span></div>
+          <div class="table-row"><span>Stability</span> <span>${Math.round(stab.stability || 0)}</span></div>
+          <div class="table-row"><span>Speed Stability</span> <span>${Math.round(stab.speed_stability || 0)}</span></div>
+          <div class="table-row"><span>Konsistensi</span> <span>${Math.round(stab.consistency || 0)}</span></div>
+          <div class="table-row"><span>Akurasi</span> <span>${Math.round(s.avg_score || 0)}</span></div>
+          <div class="table-row"><span>Endurance</span> <span>${Math.round(stab.endurance || 0)}</span></div>
         </div>
       </div>
 
-      <div class="journal-summary-box">
-        <div class="summary-item">
-          <span class="label">Classification</span>
-          <span class="value badge">${summary.classification}</span>
+      <div class="journal-summary-box" style="background: var(--accent-soft); padding: 16px; border-radius: var(--radius-md); margin-top: 20px; border-left: 4px solid var(--accent);">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="summary-item">
+            <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">IQ Final</span>
+            <span class="value" style="font-size: 18px; font-weight: 800; color: var(--accent);">${summ.iq_final || 0}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Confidence</span>
+            <span class="value" style="font-size: 18px; font-weight: 800;">${summ.confidence || 0}%</span>
+          </div>
+          <div class="summary-item">
+            <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Classification</span>
+            <span class="value" style="font-weight: 600;">${summ.classification || '-'}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Neuro Type</span>
+            <span class="value" style="font-weight: 600;">${summ.neuro_type || '-'}</span>
+          </div>
         </div>
-        <div class="summary-item">
-          <span class="label">Neuro Type</span>
-          <span class="value">${summary.neuro_type}</span>
-        </div>
-        <p class="summary-footer">Profil ${summary.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berbasis struktur.</p>
+        <p style="margin-top: 12px; font-size: 12px; font-style: italic; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 8px;">
+          Profil ${summ.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berbasis struktur.
+        </p>
       </div>
 
-      <div class="journal-insight">
-        <div class="insight-label">🔎 Area Pengembangan:</div>
-        <ul>
-          <li>Fokus latihan memory recall.</li>
-          <li>Pertahankan keunggulan di analogical reasoning.</li>
+      <div class="journal-insight" style="margin-top: 20px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
+        <div class="insight-label" style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          <span>🔎</span> Area Pengembangan
+        </div>
+        <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
+          <li>Stabilitas performa antar sesi masih rendah (${Math.round(stab.stability || 0)}).</li>
+          <li>Memory (${Math.round(cog.memory || 0)}) relatif lebih lemah dibanding reasoning & analogi.</li>
+          <li>Confidence estimasi masih rendah (${summ.confidence || 0}%).</li>
         </ul>
       </div>
     </div>
