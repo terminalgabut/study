@@ -2,8 +2,8 @@
 
 export const journalView = `
 <section class="home fade-in">
-  <div class="home-card hero">
-    <h1>📔 Journal Mingguan</h1>
+  <div class="home-card hero" style="margin-bottom: var(--space-lg);">
+    <h1>📔 Jurnal Mingguan</h1>
     <p class="subtitle">
       Ringkasan performa belajar kamu setiap minggu.
     </p>
@@ -12,10 +12,10 @@ export const journalView = `
     </p>
   </div>
 
-  <div id="journalListContainer" class="home-grid">
-    <div class="home-card">
-      <p>Memuat journal...</p>
+  <div id="journalListContainer" class="journal-list-stack">
+    <div class="loading-state">
+      <p>Memuat jurnal...</p>
     </div>
   </div>
 </section>
-`
+`;
