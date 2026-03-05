@@ -96,3 +96,34 @@
   line-height: 1.6;
   color: var(--text-muted);
 }
+
+/* Wrapper untuk daftar kartu jurnal */
+.journal-list-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  width: 100%;
+  max-width: 800px; /* Opsional: membatasi lebar agar tetap enak dibaca di layar lebar */
+  margin: 0 auto;
+}
+
+/* Pastikan kartu jurnal memiliki bayangan tegas sesuai base CSS */
+.journal-card.home-card {
+  margin-bottom: 0; /* Jarak sudah diatur oleh gap wrapper */
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  background: var(--card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.journal-card.home-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Penyesuaian responsif jika di mobile */
+@media (max-width: 640px) {
+  .journal-list-stack {
+    gap: var(--space-md);
+  }
+}
