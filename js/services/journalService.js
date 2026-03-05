@@ -42,19 +42,12 @@ async function ensureCurrentWeekSnapshot(userId) {
 async function generateWeeklySnapshot(userId, startISO, endISO) {
 
   const [attemptRes, sessionRes] = await Promise.all([
-    supabase
-      .from('study_attempts') 
-      .select('
-              score, 
-              category, 
-              duration_seconds, 
-              submitted_at, 
-              question_id, 
-              title
-              ')
-      .eq('user_id', userId)
-      .gte('submitted_at', startISO)
-      .lt('submitted_at', endISO),
+    supabase 
+     .from('study_attempts') 
+     .select('score, category, duration_seconds, submitted_at, question_id, title')
+     .eq('user_id', userId)
+     .gte('submitted_at', startISO)
+     .lt('submitted_at', endISO),
 
     supabase
       .from('learning_sessions')
