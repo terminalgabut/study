@@ -150,6 +150,10 @@ const uniqueCategoryCount = new Set(
   attempts.map(a => a.category).filter(Boolean)
 ).size
 
+const normalizeTitle = (str) =>
+  (str || 'Unknown').trim()
+
+     
 // =============================
 // PHASE 2: BAB ANALYTICS (WEEKLY)
 // =============================
@@ -159,22 +163,20 @@ const babDurations = {}
 
 // Quiz duration per bab
 attempts.forEach(a => {
-  const title = a.title || 'Unknown'
+  const title = normalizeTitle(a.title)
   const dur = Number(a.duration_seconds) || 0
   babDurations[title] = (babDurations[title] || 0) + dur
 })
 
 // Reading duration per bab
 sessions.forEach(s => {
-  const title = s.bab_title || 'Unknown'
+  const title = normalizeTitle(s.bab_title)
   const dur = Number(s.reading_seconds) || 0
   babDurations[title] = (babDurations[title] || 0) + dur
 })
 
 // Unique bab count (weekly)
-const uniqueBabCount = new Set(
-  attempts.map(a => a.title).filter(Boolean)
-).size
+const uniqueBabCount = Object.keys(babDurations).length
 
 // Review detection (weekly raw attempts)
 const questionTracker = {}
@@ -182,7 +184,7 @@ const reviewedBabSet = new Set()
 
 attempts.forEach(a => {
   const qid = a.question_id
-  const title = a.title
+ const title = normalizeTitle(a.title)
 
   if (!qid) return
 
