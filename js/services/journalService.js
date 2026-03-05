@@ -229,30 +229,27 @@ function calculateMetrics(attempts, sessions) {
     }
   }
 
-
-  return {
-
-  /* quiz */
+return {
 
   total_quiz_attempts: totalQuestions,
   total_quiz_score: totalCorrect,
   avg_score: avgScore,
   avg_speed_seconds: avgSpeed,
 
-  /* study */
-
   total_reading_seconds: totalReadingSeconds,
   total_quiz_seconds: totalQuizSeconds,
   total_study_seconds: totalStudySeconds,
 
-  most_active_hour: mostActiveHour ? `${mostActiveHour}:00` : '00:00',
+  most_active_hour: mostActiveHour ?? null,
 
   unique_category_count: uniqueCategoryCount,
   most_active_category: mostActiveCategory,
 
   unique_bab_count: uniqueBabCount,
   review_bab_count: reviewBabCount,
+
   dominant_bab: dominantBab,
+  dominant_bab_seconds: maxDuration,   // ← penting
 
   bab_durations: babDurations
 }
