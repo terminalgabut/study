@@ -309,7 +309,8 @@ return {
   const day = now.getDay() || 7 // Minggu = 7
 
   const monday = new Date(now)
-  monday.setDate(now.getDate() - day + 1)
+  const monday = new Date(now)
+  monday.setDate(now.getDate() - day + 1) // Pastikan ini satu baris utuh
   monday.setHours(0, 0, 0, 0)
 
   const nextMonday = new Date(monday)
