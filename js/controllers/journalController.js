@@ -105,7 +105,7 @@ export const journalController = {
       <div class="journal-summary-box" style="background: var(--accent-soft); padding: 16px; border-radius: var(--radius-md); margin-top: 20px; border-left: 4px solid var(--accent);">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div class="summary-item">
-            <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">CP</span>
+            <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Cognitive Poin</span>
             <span class="value" style="font-size: 18px; font-weight: 800; color: var(--accent);">${summ.iq_final || 0}</span>
           </div>
           <div class="summary-item">
