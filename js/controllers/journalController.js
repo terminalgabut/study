@@ -122,32 +122,14 @@ function formatHour(hour) {
 ===================================================== */
 
 function parseInsight(raw) {
-  if (!raw) {
-    return {
-      summary: 'Belum ada insight.',
-      strength: '-',
-      improvement: '-'
-    }
-  }
-
-  try {
-    const parsed =
-      typeof raw === 'string'
-        ? JSON.parse(raw)
-        : raw
-
-    return {
-      summary: parsed?.summary || '',
-      strength: parsed?.strength || '-',
-      improvement: parsed?.improvement || '-'
-    }
-  } catch {
-    return {
-      summary: String(raw),
-      strength: '-',
-      improvement: '-'
-    }
-  }
+  // Jika raw sudah berupa objek (dari JSONB Supabase)
+  const data = (typeof raw === 'string') ? JSON.parse(raw || '{}') : raw;
+  
+  return {
+    summary: data?.summary || 'Belum ada insight.',
+    strength: data?.strength || '-',
+    improvement: data?.improvement || '-'
+  };
 }
 
 /* =====================================================
