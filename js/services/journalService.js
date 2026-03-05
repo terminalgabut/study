@@ -44,14 +44,14 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
   const [attemptRes, sessionRes] = await Promise.all([
     supabase 
      .from('study_attempts') 
-     .select('score, category, duration_seconds, submitted_at, question_id, title')
+     .select('score, duration_seconds')
      .eq('user_id', userId)
      .gte('submitted_at', startISO)
      .lt('submitted_at', endISO),
 
     supabase
   .from('learning_sessions')
-  .select('reading_seconds, quiz_seconds, bab_title')
+  .select('reading_seconds, quiz_seconds, bab_title, category, created_at')
       .eq('user_id', userId)
       .gte('created_at', startISO)
       .lt('created_at', endISO)
@@ -83,184 +83,183 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
 }
 
   /* =============================
-     METRIC ENGINE (Dipisah)
+     METRIC ENGINE
+  ============================== */
+function calculateMetrics(attempts, sessions) {
+
+  /* =============================
+     ATTEMPTS LOOP
   ============================== */
 
-  function calculateMetrics(attempts, sessions) {
+  let totalQuestions = 0
+  let totalCorrect = 0
+  let totalDurationSeconds = 0
 
-  // =============================
-  // QUIZ METRICS (RAW ATTEMPTS)
-  // =============================
+  for (const a of attempts) {
 
-  const totalQuestions = attempts.length
+    totalQuestions++
 
-  const totalCorrect = attempts.reduce(
-    (sum, a) => sum + (Number(a.score) || 0),
-    0
-  )
+    totalCorrect += Number(a.score) || 0
+    totalDurationSeconds += Number(a.duration_seconds) || 0
+  }
 
   const avgScore =
     totalQuestions > 0
       ? Math.round((totalCorrect / totalQuestions) * 100)
       : 0
 
+  const avgSpeed =
+    totalQuestions > 0
+      ? Number((totalDurationSeconds / totalQuestions).toFixed(1))
+      : 0
 
-// =============================
-// STUDY TIME (READING + QUIZ)
-// =============================
 
-const totalReadingSeconds = sessions.reduce(
-  (sum, s) => sum + (Number(s.reading_seconds) || 0),
-  0
-)
+  /* =============================
+     SESSIONS LOOP
+  ============================== */
 
-const totalQuizSeconds = attempts.reduce(
-  (sum, a) => sum + (Number(a.duration_seconds) || 0),
-  0
-)
+  let totalReadingSeconds = 0
+  let totalQuizSeconds = 0
 
-const totalStudySeconds = totalReadingSeconds + totalQuizSeconds
+  const hourCounter = {}
+  const categoryCounter = {}
+  const babCounter = {}
+  const babDurations = {}
 
-// =============================
-// AVG SPEED
-// =============================
+  for (const s of sessions) {
 
-const totalDurationSeconds = attempts.reduce(
-  (sum, a) => sum + (Number(a.duration_seconds) || 0),
-  0
-)
+    const reading = Number(s.reading_seconds) || 0
+    const quiz = Number(s.quiz_seconds) || 0
+    const duration = reading + quiz
 
-const avgSpeed =
-  totalQuestions > 0
-    ? Number((totalDurationSeconds / totalQuestions).toFixed(1))
-    : 0
+    totalReadingSeconds += reading
+    totalQuizSeconds += quiz
 
-  // =============================
-  // CATEGORY
-  // =============================
+    /* jam aktif */
 
-  const mostActiveCategory = getMostActiveCategory(attempts)
-  const mostActiveHour = getMostActiveHour(attempts)
+    if (s.created_at) {
 
-// =============================
-// UNIQUE CATEGORY COUNT
-// =============================
+      const hour = new Date(s.created_at)
+        .toLocaleString('id-ID', {
+          timeZone: 'Asia/Jakarta',
+          hour: '2-digit',
+          hour12: false
+        })
 
-const uniqueCategoryCount = new Set(
-  attempts.map(a => a.category).filter(Boolean)
-).size
+      hourCounter[hour] = (hourCounter[hour] || 0) + 1
+    }
 
-const normalizeTitle = (str) =>
-  (str || 'Unknown').trim()
+    /* kategori */
 
-     
-// =============================
-// PHASE 2: BAB ANALYTICS (WEEKLY)
-// =============================
+    if (s.category) {
+      categoryCounter[s.category] =
+        (categoryCounter[s.category] || 0) + 1
+    }
 
-const babDurations = {}
+    /* bab */
 
-sessions.forEach(s => {
-  const title = normalizeTitle(s.bab_title)
+    if (s.bab_title) {
 
-  const reading = Number(s.reading_seconds) || 0
-  const quiz = Number(s.quiz_seconds) || 0
+      babCounter[s.bab_title] =
+        (babCounter[s.bab_title] || 0) + 1
 
-  const total = reading + quiz
-
-  babDurations[title] = (babDurations[title] || 0) + total
-})
-
-const uniqueBabCount = Object.keys(babDurations).length
-
-const questionTracker = {}
-const reviewedBabSet = new Set()
-
-attempts.forEach(a => {
-  const qid = a.question_id
-  const title = normalizeTitle(a.title)
-
-  if (!qid) return
-
-  if (!questionTracker[qid]) {
-    questionTracker[qid] = 1
-  } else {
-    questionTracker[qid]++
-    reviewedBabSet.add(title)
+      babDurations[s.bab_title] =
+        (babDurations[s.bab_title] || 0) + duration
+    }
   }
-})
 
-const reviewBabCount = reviewedBabSet.size
 
-const dominantBab =
-  Object.entries(babDurations)
-    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
+  const totalStudySeconds =
+    totalReadingSeconds + totalQuizSeconds
+
+
+  /* =============================
+     JAM AKTIF
+  ============================== */
+
+  let mostActiveHour = null
+  let hourMax = 0
+
+  for (const h in hourCounter) {
+    if (hourCounter[h] > hourMax) {
+      hourMax = hourCounter[h]
+      mostActiveHour = h
+    }
+  }
+
+
+  /* =============================
+     CATEGORY
+  ============================== */
+
+  const uniqueCategoryCount =
+    Object.keys(categoryCounter).length
+
+  let mostActiveCategory = null
+  let categoryMax = 0
+
+  for (const c in categoryCounter) {
+    if (categoryCounter[c] > categoryMax) {
+      categoryMax = categoryCounter[c]
+      mostActiveCategory = c
+    }
+  }
+
+
+  /* =============================
+     BAB METRICS
+  ============================== */
+
+  const uniqueBabCount =
+    Object.keys(babCounter).length
+
+  let reviewBabCount = 0
+
+  for (const b in babCounter) {
+    if (babCounter[b] > 1) reviewBabCount++
+  }
+
+  let dominantBab = null
+  let maxDuration = 0
+
+  for (const b in babDurations) {
+    if (babDurations[b] > maxDuration) {
+      maxDuration = babDurations[b]
+      dominantBab = b
+    }
+  }
+
 
   return {
-  total_quiz_attempts: totalQuestions,
-  total_quiz_score: totalCorrect,
-  avg_score: avgScore,
 
-  total_reading_seconds: totalReadingSeconds,
-  total_quiz_seconds: totalQuizSeconds,
-  total_study_seconds: totalStudySeconds,
+    /* quiz */
 
-  avg_speed_seconds: avgSpeed,
-  most_active_hour: mostActiveHour,
-  unique_category_count: uniqueCategoryCount,
-  most_active_category: mostActiveCategory,
+    total_quiz_attempts: totalQuestions,
+    total_quiz_score: totalCorrect,
+    avg_score: avgScore,
+    avg_speed_seconds: avgSpeed,
 
-  // ===== Phase 2 =====
-  bab_durations: babDurations,
-  unique_bab_count: uniqueBabCount,
-  review_bab_count: reviewBabCount,
-  dominant_bab: dominantBab
+    /* study */
+
+    total_reading_seconds: totalReadingSeconds,
+    total_quiz_seconds: totalQuizSeconds,
+    total_study_seconds: totalStudySeconds,
+
+    most_active_hour:
+      mostActiveHour ? `${mostActiveHour}:00` : null,
+
+    unique_category_count: uniqueCategoryCount,
+    most_active_category: mostActiveCategory,
+
+    unique_bab_count: uniqueBabCount,
+    review_bab_count: reviewBabCount,
+    dominant_bab: dominantBab,
+
+    bab_durations: babDurations
   }
-  }
-
-/* =============================
-   CATEGORY HELPER
-============================= */
-
-function getMostActiveCategory(attempts) {
-  const counter = {}
-
-  attempts.forEach(a => {
-    if (!a.category) return
-    counter[a.category] = (counter[a.category] || 0) + 1
-  })
-
-  const result =
-    Object.entries(counter)
-      .sort((a, b) => b[1] - a[1])[0]?.[0]
-
-  return result ?? null
 }
 
-function getMostActiveHour(attempts) {
-  const counter = {}
-
-  attempts.forEach(a => {
-    if (!a.submitted_at) return
-
-    const hour = new Date(a.submitted_at)
-      .toLocaleString('id-ID', {
-        timeZone: 'Asia/Jakarta',
-        hour: '2-digit',
-        hour12: false
-      })
-
-    counter[hour] = (counter[hour] || 0) + 1
-  })
-
-  const result =
-    Object.entries(counter)
-      .sort((a, b) => b[1] - a[1])[0]?.[0]
-
-  return result ? `${result}:00` : null
-}
-
-
+  
   /* =============================
      INSIGHT ENGINE (Lebih Smart)
   ============================== */
