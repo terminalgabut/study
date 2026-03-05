@@ -48,19 +48,13 @@ function createJournalCard(snapshot) {
 
   const insight = parseInsight(snapshot.insight)
 
-  // ===== Phase 2 Metrics =====
+// ===== Phase 2 Metrics (Single Dominant Bab) =====
 const uniqueBabCount = snapshot.unique_bab_count || 0
 const reviewBabCount = snapshot.review_bab_count || 0
-const dominantBab = snapshot.dominant_bab || '-'
-const babDurations = snapshot.bab_durations || {}
 
-const babBreakdownHTML = Object.entries(babDurations)
-  .sort((a, b) => b[1] - a[1])
-  .map(([title, seconds]) => {
-    const dur = formatDuration(seconds)
-    return `<li>${title} — ${dur}</li>`
-  })
-  .join('')
+const dominantBab = snapshot.dominant_bab || '-'
+const dominantBabSeconds = snapshot.dominant_bab_seconds || 0
+const dominantBabDuration = formatDuration(dominantBabSeconds)
   
 
   return `
@@ -77,7 +71,7 @@ const babBreakdownHTML = Object.entries(babDurations)
   <p><strong>🏷 Kategori Aktif:</strong> ${snapshot.most_active_category || '-'}</p>
   <p><strong>📖 Bab Dipelajari:</strong> ${uniqueBabCount}</p>
   <p><strong>🔁 Bab Direview:</strong> ${reviewBabCount}</p>
-  <p><strong>👑 Bab Dominan:</strong> ${dominantBab}</p>
+  <p><strong>👑 Bab Terlama:</strong> ${dominantBab} (${dominantBabDuration})</p>
 </div>
 
       <div class="journal-insight">
