@@ -50,8 +50,8 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
      .lt('submitted_at', endISO),
 
     supabase
-      .from('learning_sessions')
-      .select('reading_seconds, bab_title')
+  .from('learning_sessions')
+  .select('reading_seconds, quiz_seconds, bab_title')
       .eq('user_id', userId)
       .gte('created_at', startISO)
       .lt('created_at', endISO)
@@ -158,21 +158,17 @@ const normalizeTitle = (str) =>
 // PHASE 2: BAB ANALYTICS (WEEKLY)
 // =============================
 
-// Durasi per bab (quiz + reading)
-const babDurations = {}
-
-// Quiz duration per bab
-attempts.forEach(a => {
-  const title = normalizeTitle(a.title)
-  const dur = Number(a.duration_seconds) || 0
-  babDurations[title] = (babDurations[title] || 0) + dur
-})
 
 // Reading duration per bab
 sessions.forEach(s => {
   const title = normalizeTitle(s.bab_title)
-  const dur = Number(s.reading_seconds) || 0
-  babDurations[title] = (babDurations[title] || 0) + dur
+
+  const reading = Number(s.reading_seconds) || 0
+  const quiz = Number(s.quiz_seconds) || 0
+
+  const total = reading + quiz
+
+  babDurations[title] = (babDurations[title] || 0) + total
 })
 
 // Unique bab count (weekly)
