@@ -40,53 +40,52 @@ export async function initJournalPage() {
 ===================================================== */
 
 function createJournalCard(snapshot) {
+
   const start = formatDate(snapshot.week_start)
   const end = formatDate(snapshot.week_end)
 
-  const totalSeconds = Number(snapshot.total_study_seconds) || 0
+  const totalSeconds = Number(snapshot.total_study_seconds ?? 0)
   const timeString = formatDuration(totalSeconds)
 
   const insight = parseInsight(snapshot.insight)
 
-// ===== Phase 2 Metrics (Single Dominant Bab) =====
-const uniqueBabCount = snapshot.unique_bab_count || 0
-const reviewBabCount = snapshot.review_bab_count || 0
+  /* ===== Phase 2 Metrics ===== */
 
-const dominantBab = snapshot.dominant_bab || '-'
+  const uniqueBabCount = Number(snapshot.unique_bab_count ?? 0)
+  const reviewBabCount = Number(snapshot.review_bab_count ?? 0)
 
-const babDurations = snapshot.bab_durations || {}
+  const dominantBab = snapshot.dominant_bab ?? '-'
 
-const dominantBabSeconds =
-  dominantBab && babDurations[dominantBab]
-    ? babDurations[dominantBab]
-    : 0
+  // IMPORTANT: gunakan field yang benar dari DB
+  const dominantBabSeconds = Number(snapshot.dominant_bab_seconds ?? 0)
 
-const dominantBabDuration = formatDuration(dominantBabSeconds)
-  
+  const dominantBabDuration = formatDuration(dominantBabSeconds)
 
   return `
-    <div class="home-card">
-      <h3>🗓 ${start} – ${end}</h3>
+  <div class="home-card">
 
-      <div class="journal-stats">
-  <p><strong>🏆 Kuis Selesai:</strong> ${snapshot.total_quiz_attempts || 0}</p>
-  <p><strong>📊 Rate Score:</strong> ${snapshot.avg_score || 0}%</p>
-  <p><strong>⏳ Study Time:</strong> ${timeString}</p>
-  <p><strong>⚡ Speed:</strong> ${snapshot.avg_speed_seconds || 0}s / soal</p>
-  <p><strong>🕒 Jam Aktif:</strong> ${formatHour(snapshot.most_active_hour)}</p>
-  <p><strong>📚 Kategori Dieksplor:</strong> ${snapshot.unique_category_count || 0}</p>
-  <p><strong>🏷 Kategori Aktif:</strong> ${snapshot.most_active_category || '-'}</p>
-  <p><strong>📖 Bab Dipelajari:</strong> ${uniqueBabCount}</p>
-  <p><strong>🔁 Bab Direview:</strong> ${reviewBabCount}</p>
-  <p><strong>👑 Bab Terlama:</strong> ${dominantBab} (${dominantBabDuration})</p>
-</div>
+    <h3>🗓 ${start} – ${end}</h3>
 
-      <div class="journal-insight">
-        <p>${insight.summary}</p>
-        <p><strong>Kekuatan:</strong> ${insight.strength}</p>
-        <p><strong>Area Pengembangan:</strong> ${insight.improvement}</p>
-      </div>
+    <div class="journal-stats">
+      <p><strong>🏆 Kuis Selesai:</strong> ${snapshot.total_quiz_attempts ?? 0}</p>
+      <p><strong>📊 Rate Score:</strong> ${snapshot.avg_score ?? 0}%</p>
+      <p><strong>⏳ Study Time:</strong> ${timeString}</p>
+      <p><strong>⚡ Speed:</strong> ${snapshot.avg_speed_seconds ?? 0}s / soal</p>
+      <p><strong>🕒 Jam Aktif:</strong> ${formatHour(snapshot.most_active_hour)}</p>
+      <p><strong>📚 Kategori Dieksplor:</strong> ${snapshot.unique_category_count ?? 0}</p>
+      <p><strong>🏷 Kategori Aktif:</strong> ${snapshot.most_active_category ?? '-'}</p>
+      <p><strong>📖 Bab Dipelajari:</strong> ${uniqueBabCount}</p>
+      <p><strong>🔁 Bab Direview:</strong> ${reviewBabCount}</p>
+      <p><strong>👑 Bab Terlama:</strong> ${dominantBab} (${dominantBabDuration})</p>
     </div>
+
+    <div class="journal-insight">
+      <p>${insight.summary}</p>
+      <p><strong>Kekuatan:</strong> ${insight.strength}</p>
+      <p><strong>Area Pengembangan:</strong> ${insight.improvement}</p>
+    </div>
+
+  </div>
   `
 }
 
