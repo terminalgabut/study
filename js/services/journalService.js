@@ -44,14 +44,21 @@ async function generateWeeklySnapshot(userId, startISO, endISO) {
   const [attemptRes, sessionRes] = await Promise.all([
     supabase
       .from('study_attempts') 
-      .select('score, category, duration_seconds, submitted_at')
+      .select('
+              score, 
+              category, 
+              duration_seconds, 
+              submitted_at, 
+              question_id, 
+              title
+              ')
       .eq('user_id', userId)
       .gte('submitted_at', startISO)
       .lt('submitted_at', endISO),
 
     supabase
-  .from('learning_sessions')
-  .select('reading_seconds')
+      .from('learning_sessions')
+      .select('reading_seconds, bab_title')
       .eq('user_id', userId)
       .gte('created_at', startISO)
       .lt('created_at', endISO)
@@ -150,6 +157,57 @@ const uniqueCategoryCount = new Set(
   attempts.map(a => a.category).filter(Boolean)
 ).size
 
+// =============================
+// PHASE 2: BAB ANALYTICS (WEEKLY)
+// =============================
+
+// Durasi per bab (quiz + reading)
+const babDurations = {}
+
+// Quiz duration per bab
+attempts.forEach(a => {
+  const title = a.title || 'Unknown'
+  const dur = Number(a.duration_seconds) || 0
+  babDurations[title] = (babDurations[title] || 0) + dur
+})
+
+// Reading duration per bab
+sessions.forEach(s => {
+  const title = s.bab_title || 'Unknown'
+  const dur = Number(s.reading_seconds) || 0
+  babDurations[title] = (babDurations[title] || 0) + dur
+})
+
+// Unique bab count (weekly)
+const uniqueBabCount = new Set(
+  attempts.map(a => a.title).filter(Boolean)
+).size
+
+// Review detection (weekly raw attempts)
+const questionTracker = {}
+const reviewedBabSet = new Set()
+
+attempts.forEach(a => {
+  const qid = a.question_id
+  const title = a.title
+
+  if (!qid) return
+
+  if (!questionTracker[qid]) {
+    questionTracker[qid] = 1
+  } else {
+    questionTracker[qid]++
+    reviewedBabSet.add(title)
+  }
+})
+
+const reviewBabCount = reviewedBabSet.size
+
+// Bab paling dominan (berdasarkan total durasi)
+const dominantBab =
+  Object.entries(babDurations)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
+
   return {
   total_quiz_attempts: totalQuestions,
   total_quiz_score: totalCorrect,
@@ -162,9 +220,14 @@ const uniqueCategoryCount = new Set(
   avg_speed_seconds: avgSpeed,
   most_active_hour: mostActiveHour,
   unique_category_count: uniqueCategoryCount,
+  most_active_category: mostActiveCategory,
 
-  most_active_category: mostActiveCategory
-}
+  // ===== Phase 2 =====
+  bab_durations: babDurations,
+  unique_bab_count: uniqueBabCount,
+  review_bab_count: reviewBabCount,
+  dominant_bab: dominantBab
+  }
   }
 
   /* =============================
