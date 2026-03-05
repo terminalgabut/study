@@ -1,0 +1,98 @@
+/* Container Utama Jurnal */
+.journal-card.home-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--shadow-sm); /* Bayangan tegas sesuai variabel */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Header: Tanggal & Kategori */
+.journal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-md);
+}
+
+.journal-date h3 {
+  font-size: 16px;
+  color: var(--text);
+  margin-top: var(--space-xs);
+}
+
+.badge-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Grid Statistik: Dibuat lebih tegas dengan border tipis */
+.journal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+}
+
+.stat-item {
+  background: var(--bg); /* Sedikit lebih gelap dari kartu */
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-item .label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.stat-item .value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Highlight Area (Bab & Jam) */
+.journal-highlight {
+  background: rgba(255, 255, 255, 0.03);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.highlight-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 13px;
+}
+
+.highlight-item strong {
+  color: var(--accent);
+}
+
+/* Insight Section */
+.journal-insight {
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-md);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
