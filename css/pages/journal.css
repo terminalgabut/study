@@ -121,6 +121,70 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
+.journal-section {
+  margin-top: var(--space-md);
+}
+
+.journal-section h4 {
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--space-sm);
+  letter-spacing: 0.5px;
+}
+
+/* Tabel Minimalis untuk Dimensi */
+.dimensi-table {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.table-row.header {
+  background: var(--border);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+/* Summary Box */
+.journal-summary-box {
+  background: var(--accent-soft);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-md);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.summary-item .label { font-size: 12px; color: var(--text-muted); }
+.summary-item .value { font-weight: 700; color: var(--accent); }
+.summary-item .badge { background: var(--accent); color: var(--bg); padding: 0 6px; border-radius: 4px; }
+
+.summary-footer {
+  font-size: 11px;
+  margin-top: var(--space-sm);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 /* Penyesuaian responsif jika di mobile */
 @media (max-width: 640px) {
   .journal-list-stack {
