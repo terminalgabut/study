@@ -53,7 +53,14 @@ const uniqueBabCount = snapshot.unique_bab_count || 0
 const reviewBabCount = snapshot.review_bab_count || 0
 
 const dominantBab = snapshot.dominant_bab || '-'
-const dominantBabSeconds = snapshot.dominant_bab_seconds || 0
+
+const babDurations = snapshot.bab_durations || {}
+
+const dominantBabSeconds =
+  dominantBab && babDurations[dominantBab]
+    ? babDurations[dominantBab]
+    : 0
+
 const dominantBabDuration = formatDuration(dominantBabSeconds)
   
 
