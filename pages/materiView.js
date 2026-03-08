@@ -39,6 +39,13 @@ export const materiView = `
       <p class="small">Pengenalan Struktur, Taktik, Dan Perlawanan Manipulasi.</p>
     </a>
   </div>
+
+  <div class="home-card hero">
+    <a href="#/materi/nahwu" class="home-card">
+      <h3>Ilmu Nahwu</h3>
+      <p class="small">Pengenalan Sintaksi dasar Bahasa Arab.</p>
+    </a>
+  </div>
   
 </section>
 `;
