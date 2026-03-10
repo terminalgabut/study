@@ -1,5 +1,6 @@
 // js/controllers/journalController.js
 import { journalService } from '../services/journalService.js';
+import { journalAnalytic } from '../lib/journalAnalytic.js';
 import { supabase } from '../services/supabase.js';
 
 export const journalController = {
@@ -38,6 +39,7 @@ export const journalController = {
   const cog = s.cognitive_profile || {};
   const stab = s.stability_metrics || {};
   const summ = s.cognitive_summary || {};
+  const insights = journalAnalytic.getInsights(s);
   
   // Format Durasi & Metrik Dasar
   const totalStudyTime = this.formatDuration(s.total_study_seconds ?? 0);
@@ -131,9 +133,7 @@ export const journalController = {
           <span>🔎</span> Area Pengembangan
         </div>
         <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
-          <li>Stabilitas performa antar sesi masih rendah (${Math.round(stab.stability_index || 0)}).</li>
-          <li>Memory (${Math.round(cog.memory_score || 0)}) relatif lebih lemah dibanding reasoning & analogi.</li>
-          <li>Confidence estimasi masih rendah (${cog.iq_confidence || 0}%).</li>
+          ${insightsListHtml}
         </ul>
       </div>
     </div>
