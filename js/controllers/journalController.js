@@ -82,11 +82,11 @@ export const journalController = {
         <h4 style="color: var(--accent); font-size: 12px; margin-bottom: 10px;">📊 Nilai Dimensi Kognitif</h4>
         <div class="dimensi-table">
           <div class="table-row header"><span>Dimensi</span> <span>Skor</span></div>
-          <div class="table-row"><span>Memory</span> <span>${Math.round(cog.memory || 0)}</span></div>
-          <div class="table-row"><span>Reasoning</span> <span>${Math.round(cog.reasoning || 0)}</span></div>
-          <div class="table-row"><span>Analogi</span> <span>${Math.round(cog.analogy || 0)}</span></div>
-          <div class="table-row"><span>Reading</span> <span>${Math.round(cog.reading || 0)}</span></div>
-          <div class="table-row"><span>Vocabulary</span> <span>${Math.round(cog.vocabulary || 0)}</span></div>
+          <div class="table-row"><span>Memory</span> <span>${Math.round(cog.memory_score || 0)}</span></div>
+          <div class="table-row"><span>Reasoning</span> <span>${Math.round(cog.reasoning_score || 0)}</span></div>
+          <div class="table-row"><span>Analogi</span> <span>${Math.round(cog.analogy_score || 0)}</span></div>
+          <div class="table-row"><span>Reading</span> <span>${Math.round(cog.reading_score || 0)}</span></div>
+          <div class="table-row"><span>Vocabulary</span> <span>${Math.round(cog.vocabulary_score || 0)}</span></div>
         </div>
       </div>
 
@@ -94,11 +94,11 @@ export const journalController = {
         <h4 style="color: var(--accent); font-size: 12px; margin-bottom: 10px;">📈 Stability Metrics</h4>
         <div class="dimensi-table">
           <div class="table-row header"><span>Metric</span> <span>Nilai</span></div>
-          <div class="table-row"><span>Stability</span> <span>${Math.round(stab.stability || 0)}</span></div>
+          <div class="table-row"><span>Stability</span> <span>${Math.round(stab.stability.index || 0)}</span></div>
           <div class="table-row"><span>Speed Stability</span> <span>${Math.round(stab.speed_stability || 0)}</span></div>
-          <div class="table-row"><span>Konsistensi</span> <span>${Math.round(stab.consistency || 0)}</span></div>
+          <div class="table-row"><span>Konsistensi</span> <span>${Math.round(summ.error_consistency || 0)}</span></div>
           <div class="table-row"><span>Akurasi</span> <span>${Math.round(stab.accuracy_stability || 0)}</span></div>
-          <div class="table-row"><span>Endurance</span> <span>${Math.round(stab.endurance || 0)}</span></div>
+          <div class="table-row"><span>Endurance</span> <span>${Math.round(summ.endurance_index || 0)}</span></div>
         </div>
       </div>
 
@@ -110,11 +110,11 @@ export const journalController = {
           </div>
           <div class="summary-item">
             <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Confidence</span>
-            <span class="value" style="font-size: 18px; font-weight: 800;">${summ.confidence || 0}%</span>
+            <span class="value" style="font-size: 18px; font-weight: 800;">${summ.iq_confidence || 0}%</span>
           </div>
           <div class="summary-item">
             <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Classification</span>
-            <span class="value" style="font-weight: 600;">${summ.classification || '-'}</span>
+            <span class="value" style="font-weight: 600;">${summ.iq_class || '-'}</span>
           </div>
           <div class="summary-item">
             <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Neuro Type</span>
@@ -131,9 +131,9 @@ export const journalController = {
           <span>🔎</span> Area Pengembangan
         </div>
         <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
-          <li>Stabilitas performa antar sesi masih rendah (${Math.round(stab.stability || 0)}).</li>
-          <li>Memory (${Math.round(cog.memory || 0)}) relatif lebih lemah dibanding reasoning & analogi.</li>
-          <li>Confidence estimasi masih rendah (${summ.confidence || 0}%).</li>
+          <li>Stabilitas performa antar sesi masih rendah (${Math.round(stab.stability_index || 0)}).</li>
+          <li>Memory (${Math.round(cog.memory_score || 0)}) relatif lebih lemah dibanding reasoning & analogi.</li>
+          <li>Confidence estimasi masih rendah (${summ.iq_confidence || 0}%).</li>
         </ul>
       </div>
     </div>
