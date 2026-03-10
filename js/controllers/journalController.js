@@ -58,7 +58,7 @@ export const journalController = {
         </div>
         <div class="journal-brief" style="margin-top: 8px; font-size: 13px; line-height: 1.5;">
           <p>Selama 7 hari terakhir, kamu mempelajari <strong>${s.unique_bab_count || 0} bab</strong> dari <strong>${s.unique_category_count || 0} kategori</strong> dengan total waktu belajar <strong>${totalStudyTime}</strong>.</p>
-          <p style="margin-top: 4px;">Pola belajar menunjukkan kamu paling fokus pada pukul <strong>${s.most_active_hour ? s.most_active_hour + ':00' : '-'}</strong>.</p>
+          <p style="margin-top: 4px;">Pola belajar menunjukkan kamu paling fokus pada pukul <strong>${s.most_active_hour ? s.most_active_hour + ':00' : '-'} WIB</strong>.</p>
         </div>
       </div>
 
