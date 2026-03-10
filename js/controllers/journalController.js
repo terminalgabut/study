@@ -97,7 +97,7 @@ export const journalController = {
           <div class="table-row"><span>Stability</span> <span>${Math.round(stab.stability || 0)}</span></div>
           <div class="table-row"><span>Speed Stability</span> <span>${Math.round(stab.speed_stability || 0)}</span></div>
           <div class="table-row"><span>Konsistensi</span> <span>${Math.round(stab.consistency || 0)}</span></div>
-          <div class="table-row"><span>Akurasi</span> <span>${Math.round(s.avg_score || 0)}</span></div>
+          <div class="table-row"><span>Akurasi</span> <span>${Math.round(stab.accuracy_stability || 0)}</span></div>
           <div class="table-row"><span>Endurance</span> <span>${Math.round(stab.endurance || 0)}</span></div>
         </div>
       </div>
