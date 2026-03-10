@@ -106,19 +106,19 @@ export const journalController = {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div class="summary-item">
             <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Cognitive Poin</span>
-            <span class="value" style="font-size: 18px; font-weight: 800; color: var(--accent);">${summ.iq_final || 0}</span>
+            <span class="value" style="font-size: 18px; font-weight: 800; color: var(--accent);">${cog.iq_final || 0}</span>
           </div>
           <div class="summary-item">
             <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Confidence</span>
-            <span class="value" style="font-size: 18px; font-weight: 800;">${summ.iq_confidence || 0}%</span>
+            <span class="value" style="font-size: 18px; font-weight: 800;">${cog.iq_confidence || 0}%</span>
           </div>
           <div class="summary-item">
             <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Classification</span>
-            <span class="value" style="font-weight: 600;">${summ.iq_class || '-'}</span>
+            <span class="value" style="font-weight: 600;">${cog.iq_class || '-'}</span>
           </div>
           <div class="summary-item">
             <span class="label" style="display:block; font-size: 11px; color: var(--text-muted);">Neuro Type</span>
-            <span class="value" style="font-weight: 600;">${summ.neuro_type || '-'}</span>
+            <span class="value" style="font-weight: 600;">${cog.neuro_type || '-'}</span>
           </div>
         </div>
         <p style="margin-top: 12px; font-size: 12px; font-style: italic; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 8px;">
@@ -133,7 +133,7 @@ export const journalController = {
         <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
           <li>Stabilitas performa antar sesi masih rendah (${Math.round(stab.stability_index || 0)}).</li>
           <li>Memory (${Math.round(cog.memory_score || 0)}) relatif lebih lemah dibanding reasoning & analogi.</li>
-          <li>Confidence estimasi masih rendah (${summ.iq_confidence || 0}%).</li>
+          <li>Confidence estimasi masih rendah (${cog.iq_confidence || 0}%).</li>
         </ul>
       </div>
     </div>
