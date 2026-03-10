@@ -40,6 +40,10 @@ export const journalController = {
   const stab = s.stability_metrics || {};
   const summ = s.cognitive_summary || {};
   const insights = journalAnalytic.getInsights(s);
+
+  const insightsListHtml = insights
+      .map(text => `<li>${text}</li>`)
+      .join('');
   
   // Format Durasi & Metrik Dasar
   const totalStudyTime = this.formatDuration(s.total_study_seconds ?? 0);
@@ -129,13 +133,13 @@ export const journalController = {
       </div>
 
       <div class="journal-insight" style="margin-top: 20px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
-        <div class="insight-label" style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-          <span>🔎</span> Area Pengembangan
+          <div class="insight-label" style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+            <span>🔎</span> Area Pengembangan
+          </div>
+          <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
+            ${insightsListHtml}
+          </ul>
         </div>
-        <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
-          ${insightsListHtml}
-        </ul>
-      </div>
     </div>
   `;
   },
