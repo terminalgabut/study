@@ -39,9 +39,10 @@ export const journalController = {
   const cog = s.cognitive_profile || {};
   const stab = s.stability_metrics || {};
   const summ = s.cognitive_summary || {};
-  const analysis = journalAnalytic.getInsights(s);
+  const { neuroDescription, list: insightsList } = journalAnalytic.getInsights(s);
 
-  const insightsListHtml = insights
+  // 3. Mapping HTML menggunakan insightsList (bukan insights)
+  const insightsListHtml = insightsList
       .map(text => `<li>${text}</li>`)
       .join('');
   
