@@ -2,18 +2,18 @@
 
 
 Selama 7 hari terakhir, 
-kamu mempelajari ${s.unique_bab_count || 0} bab >> learning_sesions
-dari ${s.unique_category_count || 0} kategori >> learning_sessions 
-dengan total waktu belajar ${totalStudyTime} >> learning_sessions
+kamu mempelajari ${s.unique_bab_count || 0} bab >> learning_sesions = kolom bab_title
+dari ${s.unique_category_count || 0} kategori >> learning_sessions = kolom category
+dengan total waktu belajar ${totalStudyTime} >> learning_sessions = kolom reading_seconds & quiz_seconds
 
 Pola belajar menunjukkan kamu paling fokus 
-pada pukul ${s.most_active_hour ? s.most_active_hour + ':00' : '-'} WIB >> learning_sessions
+pada pukul ${s.most_active_hour ? s.most_active_hour + ':00' : '-'} WIB >> learning_sessions = kolom created_at (utc +7)
 
 🧪 Aktivitas Latihan
-🎯 Akurasi ${Math.round(s.avg_score || 0)}% >> learning_sessions
-⚡ Avg Speed ${avgSpeed}s >> study_attemps
+🎯 Akurasi ${Math.round(s.avg_score || 0)}% >> learning_sessions = kolom score_avg
+⚡ Avg Speed ${avgSpeed}s >> study_attemps = kolom duration_seconds
 🏆 Soal ${s.total_quiz_attempts || 0} Selesai >> study_attemps
-🔄 Review ${s.review_bab_count || 0} Materi >> learning_sessions
+🔄 Review ${s.review_bab_count || 0} Materi >> learning_sessions = kolom bab_title
 
 
 ====================================================   
@@ -47,4 +47,5 @@ Profil ${summ.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berb
   const insights = journalAnalytic.getInsights(s);
 ====================================================
 🔎 Area Pengembangan
-${insightsListHtml}
+${insight
+sListHtml}
