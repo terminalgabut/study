@@ -39,7 +39,7 @@ export const journalController = {
   const cog = s.cognitive_profile || {};
   const stab = s.stability_metrics || {};
   const summ = s.cognitive_summary || {};
-  const insights = journalAnalytic.getInsights(s);
+  const analysis = journalAnalytic.getInsights(s);
 
   const insightsListHtml = insights
       .map(text => `<li>${text}</li>`)
@@ -128,13 +128,13 @@ export const journalController = {
           </div>
         </div>
         <p style="margin-top: 12px; font-size: 12px; font-style: italic; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 8px;">
-          Profil ${summ.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berbasis struktur.
+          ${analysis.neuroDescription}
         </p>
       </div>
 
       <div class="journal-insight" style="margin-top: 20px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
           <div class="insight-label" style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-            <span>🔎</span> Area Pengembangan
+            <span>🔎</span> Intelligence Insight
           </div>
           <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
             ${insightsListHtml}
