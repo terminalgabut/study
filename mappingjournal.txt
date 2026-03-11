@@ -1,3 +1,6 @@
+====================================================
+BACKEND TABEL & TRIGGER
+====================================================
 create table public.weekly_journal_snapshot (
   id uuid not null default gen_random_uuid (),
   user_id uuid not null,
@@ -152,7 +155,7 @@ update on user_cognitive_sessions for EACH row
 execute FUNCTION normalize_session_iq_confidence ();
 
 ====================================================
-OUTPUT JOURNAL
+OUTPUT JOURNAL (FRONTEND)
 ====================================================
 Selama 7 hari terakhir, 
 kamu mempelajari ${s.unique_bab_count || 0} bab >> learning_sesions = kolom bab_title (hitung jumlah bab)
