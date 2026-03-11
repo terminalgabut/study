@@ -41,7 +41,7 @@ export const journalController = {
   const summ = s.cognitive_summary || {};
   const { neuroDescription, list: insightsList } = journalAnalytic.getInsights(s);
 
-  // 3. Mapping HTML menggunakan insightsList (bukan insights)
+  // 3. Mapping HTML menggunakan insightsList
   const insightsListHtml = insightsList
       .map(text => `<li>${text}</li>`)
       .join('');
@@ -129,7 +129,7 @@ export const journalController = {
           </div>
         </div>
         <p style="margin-top: 12px; font-size: 12px; font-style: italic; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 8px;">
-          ${analysis.neuroDescription}
+          ${neuroDescription}
         </p>
       </div>
 
