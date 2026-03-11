@@ -1,6 +1,5 @@
 
 
-
 Selama 7 hari terakhir, 
 kamu mempelajari ${s.unique_bab_count || 0} bab >> learning_sesions = kolom bab_title
 dari ${s.unique_category_count || 0} kategori >> learning_sessions = kolom category
@@ -17,10 +16,10 @@ pada pukul ${s.most_active_hour ? s.most_active_hour + ':00' : '-'} WIB >> learn
 
 
 ====================================================   
-  // Parsing data JSONB
-  const cog = s.cognitive_profile || {};
-  const stab = s.stability_metrics || {};
-  const summ = s.cognitive_summary || {};
+user_cognitive_sessions kirim Parsing JSONB ke 3 tabel weekly_journal_snapshot
+ cog = s.cognitive_profile || {}; 
+ stab = s.stability_metrics || {}; 
+ summ = s.cognitive_summary || {}; 
 ===================================================
 📊 Nilai Dimensi Kognitif
 Memory ${Math.round(cog.memory_score || 0)}
@@ -47,5 +46,4 @@ Profil ${summ.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berb
   const insights = journalAnalytic.getInsights(s);
 ====================================================
 🔎 Area Pengembangan
-${insight
-sListHtml}
+${insightsListHtml}
