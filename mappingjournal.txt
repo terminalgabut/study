@@ -17,9 +17,15 @@ pada pukul ${s.most_active_hour ? s.most_active_hour + ':00' : '-'} WIB >> learn
 
 ====================================================   
 user_cognitive_sessions kirim Parsing JSONB ke 3 tabel weekly_journal_snapshot
- cog = s.cognitive_profile || {}; 
- stab = s.stability_metrics || {}; 
- summ = s.cognitive_summary || {}; 
+
+ cog = s.cognitive_profile || {}; >> iq_class, iq_final, neuro_type,
+     memory_score, analogy_score, iq_confidence, reading_score,
+     reasoning_score, vocabulary_score.
+
+ stab = s.stability_metrics || {}; >> speed_stability, stability_index,
+      accuracy_stability.
+
+ summ = s.cognitive_summary || {}; >> error_consistency, endurance_index.
 ===================================================
 📊 Nilai Dimensi Kognitif
 Memory ${Math.round(cog.memory_score || 0)}
@@ -39,7 +45,7 @@ Cognitive Poin ${cog.iq_final || 0}
 Confidence ${cog.iq_confidence || 0}%      
 Classification ${cog.iq_class || '-'}
 Neuro Type ${cog.neuro_type || '-'}
-Profil ${summ.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berbasis struktur.
+Profil ${cog.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berbasis struktur.
 
 
 ====================================================
