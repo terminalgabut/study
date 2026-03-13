@@ -231,6 +231,8 @@ def compute_cognitive_profile(db, user_id: str):
 
     neuro_type = assign_neuro_type(scores, stability_index)
     fatigue_sensitivity = round(fatigue_drop, 2)
+    burnout_risk_score = clamp((fatigue_drop * 0.7) + (speed_variance * 0.3), 0, 100)
+    recovery_rate = clamp(stability_index - (fatigue_drop * 0.4), 0, 100)
 
     neuro_fingerprint = {
         "scores": scores,
@@ -243,7 +245,9 @@ def compute_cognitive_profile(db, user_id: str):
         "error_consistency": error_consistency,
         "fatigue_drop": fatigue_drop,
         "speed_variance": speed_variance,
-        "fatigue_sensitivity": fatigue_sensitivity
+        "fatigue_sensitivity": fatigue_sensitivity,
+        "burnout_risk_score": round(burnout_risk_score, 2), 
+        "recovery_rate": round(recovery_rate, 2)
     }
 
     return (
@@ -262,5 +266,7 @@ def compute_cognitive_profile(db, user_id: str):
         neuro_type,
         fatigue_sensitivity,
         scores,
-        neuro_fingerprint
+        neuro_fingerprint,
+        round(burnout_risk_score, 2), 
+        round(recovery_rate, 2)
     )
