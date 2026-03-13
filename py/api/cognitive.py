@@ -15,7 +15,8 @@ def compute_profile(user_id: str):
          stability_index, accuracy_stability, speed_stability,
          endurance_index, error_consistency, fatigue_drop,
          speed_variance, iq_profile, neuro_type, fatigue_sensitivity,
-         consistency_signature, neuro_fingerprint) = compute_cognitive_profile(db, user_id)
+         consistency_signature, neuro_fingerprint, 
+         burnout_risk_score, recovery_rate) = compute_cognitive_profile(db, user_id)
 
         db.execute(text("""
             INSERT INTO user_cognitive_profile (
@@ -39,8 +40,11 @@ def compute_profile(user_id: str):
                 iq_estimated,
                 iq_confidence,
                 iq_class,
+                iq_final,
                 neuro_type,
                 fatigue_sensitivity,
+                burnout_risk_score,
+                recovery_rate,
                 consistency_signature,
                 neuro_fingerprint
             )
@@ -65,8 +69,11 @@ def compute_profile(user_id: str):
                 :iq_estimated,
                 :iq_confidence,
                 :iq_class,
+                :iq_final,
                 :neuro_type,
                 :fatigue_sensitivity,
+                :burnout_risk_score,
+                :recovery_rate,
                 :consistency_signature,
                 :neuro_fingerprint
             )
@@ -89,8 +96,11 @@ def compute_profile(user_id: str):
                 iq_estimated = EXCLUDED.iq_estimated,
                 iq_confidence = EXCLUDED.iq_confidence,
                 iq_class = EXCLUDED.iq_class,
+                iq_final = EXCLUDED.iq_final,
                 neuro_type = EXCLUDED.neuro_type,
                 fatigue_sensitivity = EXCLUDED.fatigue_sensitivity,
+                burnout_risk_score = EXCLUDED.burnout_risk_score,
+                recovery_rate = EXCLUDED.recovery_rate,
                 consistency_signature = EXCLUDED.consistency_signature,
                 neuro_fingerprint = EXCLUDED.neuro_fingerprint,
                 last_computed_at = now();
@@ -114,8 +124,11 @@ def compute_profile(user_id: str):
             "iq_estimated": iq_profile["iq_estimated"],
             "iq_confidence": iq_profile["iq_confidence"],
             "iq_class": iq_profile["iq_class"],
+            "iq_final": iq_profile["iq_final"],
             "neuro_type": neuro_type,
             "fatigue_sensitivity": fatigue_sensitivity,
+            "burnout_risk_score": burnout_risk_score,
+            "recovery_rate": recovery_rate,
             "consistency_signature": json.dumps(consistency_signature),
             "neuro_fingerprint": json.dumps(neuro_fingerprint)
         })
@@ -127,9 +140,16 @@ def compute_profile(user_id: str):
             "scores": scores,
             "cognitive_index": cognitive_index,
             "stability_index": stability_index,
+            "burnout_risk": burnout_risk_score,
+            "recovery_rate": recovery_rate,
             "iq_profile": iq_profile,
             "neuro_type": neuro_type,
             "neuro_fingerprint": neuro_fingerprint
         }
+    except Exception as e:
+        db.rollback()
+        # Penting untuk log error agar mudah debugging di terminal backend
+        print(f"[Cognitive API Error]: {e}")
+        return {"status": "error", "message": str(e)}
     finally:
         db.close()
