@@ -174,30 +174,68 @@ Buatkan 5 soal kritis berdasarkan teks materi berikut:
 {materi}
 
 ATURAN WAJIB:
-1. Struktur 5 Soal Berbasis Teks mengunakan 5 Dimension:
+
+1. Struktur 5 Soal Berbasis Teks menggunakan 5 Dimension (SETIAP DIMENSI HARUS UNIK DAN TIDAK BOLEH OVERLAP):
+
    - reading comprehension:
-      Fokus: Mencari gagasan utama atau fakta tersurat.
-      Contoh Soal: "Apa tujuan utama penulis dalam paragraf kedua?" 
-                   "Berdasarkan teks, apa penyebab utama dari fenomena X?"
+      Fokus: Memahami informasi eksplisit dan implikasi langsung dari teks.
+      Aturan:
+      - Jawaban dapat ditelusuri dari teks
+      - Tidak membutuhkan logika kompleks atau asumsi tambahan
+      Contoh:
+      - "Apa ide utama yang ingin disampaikan penulis?"
+      - "Apa implikasi langsung dari pernyataan pada paragraf kedua?"
+
    - vocabulary & semantics:
-      Fokus: Menguji pemahaman kata sulit atau istilah teknis dalam materi.
-      Contoh soal: "Kata 'signifikan' pada baris ke-5 paling tepat digantikan dengan kata..."
-                   "Apa makna istilah [Istilah Teknis] menurut konteks bacaan tersebut?"
+      Fokus: Memahami makna kata atau istilah berdasarkan konteks, bukan definisi umum.
+      Aturan:
+      - Kata/istilah harus berasal dari teks
+      - Jawaban harus bergantung pada konteks kalimat
+      Contoh:
+      - "Dalam konteks bacaan, kata 'signifikan' paling dekat maknanya dengan..."
+      - "Istilah 'X' dalam teks merujuk pada apa?"
+
    - verbal reasoning:
-      Fokus: Menarik kesimpulan atau logika "Benar/Salah/Tidak Diketahui".
-      Contoh soal: "Jika pernyataan di paragraf 3 benar, manakah kesimpulan berikut yang paling logis?"
-                   "Manakah asumsi yang mendasari argumen penulis di bagian akhir?"
+      Fokus: Menarik kesimpulan logis yang tidak tertulis secara langsung.
+      Aturan:
+      - Jawaban tidak boleh eksplisit di teks
+      - Membutuhkan proses logika/inferensi
+      Contoh:
+      - "Kesimpulan mana yang paling logis berdasarkan teks?"
+      - "Manakah pernyataan yang tidak dapat disimpulkan dari bacaan?"
+      - "Apa asumsi yang mendasari argumen penulis?"
+
    - analogy:
-      Fokus: Menghubungkan konsep dalam teks dengan konsep serupa.
-      Contoh soal: "Jika [Konsep kaki] digambarkan sebagai [Sifat], maka [Konsep tangan] dalam teks digambarkan sebagai..."
+      Fokus: Mengidentifikasi hubungan antar konsep (bukan sekadar isi teks).
+      Aturan:
+      - Menilai pola hubungan (A : B = C : ?)
+      - Boleh menggunakan konteks di luar teks selama masih relevan
+      Contoh:
+      - "Hubungan antara X dan Y dalam teks paling mirip dengan..."
+      - "Jika X berperan sebagai [fungsi], maka padanan yang setara adalah..."
+
    - working memory:
-      Fokus: Menghubungkan informasi dari dua bagian teks yang berjauhan (sintesis).
-      Contoh Soal: "Bagaimana pengaruh temuan di paragraf pertama terhadap teori yang dijelaskan di paragraf terakhir?"
+      Fokus: Mengingat dan menggabungkan beberapa informasi dari bagian teks yang berbeda.
+      Aturan:
+      - Wajib melibatkan minimal dua bagian teks
+      - Tidak bisa dijawab jika hanya membaca satu bagian
+      Contoh:
+      - "Informasi mana yang konsisten jika menggabungkan paragraf awal dan akhir?"
+      - "Bagaimana hubungan antara konsep di awal dan kesimpulan di akhir teks?"
+
+   ATURAN GLOBAL DIMENSI:
+   - Setiap soal harus benar-benar merepresentasikan proses berpikir dari dimensinya
+   - Jika soal bisa dijawab tanpa menggunakan kemampuan utama dimensinya, maka soal dianggap SALAH
+
    Tips soal seperti "Tes IQ":
-      - Jangan buat soal atau jawaban langsung dari materi, Gunakan kata yang berbeda namun maknanya sama.
-      - Buat pilihan jawaban yang terlihat benar.
-2. Setiap soal WAJIB menyertakan 'explanation' singkat, yang menjelaskan MENGAPA jawaban tersebut benar berdasarkan materi yang diberikan.
+   - Gunakan parafrase (jangan copy kalimat dari teks)
+   - Semua opsi harus terlihat masuk akal dan relevan
+   - Minimal 2 opsi harus tampak benar secara sekilas, namun hanya 1 paling tepat
+
+2. Setiap soal WAJIB menyertakan 'explanation' singkat yang menjelaskan MENGAPA jawaban benar berdasarkan teks.
+
 3. Kembalikan HANYA JSON VALID.
+
 4. Struktur:
 {{
   "questions": [
@@ -212,11 +250,13 @@ ATURAN WAJIB:
     }}
   ]
 }}
+
 VALIDATION STEP (Internal, jangan ditampilkan):
-- Periksa 5 dimension reading comprehension, vocabulary & semantics, verbal reasoning, analogy, working memory
+- Periksa 5 dimension: reading comprehension, vocabulary & semantics, verbal reasoning, analogy, working memory
+- Pastikan masing-masing muncul tepat 1 kali
 - Periksa semua correct_answer identik dengan salah satu options
-- Periksa JSON valid sebelum final output
-- Jika di dalam teks soal atau explanation perlu tanda kutip, gunakan tanda kutip tunggal (') agar tidak merusak format JSON.
+- Periksa JSON valid sebelum output
+- Gunakan tanda kutip tunggal (') jika diperlukan dalam teks
 """
 
         messages = [
