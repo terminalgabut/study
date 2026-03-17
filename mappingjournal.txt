@@ -164,6 +164,35 @@ after INSERT on study_attempts for EACH row
 execute FUNCTION fn_sync_activity_to_journal ();
 
 ====================================================
+create table public.learning_sessions (
+  id uuid not null default gen_random_uuid (),
+  user_id uuid not null,
+  category text null,
+  bab_title text null,
+  reading_seconds integer null,
+  created_at timestamp with time zone null default now(),
+  quiz_seconds integer null default 0,
+  total_correct integer null default 0,
+  total_questions integer null default 0,
+  score_avg numeric(5, 2) null default 0,
+  constraint learning_sessions_pkey primary key (id),
+  constraint learning_sessions_user_id_fkey foreign KEY (user_id) references auth.users (id)
+) TABLESPACE pg_default;
+
+create trigger trg_master_sync_learning
+after INSERT
+or
+update on learning_sessions for EACH row
+execute FUNCTION fn_sync_all_to_journal ();
+
+create trigger trg_prepare_session_performance BEFORE INSERT on learning_sessions for EACH row
+execute FUNCTION fn_pull_session_performance ();
+
+create trigger trg_sync_learning_to_journal
+after INSERT
+or
+update on learning_sessions for EACH row
+execute FUNCTION fn_sync_activity_to_journal ();
 
 ====================================================
 
