@@ -1,7 +1,7 @@
 ====================================================
 BACKEND DATABASE TABEL & TRIGGER
 ====================================================
-
+====================================================
 create table public.user_cognitive_profile (
   user_id uuid not null,
   memory_score numeric(5, 2) null default 0,
@@ -195,14 +195,34 @@ update on learning_sessions for EACH row
 execute FUNCTION fn_sync_activity_to_journal ();
 
 ====================================================
+create table public.weekly_journal_snapshot (
+  id uuid not null default gen_random_uuid (),
+  user_id uuid not null,
+  week_start date not null,
+  week_end date not null,
+  total_quiz_attempts integer null default 0,
+  avg_score numeric(5, 2) null default 0,
+  total_study_seconds integer null default 0,
+  most_active_hour integer null,
+  unique_category_count integer null default 0,
+  unique_bab_count integer null default 0,
+  review_bab_count integer null default 0,
+  cognitive_profile jsonb null default '{}'::jsonb,
+  stability_metrics jsonb null default '{}'::jsonb,
+  cognitive_summary jsonb null default '{}'::jsonb,
+  bab_durations jsonb null default '{}'::jsonb,
+  created_at timestamp with time zone null default (now() AT TIME ZONE 'Asia/Jakarta'::text),
+  avg_speed numeric(5, 2) null default 0,
+  avg_burnout_risk numeric(5, 2) null default 0,
+  avg_recovery_rate numeric(5, 2) null default 0,
+  updated_at timestamp with time zone null default (now() AT TIME ZONE 'Asia/Jakarta'::text),
+  constraint weekly_journal_snapshot_pkey primary key (id),
+  constraint weekly_journal_snapshot_user_id_week_start_key unique (user_id, week_start)
+) TABLESPACE pg_default;
+
+create index IF not exists idx_weekly_snapshot_user_week on public.weekly_journal_snapshot using btree (user_id, week_start desc) TABLESPACE pg_default;
 
 ====================================================
-
-====================================================
-
-====================================================
-
-
 ====================================================
 OUTPUT JOURNAL (FRONTEND)
 ====================================================
