@@ -272,9 +272,11 @@ Confidence ${cog.iq_confidence || 0}%
 Classification ${cog.iq_class || '-'}
 Neuro Type ${cog.neuro_type || '-'}
 ---
+const { neuroDescription, list: insightsList } = journalAnalytic.getInsights(s);
+---
 ${neuroDescription}
 ====================================================
-  const insights = journalAnalytic.getInsights(s);
+  const { neuroDescription, list: insightsList } = journalAnalytic.getInsights(s);
 ====================================================
 🔎 Intelligence Insight
 ${insightsListHtml}
