@@ -144,21 +144,16 @@ create table public.user_cognitive_profile (
   )
 ) TABLESPACE pg_default;
 
-create trigger trg_auto_compute_iq_final BEFORE INSERT
+create trigger trg_create_snapshot_from_profile
+after INSERT
 or
-update OF iq_estimated,
-iq_confidence on user_cognitive_profile for EACH row
-execute FUNCTION auto_compute_iq_final ();
+update on user_cognitive_profile for EACH row
+execute FUNCTION fn_create_cognitive_snapshot ();
 
 create trigger trg_normalize_iq_confidence BEFORE INSERT
 or
 update on user_cognitive_profile for EACH row
 execute FUNCTION normalize_iq_confidence ();
-
-create trigger trg_snapshot_cognitive_session
-after
-update on user_cognitive_profile for EACH row
-execute FUNCTION trg_snapshot_cognitive_session_fn ();
 
 create trigger trg_update_user_cognitive_profile BEFORE
 update on user_cognitive_profile for EACH row
