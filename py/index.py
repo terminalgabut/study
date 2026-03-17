@@ -113,34 +113,60 @@ def validate_quiz_structure(data: dict):
             raise ValueError(f"Distribusi dimension salah: {dim} = {count}")
 
 def validate_cognitive_quality(data: dict):
+    SIGNATURE = {
+        "reading comprehension": ["ide", "tujuan", "implikasi", "utama", "berdasarkan teks"],
+        "vocabulary & semantics": ["kata", "makna", "istilah"],
+        "verbal reasoning": ["kesimpulan", "logis", "asumsi", "tidak dapat disimpulkan"],
+        "analogy": ["hubungan", "setara", "peran", "fungsi"],
+        "working memory": ["menggabungkan", "paragraf", "bagian", "keseluruhan"]
+    }
+
+    FORBIDDEN = {
+        "reading comprehension": ["kesimpulan", "asumsi", "logis"],
+        "vocabulary & semantics": ["kesimpulan", "asumsi"],
+        "verbal reasoning": ["kata", "istilah"],  # biar tidak jadi vocab
+        "analogy": ["kesimpulan"],  # analogy ≠ reasoning
+        "working memory": ["makna kata"]  # bukan vocab
+    }
+
     for i, q in enumerate(data["questions"], start=1):
         dim = q["dimension"]
         question = q["question"].lower()
 
-        # --- READING ---
+        # --- SIGNATURE CHECK (harus ada ciri khas) ---
+        if not any(w in question for w in SIGNATURE[dim]):
+            raise ValueError(f"Q{i}: {dim} tidak memiliki signature yang jelas")
+
+        # --- FORBIDDEN CHECK (hindari overlap) ---
+        if any(w in question for w in FORBIDDEN.get(dim, [])):
+            raise ValueError(f"Q{i}: {dim} tercampur dengan dimensi lain")
+
+        # --- KHUSUS PER DIMENSI (lebih tajam) ---
+        
         if dim == "reading comprehension":
-            if any(w in question for w in ["kesimpulan", "asumsi", "logis"]):
-                raise ValueError(f"Q{i}: reading tercampur reasoning")
+            # harus bisa ditelusuri → pakai indikator
+            if "berdasarkan" not in question and "teks" not in question:
+                raise ValueError(f"Q{i}: reading tidak eksplisit berbasis teks")
 
-        # --- VOCAB ---
         elif dim == "vocabulary & semantics":
-            if not any(w in question for w in ["kata", "makna", "istilah"]):
-                raise ValueError(f"Q{i}: vocab tidak fokus kata")
+            # harus menyebut kata spesifik (indikasi tanda kutip)
+            if "'" not in q["question"] and '"' not in q["question"]:
+                raise ValueError(f"Q{i}: vocab tidak menyebut kata spesifik")
 
-        # --- REASONING ---
         elif dim == "verbal reasoning":
-            if not any(w in question for w in ["kesimpulan", "logis", "asumsi"]):
-                raise ValueError(f"Q{i}: reasoning tidak terlihat")
+            # tidak boleh terlalu literal
+            if "berdasarkan teks" in question:
+                raise ValueError(f"Q{i}: reasoning terlalu eksplisit (jadi reading)")
 
-        # --- ANALOGY ---
         elif dim == "analogy":
-            if not any(w in question for w in ["hubungan", "mirip", "diibaratkan"]):
-                raise ValueError(f"Q{i}: analogy tidak jelas")
+            # wajib pola relasi
+            if not any(w in question for w in ["hubungan", "setara", "peran", "fungsi"]):
+                raise ValueError(f"Q{i}: analogy tidak eksplisit relasi")
 
-        # --- WORKING MEMORY ---
         elif dim == "working memory":
-            if not any(w in question for w in ["paragraf", "bagian", "urutan"]):
-                raise ValueError(f"Q{i}: working memory tidak multi info")
+            # wajib multi bagian
+            if not any(w in question for w in ["paragraf", "bagian", "awal", "akhir"]):
+                raise ValueError(f"Q{i}: working memory tidak menunjukkan multi bagian")
 
         # --- BASIC QUALITY ---
         if len(q["explanation"]) < 25:
@@ -177,51 +203,115 @@ ATURAN WAJIB:
 
 1. Struktur 5 Soal Berbasis Teks menggunakan 5 Dimension (SETIAP DIMENSI HARUS UNIK DAN TIDAK BOLEH OVERLAP):
 
-   - reading comprehension:
-      Fokus: Memahami informasi eksplisit dan implikasi langsung dari teks.
-      Aturan:
-      - Jawaban dapat ditelusuri dari teks
-      - Tidak membutuhkan logika kompleks atau asumsi tambahan
-      Contoh:
-      - "Apa ide utama yang ingin disampaikan penulis?"
-      - "Apa implikasi langsung dari pernyataan pada paragraf kedua?"
+- reading comprehension:
+   Fokus: Memahami informasi eksplisit dan implikasi langsung dari teks.
 
-   - vocabulary & semantics:
-      Fokus: Memahami makna kata atau istilah berdasarkan konteks, bukan definisi umum.
-      Aturan:
-      - Kata/istilah harus berasal dari teks
-      - Jawaban harus bergantung pada konteks kalimat
-      Contoh:
-      - "Dalam konteks bacaan, kata 'signifikan' paling dekat maknanya dengan..."
-      - "Istilah 'X' dalam teks merujuk pada apa?"
+   Aturan:
+   - Jawaban HARUS bisa ditemukan atau ditelusuri langsung dari teks
+   - Tidak boleh membutuhkan inferensi kompleks
+   - Tidak boleh mengandung asumsi di luar teks
 
-   - verbal reasoning:
-      Fokus: Menarik kesimpulan logis yang tidak tertulis secara langsung.
-      Aturan:
-      - Jawaban tidak boleh eksplisit di teks
-      - Membutuhkan proses logika/inferensi
-      Contoh:
-      - "Kesimpulan mana yang paling logis berdasarkan teks?"
-      - "Manakah pernyataan yang tidak dapat disimpulkan dari bacaan?"
-      - "Apa asumsi yang mendasari argumen penulis?"
+   Signature (WAJIB ADA SALAH SATU):
+   - ide utama / tujuan / ringkasan
+   - informasi langsung / fakta
+   - implikasi langsung
 
-   - analogy:
-      Fokus: Mengidentifikasi hubungan antar konsep (bukan sekadar isi teks).
-      Aturan:
-      - Menilai pola hubungan (A : B = C : ?)
-      - Boleh menggunakan konteks di luar teks selama masih relevan
-      Contoh:
-      - "Hubungan antara X dan Y dalam teks paling mirip dengan..."
-      - "Jika X berperan sebagai [fungsi], maka padanan yang setara adalah..."
+   Anti-error:
+   - Jika jawaban tidak bisa ditunjukkan ke bagian teks → SALAH
+   - Jika butuh logika tambahan → masuk reasoning (BUKAN ini)
 
-   - working memory:
-      Fokus: Mengingat dan menggabungkan beberapa informasi dari bagian teks yang berbeda.
-      Aturan:
-      - Wajib melibatkan minimal dua bagian teks
-      - Tidak bisa dijawab jika hanya membaca satu bagian
-      Contoh:
-      - "Informasi mana yang konsisten jika menggabungkan paragraf awal dan akhir?"
-      - "Bagaimana hubungan antara konsep di awal dan kesimpulan di akhir teks?"
+   Contoh:
+   - "Apa ide utama yang ingin disampaikan penulis?"
+   - "Apa implikasi langsung dari pernyataan pada paragraf kedua?"
+
+
+- vocabulary & semantics:
+   Fokus: Memahami makna kata/istilah berdasarkan konteks kalimat.
+
+   Aturan:
+   - Kata/istilah HARUS berasal dari teks
+   - Jawaban HARUS berbasis konteks, bukan definisi umum
+   - Tidak boleh jadi soal hafalan
+
+   Signature (WAJIB ADA):
+   - kata/istilah spesifik dari teks disebutkan di soal
+
+   Anti-error:
+   - Jika kata bisa dijawab tanpa konteks → SALAH
+   - Jika tidak menyebut kata spesifik → SALAH
+
+   Contoh:
+   - "Dalam konteks bacaan, kata 'signifikan' paling dekat maknanya dengan..."
+   - "Istilah 'X' dalam teks merujuk pada apa?"
+
+
+- verbal reasoning:
+   Fokus: Menarik kesimpulan logis yang tidak tertulis secara eksplisit.
+
+   Aturan:
+   - Jawaban TIDAK boleh ada secara langsung di teks
+   - Harus membutuhkan inferensi/logika
+   - Boleh menggunakan format implisit (kesimpulan, asumsi, kemungkinan)
+
+   Signature (WAJIB ADA SALAH SATU):
+   - kesimpulan
+   - asumsi
+   - tidak dapat disimpulkan
+   - paling logis
+
+   Anti-error:
+   - Jika jawaban bisa ditemukan langsung → SALAH (itu reading)
+   - Jika hanya parafrase → SALAH
+
+   Contoh:
+   - "Kesimpulan mana yang paling logis berdasarkan teks?"
+   - "Manakah pernyataan yang tidak dapat disimpulkan dari bacaan?"
+   - "Apa asumsi yang mendasari argumen penulis?"
+
+
+- analogy:
+   Fokus: Mengidentifikasi hubungan antar konsep (relasi, bukan isi).
+
+   Aturan:
+   - HARUS berbentuk relasi (A : B = C : ?)
+   - Menilai kesamaan hubungan, bukan kesamaan isi
+   - Tidak boleh hanya parafrase teks
+
+   Signature (WAJIB ADA SALAH SATU):
+   - hubungan
+   - peran
+   - fungsi
+   - setara
+
+   Anti-error:
+   - Jika soal masih bisa dijawab dengan membaca teks langsung → SALAH
+   - Jika tidak ada relasi eksplisit → SALAH
+
+   Contoh:
+   - "Hubungan antara X dan Y dalam teks paling mirip dengan..."
+   - "Jika X berperan sebagai penyebab dan Y sebagai akibat, maka pasangan yang setara adalah..."
+
+
+- working memory:
+   Fokus: Mengingat dan menggabungkan informasi dari beberapa bagian teks.
+
+   Aturan:
+   - HARUS melibatkan minimal dua bagian teks
+   - Jawaban membutuhkan penggabungan informasi
+   - Tidak bisa dijawab dari satu bagian saja
+
+   Signature (WAJIB ADA SALAH SATU):
+   - menggabungkan / kombinasi
+   - paragraf awal & akhir
+   - beberapa bagian / seluruh teks
+
+   Anti-error:
+   - Jika bisa dijawab dari satu paragraf → SALAH
+   - Jika hanya memahami tanpa menggabungkan → SALAH
+
+   Contoh:
+   - "Informasi mana yang konsisten jika menggabungkan paragraf awal dan akhir?"
+   - "Bagaimana hubungan antara konsep di awal dan kesimpulan di akhir teks?"
 
    ATURAN GLOBAL DIMENSI:
    - Setiap soal harus benar-benar merepresentasikan proses berpikir dari dimensinya
