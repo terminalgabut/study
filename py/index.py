@@ -112,76 +112,7 @@ def validate_quiz_structure(data: dict):
         if count != 1:
             raise ValueError(f"Distribusi dimension salah: {dim} = {count}")
 
-def validate_cognitive_quality(data: dict):
-    SIGNATURE = {
-        "reading comprehension": ["ide", "tujuan", "implikasi", "utama", "berdasarkan", "teks"],
-        "vocabulary & semantics": ["kata", "makna", "istilah"],
-        "verbal reasoning": ["kesimpulan", "logis", "asumsi", "tidak dapat disimpulkan"],
-        "analogy": ["hubungan", "relasi", "perbandingan", "setara", "padanan", "fungsi", "peran"],
-        "working memory": ["menggabungkan", "paragraf", "bagian", "awal", "akhir", "keseluruhan"]
-    }
 
-    FORBIDDEN = {
-        "reading comprehension": ["asumsi"],  # dipersempit (biar gak terlalu sensitif)
-        "vocabulary & semantics": ["kesimpulan"],
-        "verbal reasoning": ["makna kata"],  
-        "analogy": ["kesimpulan"],
-        "working memory": ["makna kata"]
-    }
-
-    warnings = []
-
-    for i, q in enumerate(data["questions"], start=1):
-        dim = q["dimension"]
-        question = q["question"].lower()
-
-        # --- SIGNATURE (lebih fleksibel) ---
-        signature_match = any(w in question for w in SIGNATURE[dim])
-
-        # analogy fallback: allow pattern A : B
-        if dim == "analogy":
-            if not signature_match and ":" not in question:
-                warnings.append(f"Q{i}: analogy lemah (tidak eksplisit relasi)")
-        else:
-            if not signature_match:
-                warnings.append(f"Q{i}: {dim} lemah signature")
-
-        # --- FORBIDDEN (tidak langsung fail) ---
-        if any(w in question for w in FORBIDDEN.get(dim, [])):
-            warnings.append(f"Q{i}: {dim} sedikit overlap")
-
-        # --- DIMENSION CHECK (SOFT RULE) ---
-        
-        if dim == "reading comprehension":
-            if "teks" not in question:
-                warnings.append(f"Q{i}: reading tidak eksplisit referensi teks")
-
-        elif dim == "vocabulary & semantics":
-            if "'" not in q["question"] and '"' not in q["question"]:
-                warnings.append(f"Q{i}: vocab tidak menyebut kata spesifik")
-
-        elif dim == "verbal reasoning":
-            if "berdasarkan teks" in question:
-                warnings.append(f"Q{i}: reasoning terlalu dekat ke reading")
-
-        elif dim == "analogy":
-            if not any(w in question for w in ["hubungan", "relasi", "setara", "padanan", "fungsi", "peran"]) and ":" not in question:
-                warnings.append(f"Q{i}: analogy kurang kuat")
-
-        elif dim == "working memory":
-            if not any(w in question for w in ["paragraf", "bagian", "awal", "akhir"]):
-                warnings.append(f"Q{i}: working memory kurang multi-bagian")
-
-        # --- HARD FAIL (tetap ada, tapi minimal) ---
-        if len(q["explanation"]) < 20:
-            raise ValueError(f"Q{i}: explanation terlalu pendek")
-
-        if len(set(q["options"])) != 4:
-            raise ValueError(f"Q{i}: opsi tidak unik")
-
-    # --- OPTIONAL: log warning saja ---
-    if warnings:
-        print("Cognitive Warnings:", warnings
 
 # --- ROUTES ---
 
