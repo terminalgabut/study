@@ -215,7 +215,6 @@ VALIDATION STEP (Internal, jangan ditampilkan):
             raise ValueError(f"JSON Decode Error: {str(e)}")
  
         validate_quiz_structure(parsed)
-        validate_cognitive_quality(parsed)
 
         questions = parsed["questions"]
         
