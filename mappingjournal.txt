@@ -266,7 +266,10 @@ Speed Stability ${Math.round(stab.speed_stability || 0)}
 Konsistensi ${Math.round(summ.error_consistency || 0)}
 Akurasi ${Math.round(stab.accuracy_stability || 0)}
 Endurance ${Math.round(summ.endurance_index || 0)}
-
+----------------------------------------------------
+🔥 Burnout Risk  ${Math.round(stab.burnout_risk || 0)}%
+🔋 Recovery Rate ${Math.round(stab.recovery_rate || 0)}%
+----------------------------------------------------
 Cognitive Poin ${cog.iq_final || 0}
 Confidence ${cog.iq_confidence || 0}%      
 Classification ${cog.iq_class || '-'}
