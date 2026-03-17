@@ -203,21 +203,14 @@ create index IF not exists idx_sessions_user_id on public.user_cognitive_session
 
 create index IF not exists idx_sessions_user_date on public.user_cognitive_sessions using btree (user_id, session_at desc) TABLESPACE pg_default;
 
-create trigger trg_compute_iq_final BEFORE INSERT
-or
-update on user_cognitive_sessions for EACH row
-execute FUNCTION trg_compute_iq_final ();
-
 create trigger trg_normalize_session_iq_confidence BEFORE INSERT
 or
 update on user_cognitive_sessions for EACH row
 execute FUNCTION normalize_session_iq_confidence ();
 
-create trigger trg_sync_cog_to_snapshot
-after INSERT
-or
-update on user_cognitive_sessions for EACH row
-execute FUNCTION fn_sync_to_weekly_snapshot ();
+create trigger trg_sync_session_to_journal
+after INSERT on user_cognitive_sessions for EACH row
+execute FUNCTION fn_sync_session_to_journal ();
 
 ====================================================
 OUTPUT JOURNAL (FRONTEND)
