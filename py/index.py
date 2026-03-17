@@ -112,6 +112,43 @@ def validate_quiz_structure(data: dict):
         if count != 1:
             raise ValueError(f"Distribusi dimension salah: {dim} = {count}")
 
+def validate_cognitive_quality(data: dict):
+    for i, q in enumerate(data["questions"], start=1):
+        dim = q["dimension"]
+        question = q["question"].lower()
+
+        # --- READING ---
+        if dim == "reading comprehension":
+            if any(w in question for w in ["kesimpulan", "asumsi", "logis"]):
+                raise ValueError(f"Q{i}: reading tercampur reasoning")
+
+        # --- VOCAB ---
+        elif dim == "vocabulary & semantics":
+            if not any(w in question for w in ["kata", "makna", "istilah"]):
+                raise ValueError(f"Q{i}: vocab tidak fokus kata")
+
+        # --- REASONING ---
+        elif dim == "verbal reasoning":
+            if not any(w in question for w in ["kesimpulan", "logis", "asumsi"]):
+                raise ValueError(f"Q{i}: reasoning tidak terlihat")
+
+        # --- ANALOGY ---
+        elif dim == "analogy":
+            if not any(w in question for w in ["hubungan", "mirip", "diibaratkan"]):
+                raise ValueError(f"Q{i}: analogy tidak jelas")
+
+        # --- WORKING MEMORY ---
+        elif dim == "working memory":
+            if not any(w in question for w in ["paragraf", "bagian", "urutan"]):
+                raise ValueError(f"Q{i}: working memory tidak multi info")
+
+        # --- BASIC QUALITY ---
+        if len(q["explanation"]) < 25:
+            raise ValueError(f"Q{i}: explanation terlalu pendek")
+
+        if len(set(q["options"])) != 4:
+            raise ValueError(f"Q{i}: opsi tidak unik")
+
 # --- ROUTES ---
 
 @app.get("/")
@@ -206,6 +243,7 @@ VALIDATION STEP (Internal, jangan ditampilkan):
             raise ValueError(f"JSON Decode Error: {str(e)}")
  
         validate_quiz_structure(parsed)
+        validate_cognitive_quality(parsed)
 
         questions = parsed["questions"]
 
