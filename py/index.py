@@ -246,6 +246,9 @@ VALIDATION STEP (Internal, jangan ditampilkan):
         validate_cognitive_quality(parsed)
 
         questions = parsed["questions"]
+        
+        import random
+        random.shuffle(questions)
 
         for i, q in enumerate(questions, start=1):
             q["id"] = f"q{i}"
