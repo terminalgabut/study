@@ -271,11 +271,10 @@ Cognitive Poin ${cog.iq_final || 0}
 Confidence ${cog.iq_confidence || 0}%      
 Classification ${cog.iq_class || '-'}
 Neuro Type ${cog.neuro_type || '-'}
-Profil ${cog.neuro_type} menunjukkan kecenderungan berpikir sistematis dan berbasis struktur.
-
-
+---
+${neuroDescription}
 ====================================================
   const insights = journalAnalytic.getInsights(s);
 ====================================================
-🔎 Area Pengembangan
+🔎 Intelligence Insight
 ${insightsListHtml}
