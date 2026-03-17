@@ -140,126 +140,29 @@ Buatkan 5 soal kritis berdasarkan teks materi berikut:
 
 ATURAN WAJIB:
 
-1. Struktur 5 Soal Berbasis Teks menggunakan 5 Dimension (SETIAP DIMENSI HARUS UNIK DAN TIDAK BOLEH OVERLAP):
+1. Buat 5 soal berdasarkan teks dengan 5 dimension (masing-masing 1 soal):
+- reading comprehension → informasi eksplisit dari teks  
+- vocabulary & semantics → makna kata/istilah dalam konteks  
+- verbal reasoning → kesimpulan/logika (tidak tertulis langsung)  
+- analogy → hubungan konsep (relasi, bukan isi)  
+- working memory → gabungkan info dari beberapa bagian teks  
 
-- reading comprehension:
-   Fokus: Memahami informasi eksplisit dan implikasi langsung dari teks.
+ATURAN:
+- Setiap soal HARUS sesuai dimension
+- Gunakan parafrase (jangan copy teks)
+- Semua opsi harus masuk akal (minimal 2 tampak benar)
+- Setiap soal wajib ada explanation singkat
 
-   Aturan:
-   - Jawaban HARUS bisa ditemukan atau ditelusuri langsung dari teks
-   - Tidak boleh membutuhkan inferensi kompleks
-   - Tidak boleh mengandung asumsi di luar teks
+FORMAT:
+- Vocabulary → harus menyebut kata spesifik dari teks
+- Reasoning → tidak boleh bisa ditemukan langsung di teks
+- Analogy → gunakan hubungan/perbandingan atau pola A : B
+- Working memory → wajib melibatkan lebih dari satu bagian teks
 
-   Signature (WAJIB ADA SALAH SATU):
-   - ide utama / tujuan / ringkasan
-   - informasi langsung / fakta
-   - implikasi langsung
-
-   Anti-error:
-   - Jika jawaban tidak bisa ditunjukkan ke bagian teks → SALAH
-   - Jika butuh logika tambahan → masuk reasoning (BUKAN ini)
-
-   Contoh:
-   - "Apa ide utama yang ingin disampaikan penulis?"
-   - "Apa implikasi langsung dari pernyataan pada paragraf kedua?"
-
-
-- vocabulary & semantics:
-   Fokus: Memahami makna kata/istilah berdasarkan konteks kalimat.
-
-   Aturan:
-   - Kata/istilah HARUS berasal dari teks
-   - Jawaban HARUS berbasis konteks, bukan definisi umum
-   - Tidak boleh jadi soal hafalan
-
-   Signature (WAJIB ADA):
-   - kata/istilah spesifik dari teks disebutkan di soal
-
-   Anti-error:
-   - Jika kata bisa dijawab tanpa konteks → SALAH
-   - Jika tidak menyebut kata spesifik → SALAH
-
-   Contoh:
-   - "Dalam konteks bacaan, kata 'signifikan' paling dekat maknanya dengan..."
-   - "Istilah 'X' dalam teks merujuk pada apa?"
-
-
-- verbal reasoning:
-   Fokus: Menarik kesimpulan logis yang tidak tertulis secara eksplisit.
-
-   Aturan:
-   - Jawaban TIDAK boleh ada secara langsung di teks
-   - Harus membutuhkan inferensi/logika
-   - Boleh menggunakan format implisit (kesimpulan, asumsi, kemungkinan)
-
-   Signature (WAJIB ADA SALAH SATU):
-   - kesimpulan
-   - asumsi
-   - tidak dapat disimpulkan
-   - paling logis
-
-   Anti-error:
-   - Jika jawaban bisa ditemukan langsung → SALAH (itu reading)
-   - Jika hanya parafrase → SALAH
-
-   Contoh:
-   - "Kesimpulan mana yang paling logis berdasarkan teks?"
-   - "Manakah pernyataan yang tidak dapat disimpulkan dari bacaan?"
-   - "Apa asumsi yang mendasari argumen penulis?"
-
-
-- analogy:
-   Fokus: Mengidentifikasi hubungan antar konsep (relasi, bukan isi).
-
-   Aturan:
-   - HARUS berbentuk relasi (A : B = C : ?)
-   - Menilai kesamaan hubungan, bukan kesamaan isi
-   - Tidak boleh hanya parafrase teks
-
-   Signature (WAJIB ADA SALAH SATU):
-   - hubungan
-   - peran
-   - fungsi
-   - setara
-
-   Anti-error:
-   - Jika soal masih bisa dijawab dengan membaca teks langsung → SALAH
-   - Jika tidak ada relasi eksplisit → SALAH
-
-   Contoh:
-   - "Hubungan antara X dan Y dalam teks paling mirip dengan..."
-   - "Jika X berperan sebagai penyebab dan Y sebagai akibat, maka pasangan yang setara adalah..."
-
-
-- working memory:
-   Fokus: Mengingat dan menggabungkan informasi dari beberapa bagian teks.
-
-   Aturan:
-   - HARUS melibatkan minimal dua bagian teks
-   - Jawaban membutuhkan penggabungan informasi
-   - Tidak bisa dijawab dari satu bagian saja
-
-   Signature (WAJIB ADA SALAH SATU):
-   - menggabungkan / kombinasi
-   - paragraf awal & akhir
-   - beberapa bagian / seluruh teks
-
-   Anti-error:
-   - Jika bisa dijawab dari satu paragraf → SALAH
-   - Jika hanya memahami tanpa menggabungkan → SALAH
-
-   Contoh:
-   - "Informasi mana yang konsisten jika menggabungkan paragraf awal dan akhir?"
-   - "Bagaimana hubungan antara konsep di awal dan kesimpulan di akhir teks?"
-
-   ATURAN GLOBAL DIMENSI:
-   - Setiap soal harus benar-benar merepresentasikan proses berpikir dari dimensinya
-   - Jika soal bisa dijawab tanpa menggunakan kemampuan utama dimensinya, maka soal dianggap SALAH
-
-   Tips soal seperti "Tes IQ":
-   - Gunakan parafrase (jangan copy kalimat dari teks)
-   - Semua opsi harus terlihat masuk akal dan relevan
-   - Minimal 2 opsi harus tampak benar secara sekilas, namun hanya 1 paling tepat
+OUTPUT:
+- HANYA JSON VALID
+- correct_answer harus sama persis dengan salah satu options
+- Gunakan tanda kutip tunggal (') jika perlu
 
 2. Setiap soal WAJIB menyertakan 'explanation' singkat yang menjelaskan MENGAPA jawaban benar berdasarkan teks.
 
