@@ -109,6 +109,15 @@ export const journalController = {
         </div>
       </div>
 
+      <div class="table-row" style="background: rgba(255, 71, 87, 0.05);">
+      <span style="color: #ff4757;">🔥 Burnout Risk</span> 
+      <span style="font-weight: 700; color: #ff4757;">${Math.round(stab.burnout_risk || 0)}%</span>
+    </div>
+    <div class="table-row" style="background: rgba(46, 213, 115, 0.05);">
+      <span style="color: #2ed573;">🔋 Recovery Rate</span> 
+      <span style="font-weight: 700; color: #2ed573;">${Math.round(stab.recovery_rate || 0)}%</span>
+    </div>
+
       <div class="journal-summary-box" style="background: var(--accent-soft); padding: 16px; border-radius: var(--radius-md); margin-top: 20px; border-left: 4px solid var(--accent);">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div class="summary-item">
