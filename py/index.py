@@ -152,6 +152,7 @@ ATURAN:
 - Gunakan parafrase (jangan copy teks)
 - Semua opsi harus masuk akal (minimal 2 tampak benar)
 - Setiap soal wajib ada explanation singkat
+- DILARANG menggunakan karakter berikut di dalam teks: ( ) { } [ ] \ / "
 
 FORMAT:
 - Vocabulary → harus menyebut kata spesifik dari teks
@@ -165,7 +166,6 @@ OUTPUT:
 - Gunakan tanda kutip tunggal (') jika perlu
 
 2. Setiap soal WAJIB menyertakan 'explanation' singkat yang menjelaskan MENGAPA jawaban benar berdasarkan teks.
-
 3. Kembalikan HANYA JSON VALID.
 
 4. Struktur:
@@ -184,14 +184,7 @@ OUTPUT:
 }}
 
 VALIDATION STEP (Internal, jangan ditampilkan):
-- Periksa 5 dimension: reading comprehension, vocabulary & semantics, verbal reasoning, analogy, working memory
-- Pastikan masing-masing muncul tepat 1 kali
-- Periksa semua correct_answer identik dengan salah satu options
 - Periksa JSON valid sebelum output
-- Gunakan tanda kutip tunggal (') jika diperlukan dalam teks
-SEMUA FIELD WAJIB STRING.
-JANGAN PERNAH gunakan null.
-Jika tidak tahu, isi dengan string kosong
 """
 
         messages = [
