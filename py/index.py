@@ -48,7 +48,7 @@ def generate_quiz(messages, mode="qa"):
     settings = MODE_SETTINGS.get(mode, MODE_SETTINGS["qa"])
 
     response = client.chat.completions.create(
-        model="openai/gpt-oss-120b:free",
+        model="stepfun/step-3.5-flash:free",
         messages=messages,
         temperature=settings["temperature"],
         max_tokens=settings["max_tokens"],
