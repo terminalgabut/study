@@ -160,7 +160,7 @@ FORMAT:
 - Working memory → wajib melibatkan lebih dari satu bagian teks
 
 OUTPUT:
-- HANYA JSON VALID
+- HANYA JSON VALID, SEMUA FIELD WAJIB STRING.
 - correct_answer harus sama persis dengan salah satu options
 - Gunakan tanda kutip tunggal (') jika perlu
 
@@ -189,6 +189,9 @@ VALIDATION STEP (Internal, jangan ditampilkan):
 - Periksa semua correct_answer identik dengan salah satu options
 - Periksa JSON valid sebelum output
 - Gunakan tanda kutip tunggal (') jika diperlukan dalam teks
+SEMUA FIELD WAJIB STRING.
+JANGAN PERNAH gunakan null.
+Jika tidak tahu, isi dengan string kosong "".
 """
 
         messages = [
