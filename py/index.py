@@ -191,7 +191,7 @@ VALIDATION STEP (Internal, jangan ditampilkan):
 - Gunakan tanda kutip tunggal (') jika diperlukan dalam teks
 SEMUA FIELD WAJIB STRING.
 JANGAN PERNAH gunakan null.
-Jika tidak tahu, isi dengan string kosong "".
+Jika tidak tahu, isi dengan string kosong
 """
 
         messages = [
