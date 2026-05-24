@@ -27,6 +27,13 @@ export const materiView = `
   </div>
 
   <div class="home-card hero">
+    <a href="#/materi/plato" class="home-card">
+      <h3>Filsafat dalam praktik</h3>
+      <p class="small">Pengenalan konsep cara berpikir Filsafat.</p>
+    </a>
+  </div>
+
+  <div class="home-card hero">
     <a href="#/materi/tajwid" class="home-card">
       <h3>Ilmu Tajwid</h3>
       <p class="small">Pengenalan konsep dasar Ilmu Tajwid.</p>
