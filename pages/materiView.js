@@ -28,8 +28,8 @@ export const materiView = `
 
   <div class="home-card hero">
     <a href="#/materi/plato" class="home-card">
-      <h3>Filsafat dalam praktik</h3>
-      <p class="small">Pengenalan konsep cara berpikir Filsafat.</p>
+      <h3>Filsafat Plato/h3>
+      <p class="small">Pengenalan konsep cara berpikir Plato.</p>
     </a>
   </div>
 
